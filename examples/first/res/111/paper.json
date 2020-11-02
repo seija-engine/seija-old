@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "height": 1024,
+    "texture": "paper.png",
+    "width": 1024
+  },
+  "sprites": [
+    {
+      "height": 198,
+      "name": "TickBox",
+      "width": 286,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "height": 135,
+      "name": "VolumeBar",
+      "width": 660,
+      "x": 286,
+      "y": 0
+    },
+    {
+      "height": 449,
+      "name": "SmallBackground",
+      "width": 862,
+      "x": 0,
+      "y": 198
+    },
+    {
+      "height": 194,
+      "name": "StarIcon",
+      "width": 206,
+      "x": 0,
+      "y": 647
+    },
+    {
+      "height": 198,
+      "name": "TickIcon",
+      "width": 200,
+      "x": 206,
+      "y": 647
+    },
+    {
+      "height": 176,
+      "name": "BlueButtonPressed",
+      "width": 260,
+      "x": 406,
+      "y": 841
+    },
+    {
+      "height": 194,
+      "name": "EmptyStar",
+      "width": 206,
+      "x": 406,
+      "y": 647
+    },
+    {
+      "height": 135,
+      "name": "VolumeSlider",
+      "width": 116,
+      "x": 0,
+      "y": 841
+    },
+    {
+      "height": 176,
+      "name": "BlueButton",
+      "width": 260,
+      "x": 116,
+      "y": 845
+    }
+  ]
+}

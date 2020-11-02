@@ -1,0 +1,1139 @@
+{
+  "meta": {
+    "height": 256,
+    "texture": "material.png",
+    "width": 512
+  },
+  "sliceBorder":[
+    {
+      "target": "button",
+      "border":[[6,6,6,6]]
+    },
+    {
+      "target": "button-active",
+      "border":[[6,6,6,6]]
+    }
+  ],
+  "sprites": [
+    {
+      "height": 20,
+      "name": "spin-ltr-down-disabled",
+      "width": 20,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-down-active",
+      "width": 20,
+      "x": 0,
+      "y": 20
+    },
+    {
+      "height": 24,
+      "name": "checkbox-mixed",
+      "width": 24,
+      "x": 0,
+      "y": 40
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-ltr-entry-disabled",
+      "width": 20,
+      "x": 20,
+      "y": 20
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-checked",
+      "width": 16,
+      "x": 40,
+      "y": 20
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-up-hover",
+      "width": 20,
+      "x": 56,
+      "y": 20
+    },
+    {
+      "height": 1,
+      "name": "entry-background",
+      "width": 1,
+      "x": 40,
+      "y": 36
+    },
+    {
+      "height": 24,
+      "name": "checkbox-mixed-active",
+      "width": 24,
+      "x": 76,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "flat-button-hover",
+      "width": 20,
+      "x": 20,
+      "y": 0
+    },
+    {
+      "height": 38,
+      "name": "combo-left-entry-hover",
+      "width": 40,
+      "x": 100,
+      "y": 0
+    },
+    {
+      "height": 24,
+      "name": "checkbox-checked",
+      "width": 24,
+      "x": 76,
+      "y": 36
+    },
+    {
+      "height": 16,
+      "name": "pan-down-alt-disabled",
+      "width": 16,
+      "x": 40,
+      "y": 0
+    },
+    {
+      "height": 16,
+      "name": "pan-right-semi",
+      "width": 16,
+      "x": 56,
+      "y": 0
+    },
+    {
+      "height": 16,
+      "name": "handle-vert-hover",
+      "width": 4,
+      "x": 72,
+      "y": 0
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-horz-slider-hover",
+      "width": 17,
+      "x": 140,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-entry-active",
+      "width": 20,
+      "x": 157,
+      "y": 0
+    },
+    {
+      "height": 24,
+      "name": "scale-vert-trough-disabled",
+      "width": 24,
+      "x": 24,
+      "y": 40
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-checked-disabled",
+      "width": 16,
+      "x": 140,
+      "y": 17
+    },
+    {
+      "height": 24,
+      "name": "radio-mixed-hover",
+      "width": 24,
+      "x": 48,
+      "y": 40
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-unchecked",
+      "width": 16,
+      "x": 140,
+      "y": 33
+    },
+    {
+      "height": 16,
+      "name": "pan-left-semi",
+      "width": 16,
+      "x": 156,
+      "y": 24
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-up",
+      "width": 20,
+      "x": 177,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-button",
+      "width": 20,
+      "x": 197,
+      "y": 0
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-ltr-slider",
+      "width": 17,
+      "x": 217,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-button",
+      "width": 20,
+      "x": 234,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "entry",
+      "width": 20,
+      "x": 254,
+      "y": 0
+    },
+    {
+      "height": 16,
+      "name": "pan-up-disabled",
+      "width": 16,
+      "x": 217,
+      "y": 17
+    },
+    {
+      "height": 20,
+      "name": "entry-disabled",
+      "width": 20,
+      "x": 172,
+      "y": 20
+    },
+    {
+      "height": 24,
+      "name": "scale-horz-trough-active",
+      "width": 24,
+      "x": 192,
+      "y": 24
+    },
+    {
+      "height": 24,
+      "name": "radio-mixed-active",
+      "width": 24,
+      "x": 156,
+      "y": 40
+    },
+    {
+      "height": 38,
+      "name": "combo-right-entry",
+      "width": 40,
+      "x": 100,
+      "y": 40
+    },
+    {
+      "height": 16,
+      "name": "pan-up",
+      "width": 16,
+      "x": 140,
+      "y": 60
+    },
+    {
+      "height": 16,
+      "name": "pan-down-disabled",
+      "width": 16,
+      "x": 140,
+      "y": 76
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-up-disabled",
+      "width": 20,
+      "x": 274,
+      "y": 0
+    },
+    {
+      "height": 2,
+      "name": "treeview-ltr-button",
+      "width": 2,
+      "x": 40,
+      "y": 37
+    },
+    {
+      "height": 4,
+      "name": "progressbar-trough",
+      "width": 4,
+      "x": 42,
+      "y": 36
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-rtl-entry-disabled",
+      "width": 20,
+      "x": 294,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-entry-disabled",
+      "width": 20,
+      "x": 314,
+      "y": 0
+    },
+    {
+      "height": 4,
+      "name": "handle-horz",
+      "width": 16,
+      "x": 156,
+      "y": 20
+    },
+    {
+      "height": 38,
+      "name": "combo-right-entry-hover",
+      "width": 40,
+      "x": 334,
+      "y": 0
+    },
+    {
+      "height": 24,
+      "name": "radio-checked-disabled",
+      "width": 24,
+      "x": 72,
+      "y": 60
+    },
+    {
+      "height": 24,
+      "name": "radio-checked",
+      "width": 24,
+      "x": 374,
+      "y": 0
+    },
+    {
+      "height": 2,
+      "name": "frame-inline",
+      "width": 3,
+      "x": 46,
+      "y": 37
+    },
+    {
+      "height": 2,
+      "name": "scrollbar-horz-trough",
+      "width": 1,
+      "x": 156,
+      "y": 17
+    },
+    {
+      "height": 24,
+      "name": "checkbox-unchecked",
+      "width": 24,
+      "x": 398,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-entry",
+      "width": 20,
+      "x": 422,
+      "y": 20
+    },
+    {
+      "height": 16,
+      "name": "pan-down-alt",
+      "width": 16,
+      "x": 374,
+      "y": 24
+    },
+    {
+      "height": 24,
+      "name": "scale-slider-disabled",
+      "width": 24,
+      "x": 442,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-button-disabled",
+      "width": 20,
+      "x": 422,
+      "y": 0
+    },
+    {
+      "height": 24,
+      "name": "checkbox-checked-disabled",
+      "width": 24,
+      "x": 466,
+      "y": 0
+    },
+    {
+      "height": 1,
+      "name": "entry-background-disabled",
+      "width": 1,
+      "x": 41,
+      "y": 36
+    },
+    {
+      "height": 38,
+      "name": "combo-left-entry-active",
+      "width": 40,
+      "x": 96,
+      "y": 78
+    },
+    {
+      "height": 16,
+      "name": "pan-right-alt",
+      "width": 16,
+      "x": 490,
+      "y": 0
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-checked",
+      "width": 16,
+      "x": 490,
+      "y": 20
+    },
+    {
+      "height": 24,
+      "name": "checkbox-mixed-disabled",
+      "width": 24,
+      "x": 390,
+      "y": 38
+    },
+    {
+      "height": 24,
+      "name": "checkbox-unchecked-active",
+      "width": 24,
+      "x": 442,
+      "y": 33
+    },
+    {
+      "height": 38,
+      "name": "entry-hover",
+      "width": 40,
+      "x": 466,
+      "y": 49
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-unchecked-disabled",
+      "width": 16,
+      "x": 466,
+      "y": 24
+    },
+    {
+      "height": 24,
+      "name": "scale-slider",
+      "width": 24,
+      "x": 414,
+      "y": 49
+    },
+    {
+      "height": 20,
+      "name": "button-disabled",
+      "width": 20,
+      "x": 233,
+      "y": 20
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-mixed",
+      "width": 16,
+      "x": 253,
+      "y": 24
+    },
+    {
+      "height": 38,
+      "name": "combo-right-entry-active",
+      "width": 40,
+      "x": 0,
+      "y": 78
+    },
+    {
+      "height": 16,
+      "name": "pan-down",
+      "width": 16,
+      "x": 269,
+      "y": 24
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-up-active",
+      "width": 20,
+      "x": 285,
+      "y": 20
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-horz-slider-disabled",
+      "width": 17,
+      "x": 305,
+      "y": 20
+    },
+    {
+      "height": 2,
+      "name": "treeview-ltr-button-hover",
+      "width": 2,
+      "x": 414,
+      "y": 38
+    },
+    {
+      "height": 20,
+      "name": "entry-active",
+      "width": 20,
+      "x": 438,
+      "y": 64
+    },
+    {
+      "height": 38,
+      "name": "combo-left-entry-disabled",
+      "width": 40,
+      "x": 40,
+      "y": 92
+    },
+    {
+      "height": 16,
+      "name": "pan-right",
+      "width": 16,
+      "x": 40,
+      "y": 64
+    },
+    {
+      "height": 16,
+      "name": "pan-left",
+      "width": 16,
+      "x": 56,
+      "y": 64
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-button-active",
+      "width": 20,
+      "x": 80,
+      "y": 116
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-down",
+      "width": 20,
+      "x": 100,
+      "y": 130
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-horz-slider",
+      "width": 17,
+      "x": 120,
+      "y": 136
+    },
+    {
+      "height": 3,
+      "name": "frame",
+      "width": 3,
+      "x": 49,
+      "y": 37
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-mixed-disabled",
+      "width": 16,
+      "x": 80,
+      "y": 92
+    },
+    {
+      "height": 1,
+      "name": "tab",
+      "width": 1,
+      "x": 156,
+      "y": 19
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-button-hover",
+      "width": 20,
+      "x": 120,
+      "y": 116
+    },
+    {
+      "height": 4,
+      "name": "handle-horz-active",
+      "width": 16,
+      "x": 216,
+      "y": 36
+    },
+    {
+      "height": 20,
+      "name": "button-active",
+      "width": 20,
+      "x": 0,
+      "y": 116
+    },
+    {
+      "height": 24,
+      "name": "checkbox-checked-active",
+      "width": 24,
+      "x": 0,
+      "y": 136
+    },
+    {
+      "height": 24,
+      "name": "scale-horz-trough-disabled",
+      "width": 24,
+      "x": 0,
+      "y": 160
+    },
+    {
+      "height": 2,
+      "name": "treeview-rtl-button",
+      "width": 2,
+      "x": 416,
+      "y": 38
+    },
+    {
+      "height": 1,
+      "name": "border",
+      "width": 1,
+      "x": 40,
+      "y": 39
+    },
+    {
+      "height": 1,
+      "name": "scrollbar-vert-rtl-trough",
+      "width": 2,
+      "x": 46,
+      "y": 39
+    },
+    {
+      "height": 38,
+      "name": "combo-right-entry-disabled",
+      "width": 40,
+      "x": 0,
+      "y": 184
+    },
+    {
+      "height": 16,
+      "name": "handle-vert-active",
+      "width": 4,
+      "x": 438,
+      "y": 48
+    },
+    {
+      "height": 16,
+      "name": "pan-left-alt",
+      "width": 16,
+      "x": 24,
+      "y": 160
+    },
+    {
+      "height": 20,
+      "name": "notebook-entry-disabled",
+      "width": 20,
+      "x": 20,
+      "y": 116
+    },
+    {
+      "height": 16,
+      "name": "pan-right-alt-disabled",
+      "width": 16,
+      "x": 24,
+      "y": 136
+    },
+    {
+      "height": 10,
+      "name": "focus",
+      "width": 10,
+      "x": 140,
+      "y": 49
+    },
+    {
+      "height": 24,
+      "name": "scale-vert-trough-active",
+      "width": 24,
+      "x": 40,
+      "y": 160
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-up",
+      "width": 20,
+      "x": 40,
+      "y": 136
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-rtl-entry",
+      "width": 20,
+      "x": 60,
+      "y": 136
+    },
+    {
+      "height": 20,
+      "name": "flat-button",
+      "width": 20,
+      "x": 80,
+      "y": 136
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-mixed-disabled",
+      "width": 16,
+      "x": 64,
+      "y": 160
+    },
+    {
+      "height": 16,
+      "name": "menu-checkbox-unchecked",
+      "width": 16,
+      "x": 80,
+      "y": 160
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-button-disabled",
+      "width": 20,
+      "x": 96,
+      "y": 160
+    },
+    {
+      "height": 24,
+      "name": "checkbox-checked-hover",
+      "width": 24,
+      "x": 116,
+      "y": 160
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-unchecked-disabled",
+      "width": 16,
+      "x": 64,
+      "y": 176
+    },
+    {
+      "height": 2,
+      "name": "treeview-rtl-button-active",
+      "width": 2,
+      "x": 418,
+      "y": 38
+    },
+    {
+      "height": 24,
+      "name": "radio-checked-active",
+      "width": 24,
+      "x": 0,
+      "y": 222
+    },
+    {
+      "height": 20,
+      "name": "notebook-entry",
+      "width": 20,
+      "x": 80,
+      "y": 184
+    },
+    {
+      "height": 24,
+      "name": "scale-slider-hover",
+      "width": 24,
+      "x": 24,
+      "y": 222
+    },
+    {
+      "height": 38,
+      "name": "combo-left-entry",
+      "width": 40,
+      "x": 48,
+      "y": 204
+    },
+    {
+      "height": 24,
+      "name": "radio-unchecked-hover",
+      "width": 24,
+      "x": 88,
+      "y": 222
+    },
+    {
+      "height": 24,
+      "name": "radio-mixed",
+      "width": 24,
+      "x": 112,
+      "y": 222
+    },
+    {
+      "height": 1,
+      "name": "scrollbar-vert-ltr-trough",
+      "width": 2,
+      "x": 52,
+      "y": 39
+    },
+    {
+      "height": 20,
+      "name": "button-hover",
+      "width": 20,
+      "x": 40,
+      "y": 184
+    },
+    {
+      "height": 20,
+      "name": "combo-rtl-entry-active",
+      "width": 20,
+      "x": 100,
+      "y": 192
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-down",
+      "width": 20,
+      "x": 120,
+      "y": 192
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-horz-slider-active",
+      "width": 17,
+      "x": 216,
+      "y": 40
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-rtl-entry-active",
+      "width": 20,
+      "x": 305,
+      "y": 37
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-rtl-slider-active",
+      "width": 17,
+      "x": 140,
+      "y": 204
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-ltr-slider-active",
+      "width": 17,
+      "x": 157,
+      "y": 204
+    },
+    {
+      "height": 16,
+      "name": "pan-up-alt",
+      "width": 16,
+      "x": 174,
+      "y": 204
+    },
+    {
+      "height": 24,
+      "name": "checkbox-mixed-hover",
+      "width": 24,
+      "x": 190,
+      "y": 49
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-entry",
+      "width": 20,
+      "x": 190,
+      "y": 73
+    },
+    {
+      "height": 20,
+      "name": "flat-button-disabled",
+      "width": 20,
+      "x": 136,
+      "y": 92
+    },
+    {
+      "height": 16,
+      "name": "pan-left-alt-disabled",
+      "width": 16,
+      "x": 156,
+      "y": 92
+    },
+    {
+      "height": 24,
+      "name": "scale-slider-active",
+      "width": 24,
+      "x": 156,
+      "y": 64
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-rtl-slider-disabled",
+      "width": 17,
+      "x": 172,
+      "y": 92
+    },
+    {
+      "height": 24,
+      "name": "radio-mixed-disabled",
+      "width": 24,
+      "x": 156,
+      "y": 109
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-up-active",
+      "width": 20,
+      "x": 140,
+      "y": 133
+    },
+    {
+      "height": 24,
+      "name": "scale-vert-trough",
+      "width": 24,
+      "x": 160,
+      "y": 133
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-down-active",
+      "width": 20,
+      "x": 140,
+      "y": 156
+    },
+    {
+      "height": 16,
+      "name": "pan-right-disabled",
+      "width": 16,
+      "x": 140,
+      "y": 116
+    },
+    {
+      "height": 20,
+      "name": "flat-button-active",
+      "width": 20,
+      "x": 140,
+      "y": 176
+    },
+    {
+      "height": 24,
+      "name": "radio-unchecked-disabled",
+      "width": 24,
+      "x": 160,
+      "y": 176
+    },
+    {
+      "height": 16,
+      "name": "handle-vert",
+      "width": 4,
+      "x": 96,
+      "y": 60
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-mixed",
+      "width": 16,
+      "x": 160,
+      "y": 157
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-entry-disabled",
+      "width": 20,
+      "x": 190,
+      "y": 93
+    },
+    {
+      "height": 4,
+      "name": "progressbar-progress",
+      "width": 4,
+      "x": 136,
+      "y": 112
+    },
+    {
+      "height": 24,
+      "name": "radio-checked-hover",
+      "width": 24,
+      "x": 190,
+      "y": 113
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-button-active",
+      "width": 20,
+      "x": 190,
+      "y": 137
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-ltr-slider-disabled",
+      "width": 17,
+      "x": 190,
+      "y": 157
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-down-disabled",
+      "width": 20,
+      "x": 190,
+      "y": 174
+    },
+    {
+      "height": 2,
+      "name": "treeview-ltr-button-active",
+      "width": 2,
+      "x": 420,
+      "y": 38
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-down-hover",
+      "width": 20,
+      "x": 190,
+      "y": 194
+    },
+    {
+      "height": 20,
+      "name": "spin-ltr-down-hover",
+      "width": 20,
+      "x": 190,
+      "y": 214
+    },
+    {
+      "height": 4,
+      "name": "handle-horz-hover",
+      "width": 16,
+      "x": 140,
+      "y": 112
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-up-hover",
+      "width": 20,
+      "x": 136,
+      "y": 222
+    },
+    {
+      "height": 24,
+      "name": "checkbox-unchecked-disabled",
+      "width": 24,
+      "x": 156,
+      "y": 222
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-rtl-slider-hover",
+      "width": 17,
+      "x": 207,
+      "y": 157
+    },
+    {
+      "height": 3,
+      "name": "frame-notebook",
+      "width": 3,
+      "x": 52,
+      "y": 36
+    },
+    {
+      "height": 20,
+      "name": "combo-ltr-button-hover",
+      "width": 20,
+      "x": 210,
+      "y": 93
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-ltr-entry",
+      "width": 20,
+      "x": 230,
+      "y": 93
+    },
+    {
+      "height": 24,
+      "name": "scale-horz-trough",
+      "width": 24,
+      "x": 233,
+      "y": 49
+    },
+    {
+      "height": 16,
+      "name": "pan-left-disabled",
+      "width": 16,
+      "x": 214,
+      "y": 64
+    },
+    {
+      "height": 20,
+      "name": "notebook-combo-ltr-entry-active",
+      "width": 20,
+      "x": 257,
+      "y": 49
+    },
+    {
+      "height": 20,
+      "name": "spin-rtl-up-disabled",
+      "width": 20,
+      "x": 257,
+      "y": 69
+    },
+    {
+      "height": 2,
+      "name": "treeview-rtl-button-hover",
+      "width": 2,
+      "x": 96,
+      "y": 76
+    },
+    {
+      "height": 24,
+      "name": "checkbox-unchecked-hover",
+      "width": 24,
+      "x": 277,
+      "y": 69
+    },
+    {
+      "height": 24,
+      "name": "radio-unchecked",
+      "width": 24,
+      "x": 250,
+      "y": 92
+    },
+    {
+      "height": 16,
+      "name": "pan-up-alt-disabled",
+      "width": 16,
+      "x": 230,
+      "y": 76
+    },
+    {
+      "height": 20,
+      "name": "button",
+      "width": 20,
+      "x": 277,
+      "y": 49
+    },
+    {
+      "height": 16,
+      "name": "menu-radio-checked-disabled",
+      "width": 16,
+      "x": 214,
+      "y": 113
+    },
+    {
+      "height": 24,
+      "name": "radio-unchecked-active",
+      "width": 24,
+      "x": 214,
+      "y": 129
+    },
+    {
+      "height": 20,
+      "name": "notebook-entry-active",
+      "width": 20,
+      "x": 224,
+      "y": 153
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-rtl-slider",
+      "width": 17,
+      "x": 224,
+      "y": 173
+    },
+    {
+      "height": 17,
+      "name": "scrollbar-vert-ltr-slider-hover",
+      "width": 17,
+      "x": 301,
+      "y": 73
+    }
+  ]
+}

@@ -1,0 +1,1430 @@
+{
+  "meta": {
+    "height": 1024,
+    "texture": "res1.png",
+    "width": 1024
+  },
+  "sprites": [
+    {
+      "height": 58,
+      "name": "z03[1]",
+      "width": 48,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "height": 142,
+      "name": "zhu10",
+      "width": 55,
+      "x": 0,
+      "y": 58
+    },
+    {
+      "height": 107,
+      "name": "cz11[1]",
+      "width": 82,
+      "x": 0,
+      "y": 200
+    },
+    {
+      "height": 54,
+      "name": "shalangan01",
+      "width": 96,
+      "x": 48,
+      "y": 0
+    },
+    {
+      "height": 127,
+      "name": "chengnei_san2[1]",
+      "width": 93,
+      "x": 55,
+      "y": 58
+    },
+    {
+      "height": 19,
+      "name": "xinpingyuan27[1]",
+      "width": 24,
+      "x": 144,
+      "y": 0
+    },
+    {
+      "height": 53,
+      "name": "o_45[1]",
+      "width": 35,
+      "x": 168,
+      "y": 0
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan29",
+      "width": 29,
+      "x": 203,
+      "y": 19
+    },
+    {
+      "height": 40,
+      "name": "xinpingyuan15[1]",
+      "width": 63,
+      "x": 232,
+      "y": 0
+    },
+    {
+      "height": 57,
+      "name": "z02",
+      "width": 32,
+      "x": 295,
+      "y": 0
+    },
+    {
+      "height": 32,
+      "name": "0[1] (2)",
+      "width": 32,
+      "x": 232,
+      "y": 40
+    },
+    {
+      "height": 18,
+      "name": "ye22",
+      "width": 22,
+      "x": 203,
+      "y": 0
+    },
+    {
+      "height": 52,
+      "name": "cz06",
+      "width": 32,
+      "x": 148,
+      "y": 58
+    },
+    {
+      "height": 154,
+      "name": "tree16",
+      "width": 190,
+      "x": 327,
+      "y": 40
+    },
+    {
+      "height": 30,
+      "name": "tree06",
+      "width": 61,
+      "x": 148,
+      "y": 110
+    },
+    {
+      "height": 46,
+      "name": "ye51",
+      "width": 49,
+      "x": 180,
+      "y": 58
+    },
+    {
+      "height": 104,
+      "name": "xinpingyuan23",
+      "width": 57,
+      "x": 229,
+      "y": 72
+    },
+    {
+      "height": 160,
+      "name": "tree18",
+      "width": 54,
+      "x": 148,
+      "y": 176
+    },
+    {
+      "height": 66,
+      "name": "ye56",
+      "width": 51,
+      "x": 517,
+      "y": 110
+    },
+    {
+      "height": 53,
+      "name": "z01",
+      "width": 47,
+      "x": 517,
+      "y": 57
+    },
+    {
+      "height": 324,
+      "name": "xinpingyuan10",
+      "width": 177,
+      "x": 568,
+      "y": 110
+    },
+    {
+      "height": 46,
+      "name": "ye50",
+      "width": 49,
+      "x": 564,
+      "y": 58
+    },
+    {
+      "height": 58,
+      "name": "zhu02",
+      "width": 28,
+      "x": 286,
+      "y": 140
+    },
+    {
+      "height": 61,
+      "name": "tree08",
+      "width": 27,
+      "x": 286,
+      "y": 72
+    },
+    {
+      "height": 116,
+      "name": "xinpingyuan4[1]",
+      "width": 56,
+      "x": 745,
+      "y": 72
+    },
+    {
+      "height": 19,
+      "name": "xinpingyuan31",
+      "width": 28,
+      "x": 264,
+      "y": 53
+    },
+    {
+      "height": 64,
+      "name": "xinpingyuan21[1]",
+      "width": 32,
+      "x": 613,
+      "y": 40
+    },
+    {
+      "height": 46,
+      "name": "ye49",
+      "width": 49,
+      "x": 564,
+      "y": 0
+    },
+    {
+      "height": 30,
+      "name": "tree06[1]",
+      "width": 61,
+      "x": 148,
+      "y": 140
+    },
+    {
+      "height": 54,
+      "name": "tree10",
+      "width": 58,
+      "x": 645,
+      "y": 54
+    },
+    {
+      "height": 94,
+      "name": "ye58",
+      "width": 73,
+      "x": 801,
+      "y": 0
+    },
+    {
+      "height": 30,
+      "name": "ye44",
+      "width": 32,
+      "x": 703,
+      "y": 72
+    },
+    {
+      "height": 25,
+      "name": "ye38",
+      "width": 25,
+      "x": 202,
+      "y": 170
+    },
+    {
+      "height": 32,
+      "name": "ball0001[1]",
+      "width": 32,
+      "x": 703,
+      "y": 40
+    },
+    {
+      "height": 59,
+      "name": "zhu05",
+      "width": 31,
+      "x": 735,
+      "y": 0
+    },
+    {
+      "height": 51,
+      "name": "z06",
+      "width": 48,
+      "x": 645,
+      "y": 0
+    },
+    {
+      "height": 92,
+      "name": "cz05",
+      "width": 30,
+      "x": 874,
+      "y": 0
+    },
+    {
+      "height": 20,
+      "name": "ye43[1]",
+      "width": 26,
+      "x": 613,
+      "y": 19
+    },
+    {
+      "height": 26,
+      "name": "tree14",
+      "width": 59,
+      "x": 904,
+      "y": 40
+    },
+    {
+      "height": 31,
+      "name": "ye11[1]",
+      "width": 28,
+      "x": 766,
+      "y": 40
+    },
+    {
+      "height": 59,
+      "name": "tree09",
+      "width": 26,
+      "x": 963,
+      "y": 50
+    },
+    {
+      "height": 19,
+      "name": "xinpingyuan27",
+      "width": 24,
+      "x": 613,
+      "y": 0
+    },
+    {
+      "height": 58,
+      "name": "ye18",
+      "width": 26,
+      "x": 989,
+      "y": 0
+    },
+    {
+      "height": 26,
+      "name": "xinpingyuan14",
+      "width": 28,
+      "x": 989,
+      "y": 72
+    },
+    {
+      "height": 29,
+      "name": "xinpingyuan26[1]",
+      "width": 30,
+      "x": 766,
+      "y": 0
+    },
+    {
+      "height": 33,
+      "name": "zhu07",
+      "width": 74,
+      "x": 904,
+      "y": 0
+    },
+    {
+      "height": 159,
+      "name": "zhangpeng01",
+      "width": 154,
+      "x": 801,
+      "y": 94
+    },
+    {
+      "height": 29,
+      "name": "ye42",
+      "width": 30,
+      "x": 693,
+      "y": 0
+    },
+    {
+      "height": 54,
+      "name": "o_44",
+      "width": 31,
+      "x": 517,
+      "y": 0
+    },
+    {
+      "height": 136,
+      "name": "city02[1]",
+      "width": 139,
+      "x": 0,
+      "y": 307
+    },
+    {
+      "height": 93,
+      "name": "cz07",
+      "width": 32,
+      "x": 989,
+      "y": 98
+    },
+    {
+      "height": 19,
+      "name": "xinpingyuan31[1]",
+      "width": 28,
+      "x": 955,
+      "y": 176
+    },
+    {
+      "height": 40,
+      "name": "ye52",
+      "width": 63,
+      "x": 82,
+      "y": 200
+    },
+    {
+      "height": 51,
+      "name": "w_28",
+      "width": 51,
+      "x": 82,
+      "y": 240
+    },
+    {
+      "height": 61,
+      "name": "tree08[1]",
+      "width": 27,
+      "x": 955,
+      "y": 110
+    },
+    {
+      "height": 46,
+      "name": "xinpingyuan17[1]",
+      "width": 46,
+      "x": 517,
+      "y": 185
+    },
+    {
+      "height": 55,
+      "name": "o_46",
+      "width": 27,
+      "x": 202,
+      "y": 195
+    },
+    {
+      "height": 30,
+      "name": "ye13[1]",
+      "width": 30,
+      "x": 327,
+      "y": 0
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan29[1]",
+      "width": 29,
+      "x": 357,
+      "y": 0
+    },
+    {
+      "height": 54,
+      "name": "o_44(1)",
+      "width": 31,
+      "x": 955,
+      "y": 195
+    },
+    {
+      "height": 64,
+      "name": "cz01",
+      "width": 21,
+      "x": 202,
+      "y": 250
+    },
+    {
+      "height": 127,
+      "name": "tree19",
+      "width": 128,
+      "x": 0,
+      "y": 443
+    },
+    {
+      "height": 25,
+      "name": "ye28[1]",
+      "width": 28,
+      "x": 904,
+      "y": 66
+    },
+    {
+      "height": 25,
+      "name": "ye28",
+      "width": 28,
+      "x": 932,
+      "y": 66
+    },
+    {
+      "height": 57,
+      "name": "z02[1]",
+      "width": 32,
+      "x": 955,
+      "y": 249
+    },
+    {
+      "height": 52,
+      "name": "xinpingyuan28",
+      "width": 97,
+      "x": 0,
+      "y": 570
+    },
+    {
+      "height": 239,
+      "name": "chengnei_chengqiang[1]",
+      "width": 96,
+      "x": 0,
+      "y": 622
+    },
+    {
+      "height": 29,
+      "name": "xinpingyuan24",
+      "width": 32,
+      "x": 986,
+      "y": 200
+    },
+    {
+      "height": 16,
+      "name": "xinpingyuan30[1]",
+      "width": 27,
+      "x": 986,
+      "y": 229
+    },
+    {
+      "height": 32,
+      "name": "18",
+      "width": 32,
+      "x": 386,
+      "y": 0
+    },
+    {
+      "height": 31,
+      "name": "ye25",
+      "width": 30,
+      "x": 418,
+      "y": 0
+    },
+    {
+      "height": 24,
+      "name": "ye45",
+      "width": 28,
+      "x": 229,
+      "y": 176
+    },
+    {
+      "height": 57,
+      "name": "xinpingyuan19",
+      "width": 29,
+      "x": 96,
+      "y": 622
+    },
+    {
+      "height": 16,
+      "name": "xinpingyuan30",
+      "width": 27,
+      "x": 257,
+      "y": 176
+    },
+    {
+      "height": 26,
+      "name": "xinpingyuan25",
+      "width": 28,
+      "x": 97,
+      "y": 570
+    },
+    {
+      "height": 161,
+      "name": "cz02",
+      "width": 114,
+      "x": 0,
+      "y": 861
+    },
+    {
+      "height": 101,
+      "name": "q_28[1]",
+      "width": 90,
+      "x": 202,
+      "y": 314
+    },
+    {
+      "height": 41,
+      "name": "o_63",
+      "width": 69,
+      "x": 223,
+      "y": 250
+    },
+    {
+      "height": 57,
+      "name": "z05",
+      "width": 33,
+      "x": 292,
+      "y": 250
+    },
+    {
+      "height": 124,
+      "name": "xinpingyuan32[1]",
+      "width": 81,
+      "x": 114,
+      "y": 861
+    },
+    {
+      "height": 110,
+      "name": "xinpingyuan8[1]",
+      "width": 100,
+      "x": 325,
+      "y": 200
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan13",
+      "width": 24,
+      "x": 144,
+      "y": 19
+    },
+    {
+      "height": 324,
+      "name": "xinpingyuan10[1]",
+      "width": 177,
+      "x": 195,
+      "y": 679
+    },
+    {
+      "height": 20,
+      "name": "chengnei_shengzi2[1]",
+      "width": 32,
+      "x": 114,
+      "y": 985
+    },
+    {
+      "height": 78,
+      "name": "shalangan03",
+      "width": 50,
+      "x": 96,
+      "y": 679
+    },
+    {
+      "height": 59,
+      "name": "ye23",
+      "width": 32,
+      "x": 96,
+      "y": 757
+    },
+    {
+      "height": 110,
+      "name": "o_34",
+      "width": 100,
+      "x": 372,
+      "y": 861
+    },
+    {
+      "height": 150,
+      "name": "shalangan05",
+      "width": 122,
+      "x": 372,
+      "y": 679
+    },
+    {
+      "height": 114,
+      "name": "z09",
+      "width": 114,
+      "x": 425,
+      "y": 307
+    },
+    {
+      "height": 58,
+      "name": "zhu01",
+      "width": 26,
+      "x": 257,
+      "y": 192
+    },
+    {
+      "height": 57,
+      "name": "z05[1]",
+      "width": 33,
+      "x": 125,
+      "y": 622
+    },
+    {
+      "height": 28,
+      "name": "shamoxiaoguanzifengkou[1]",
+      "width": 27,
+      "x": 229,
+      "y": 200
+    },
+    {
+      "height": 113,
+      "name": "zhu08",
+      "width": 100,
+      "x": 292,
+      "y": 336
+    },
+    {
+      "height": 21,
+      "name": "stone[1]",
+      "width": 31,
+      "x": 292,
+      "y": 314
+    },
+    {
+      "height": 120,
+      "name": "w_35",
+      "width": 145,
+      "x": 139,
+      "y": 434
+    },
+    {
+      "height": 26,
+      "name": "ye26[1]",
+      "width": 28,
+      "x": 97,
+      "y": 596
+    },
+    {
+      "height": 52,
+      "name": "xinpingyuan28[1]",
+      "width": 97,
+      "x": 372,
+      "y": 971
+    },
+    {
+      "height": 151,
+      "name": "xinpingyuan3[1]",
+      "width": 57,
+      "x": 494,
+      "y": 679
+    },
+    {
+      "height": 76,
+      "name": "w_34",
+      "width": 158,
+      "x": 392,
+      "y": 443
+    },
+    {
+      "height": 29,
+      "name": "ye21",
+      "width": 32,
+      "x": 146,
+      "y": 985
+    },
+    {
+      "height": 16,
+      "name": "shamoshengzi[1]",
+      "width": 30,
+      "x": 114,
+      "y": 1005
+    },
+    {
+      "height": 57,
+      "name": "ye19",
+      "width": 32,
+      "x": 158,
+      "y": 622
+    },
+    {
+      "height": 69,
+      "name": "ye55",
+      "width": 125,
+      "x": 425,
+      "y": 231
+    },
+    {
+      "height": 303,
+      "name": "city03[1]",
+      "width": 93,
+      "x": 745,
+      "y": 253
+    },
+    {
+      "height": 89,
+      "name": "zhen02[1]",
+      "width": 172,
+      "x": 838,
+      "y": 519
+    },
+    {
+      "height": 31,
+      "name": "cz03",
+      "width": 24,
+      "x": 283,
+      "y": 200
+    },
+    {
+      "height": 30,
+      "name": "ye32",
+      "width": 27,
+      "x": 96,
+      "y": 816
+    },
+    {
+      "height": 112,
+      "name": "zhu04",
+      "width": 31,
+      "x": 392,
+      "y": 314
+    },
+    {
+      "height": 30,
+      "name": "ye57",
+      "width": 43,
+      "x": 469,
+      "y": 971
+    },
+    {
+      "height": 42,
+      "name": "ye53",
+      "width": 63,
+      "x": 123,
+      "y": 816
+    },
+    {
+      "height": 60,
+      "name": "xinpingyuan22[1]",
+      "width": 33,
+      "x": 745,
+      "y": 188
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan13[1]",
+      "width": 24,
+      "x": 512,
+      "y": 985
+    },
+    {
+      "height": 71,
+      "name": "xinpingyuan18",
+      "width": 55,
+      "x": 139,
+      "y": 336
+    },
+    {
+      "height": 43,
+      "name": "z04[1]",
+      "width": 50,
+      "x": 125,
+      "y": 570
+    },
+    {
+      "height": 30,
+      "name": "ye36",
+      "width": 28,
+      "x": 536,
+      "y": 985
+    },
+    {
+      "height": 39,
+      "name": "ye48",
+      "width": 35,
+      "x": 448,
+      "y": 0
+    },
+    {
+      "height": 58,
+      "name": "ye16",
+      "width": 29,
+      "x": 539,
+      "y": 336
+    },
+    {
+      "height": 29,
+      "name": "shamoxiaoguanzi[1]",
+      "width": 27,
+      "x": 539,
+      "y": 307
+    },
+    {
+      "height": 99,
+      "name": "xinpingyuan1[1]",
+      "width": 138,
+      "x": 284,
+      "y": 519
+    },
+    {
+      "height": 126,
+      "name": "ye54",
+      "width": 108,
+      "x": 422,
+      "y": 519
+    },
+    {
+      "height": 141,
+      "name": "cz10",
+      "width": 90,
+      "x": 472,
+      "y": 830
+    },
+    {
+      "height": 26,
+      "name": "ye46",
+      "width": 27,
+      "x": 539,
+      "y": 415
+    },
+    {
+      "height": 19,
+      "name": "ye34[1]",
+      "width": 24,
+      "x": 229,
+      "y": 231
+    },
+    {
+      "height": 30,
+      "name": "ye44[1]",
+      "width": 32,
+      "x": 483,
+      "y": 0
+    },
+    {
+      "height": 122,
+      "name": "z08",
+      "width": 136,
+      "x": 530,
+      "y": 554
+    },
+    {
+      "height": 160,
+      "name": "tree17",
+      "width": 123,
+      "x": 562,
+      "y": 676
+    },
+    {
+      "height": 19,
+      "name": "ye34",
+      "width": 24,
+      "x": 539,
+      "y": 394
+    },
+    {
+      "height": 58,
+      "name": "ye14",
+      "width": 26,
+      "x": 685,
+      "y": 618
+    },
+    {
+      "height": 48,
+      "name": "tree11",
+      "width": 19,
+      "x": 666,
+      "y": 570
+    },
+    {
+      "height": 71,
+      "name": "xinpingyuan18[1]",
+      "width": 55,
+      "x": 685,
+      "y": 519
+    },
+    {
+      "height": 23,
+      "name": "ye30",
+      "width": 27,
+      "x": 469,
+      "y": 1001
+    },
+    {
+      "height": 58,
+      "name": "zhu09",
+      "width": 26,
+      "x": 711,
+      "y": 618
+    },
+    {
+      "height": 44,
+      "name": "chuan01[1]",
+      "width": 94,
+      "x": 740,
+      "y": 570
+    },
+    {
+      "height": 30,
+      "name": "ye13",
+      "width": 30,
+      "x": 530,
+      "y": 519
+    },
+    {
+      "height": 30,
+      "name": "btn_window_01[1]",
+      "width": 75,
+      "x": 425,
+      "y": 200
+    },
+    {
+      "height": 131,
+      "name": "xinpingyuan5[1]",
+      "width": 17,
+      "x": 666,
+      "y": 434
+    },
+    {
+      "height": 31,
+      "name": "cz04",
+      "width": 29,
+      "x": 372,
+      "y": 830
+    },
+    {
+      "height": 43,
+      "name": "shamodaguanzi[1]",
+      "width": 47,
+      "x": 128,
+      "y": 757
+    },
+    {
+      "height": 31,
+      "name": "chengnei_tongzi2[1]",
+      "width": 24,
+      "x": 401,
+      "y": 830
+    },
+    {
+      "height": 198,
+      "name": "q_30",
+      "width": 162,
+      "x": 838,
+      "y": 307
+    },
+    {
+      "height": 37,
+      "name": "o_42",
+      "width": 45,
+      "x": 146,
+      "y": 679
+    },
+    {
+      "height": 31,
+      "name": "cz04[1]",
+      "width": 29,
+      "x": 425,
+      "y": 830
+    },
+    {
+      "height": 31,
+      "name": "ye31",
+      "width": 31,
+      "x": 987,
+      "y": 253
+    },
+    {
+      "height": 37,
+      "name": "o_42[1]",
+      "width": 45,
+      "x": 146,
+      "y": 716
+    },
+    {
+      "height": 46,
+      "name": "xinpingyuan17",
+      "width": 46,
+      "x": 683,
+      "y": 449
+    },
+    {
+      "height": 28,
+      "name": "zhu06",
+      "width": 46,
+      "x": 685,
+      "y": 590
+    },
+    {
+      "height": 32,
+      "name": "18[1]",
+      "width": 32,
+      "x": 737,
+      "y": 645
+    },
+    {
+      "height": 40,
+      "name": "xinpingyuan15",
+      "width": 63,
+      "x": 769,
+      "y": 618
+    },
+    {
+      "height": 53,
+      "name": "o_45",
+      "width": 35,
+      "x": 190,
+      "y": 618
+    },
+    {
+      "height": 30,
+      "name": "ye33",
+      "width": 27,
+      "x": 737,
+      "y": 614
+    },
+    {
+      "height": 41,
+      "name": "o_64",
+      "width": 40,
+      "x": 225,
+      "y": 570
+    },
+    {
+      "height": 110,
+      "name": "ye20",
+      "width": 100,
+      "x": 560,
+      "y": 443
+    },
+    {
+      "height": 57,
+      "name": "xinpingyuan20",
+      "width": 30,
+      "x": 175,
+      "y": 556
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan16[1]",
+      "width": 30,
+      "x": 225,
+      "y": 611
+    },
+    {
+      "height": 31,
+      "name": "xinpingyuan16",
+      "width": 30,
+      "x": 225,
+      "y": 642
+    },
+    {
+      "height": 51,
+      "name": "chengnei_zhuozi[1]",
+      "width": 51,
+      "x": 838,
+      "y": 253
+    },
+    {
+      "height": 32,
+      "name": "0",
+      "width": 32,
+      "x": 255,
+      "y": 642
+    },
+    {
+      "height": 64,
+      "name": "cz09",
+      "width": 50,
+      "x": 284,
+      "y": 449
+    },
+    {
+      "height": 56,
+      "name": "o_35",
+      "width": 70,
+      "x": 287,
+      "y": 622
+    },
+    {
+      "height": 28,
+      "name": "xinpingyuan12[1]",
+      "width": 26,
+      "x": 255,
+      "y": 611
+    },
+    {
+      "height": 26,
+      "name": "ye62[1]",
+      "width": 22,
+      "x": 778,
+      "y": 200
+    },
+    {
+      "height": 48,
+      "name": "ye59",
+      "width": 48,
+      "x": 889,
+      "y": 253
+    },
+    {
+      "height": 29,
+      "name": "stone02[1]",
+      "width": 31,
+      "x": 357,
+      "y": 645
+    },
+    {
+      "height": 26,
+      "name": "ye26",
+      "width": 28,
+      "x": 388,
+      "y": 642
+    },
+    {
+      "height": 55,
+      "name": "ye61",
+      "width": 51,
+      "x": 334,
+      "y": 449
+    },
+    {
+      "height": 84,
+      "name": "chengnei_chengqiang2[1]",
+      "width": 96,
+      "x": 685,
+      "y": 677
+    },
+    {
+      "height": 64,
+      "name": "ye60",
+      "width": 79,
+      "x": 685,
+      "y": 761
+    },
+    {
+      "height": 20,
+      "name": "ye43",
+      "width": 26,
+      "x": 357,
+      "y": 622
+    },
+    {
+      "height": 51,
+      "name": "z06[1]",
+      "width": 48,
+      "x": 764,
+      "y": 761
+    },
+    {
+      "height": 57,
+      "name": "xinpingyuan19[1]",
+      "width": 29,
+      "x": 781,
+      "y": 677
+    },
+    {
+      "height": 31,
+      "name": "ye11",
+      "width": 28,
+      "x": 685,
+      "y": 825
+    },
+    {
+      "height": 56,
+      "name": "o_35[1]",
+      "width": 70,
+      "x": 832,
+      "y": 622
+    },
+    {
+      "height": 143,
+      "name": "chengnei_chengqiang1[1]",
+      "width": 96,
+      "x": 562,
+      "y": 836
+    },
+    {
+      "height": 58,
+      "name": "z03",
+      "width": 48,
+      "x": 902,
+      "y": 618
+    },
+    {
+      "height": 29,
+      "name": "ye42[1]",
+      "width": 30,
+      "x": 713,
+      "y": 825
+    },
+    {
+      "height": 43,
+      "name": "xinpingyuan11",
+      "width": 46,
+      "x": 764,
+      "y": 812
+    },
+    {
+      "height": 107,
+      "name": "cz11",
+      "width": 82,
+      "x": 658,
+      "y": 856
+    },
+    {
+      "height": 54,
+      "name": "shalangan02",
+      "width": 48,
+      "x": 950,
+      "y": 622
+    },
+    {
+      "height": 26,
+      "name": "ye62",
+      "width": 22,
+      "x": 778,
+      "y": 226
+    },
+    {
+      "height": 99,
+      "name": "zhangpeng02[1]",
+      "width": 138,
+      "x": 812,
+      "y": 761
+    },
+    {
+      "height": 97,
+      "name": "xinpingyuan6[1]",
+      "width": 17,
+      "x": 810,
+      "y": 658
+    },
+    {
+      "height": 58,
+      "name": "ye17",
+      "width": 26,
+      "x": 998,
+      "y": 618
+    },
+    {
+      "height": 44,
+      "name": "o_43",
+      "width": 68,
+      "x": 950,
+      "y": 812
+    },
+    {
+      "height": 60,
+      "name": "xinpingyuan22",
+      "width": 33,
+      "x": 658,
+      "y": 963
+    },
+    {
+      "height": 29,
+      "name": "xinpingyuan26",
+      "width": 30,
+      "x": 691,
+      "y": 979
+    },
+    {
+      "height": 31,
+      "name": "chengnei_tongzi3[1]",
+      "width": 29,
+      "x": 564,
+      "y": 985
+    },
+    {
+      "height": 26,
+      "name": "xinpingyuan14[1]",
+      "width": 28,
+      "x": 781,
+      "y": 734
+    },
+    {
+      "height": 31,
+      "name": "ye12",
+      "width": 32,
+      "x": 593,
+      "y": 985
+    },
+    {
+      "height": 53,
+      "name": "zhu03",
+      "width": 26,
+      "x": 721,
+      "y": 963
+    },
+    {
+      "height": 31,
+      "name": "cz03[1]",
+      "width": 24,
+      "x": 625,
+      "y": 985
+    },
+    {
+      "height": 150,
+      "name": "shalangan06",
+      "width": 122,
+      "x": 747,
+      "y": 861
+    },
+    {
+      "height": 63,
+      "name": "ye24",
+      "width": 32,
+      "x": 950,
+      "y": 856
+    },
+    {
+      "height": 53,
+      "name": "z01[1]",
+      "width": 47,
+      "x": 869,
+      "y": 971
+    },
+    {
+      "height": 54,
+      "name": "shalangan04",
+      "width": 48,
+      "x": 916,
+      "y": 963
+    },
+    {
+      "height": 46,
+      "name": "chengnei_xiangzi2[1]",
+      "width": 46,
+      "x": 869,
+      "y": 919
+    },
+    {
+      "height": 64,
+      "name": "xinpingyuan21",
+      "width": 32,
+      "x": 915,
+      "y": 861
+    },
+    {
+      "height": 57,
+      "name": "xinpingyuan20[1]",
+      "width": 30,
+      "x": 869,
+      "y": 861
+    },
+    {
+      "height": 43,
+      "name": "z04",
+      "width": 50,
+      "x": 964,
+      "y": 979
+    },
+    {
+      "height": 27,
+      "name": "ye15",
+      "width": 25,
+      "x": 915,
+      "y": 925
+    },
+    {
+      "height": 28,
+      "name": "chengnei_xiangzi3[1]",
+      "width": 26,
+      "x": 964,
+      "y": 919
+    },
+    {
+      "height": 26,
+      "name": "xinpingyuan25[1]",
+      "width": 28,
+      "x": 990,
+      "y": 925
+    },
+    {
+      "height": 53,
+      "name": "o_45(1)",
+      "width": 35,
+      "x": 982,
+      "y": 861
+    },
+    {
+      "height": 28,
+      "name": "xinpingyuan12",
+      "width": 26,
+      "x": 964,
+      "y": 947
+    }
+  ]
+}

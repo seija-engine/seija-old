@@ -1,0 +1,492 @@
+{
+  "meta": {
+    "height": 1024,
+    "texture": "flat.png",
+    "width": 1024
+  },
+  "sprites": [
+    {
+      "height": 50,
+      "name": "Blue-Shoulder-Button",
+      "width": 79,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "height": 39,
+      "name": "Fuchsia-Energy-Bar-Segment",
+      "width": 39,
+      "x": 79,
+      "y": 0
+    },
+    {
+      "height": 51,
+      "name": "Aqua-Capsule-Button-",
+      "width": 111,
+      "x": 118,
+      "y": 0
+    },
+    {
+      "height": 51,
+      "name": "Orange-Capsule-Button",
+      "width": 111,
+      "x": 0,
+      "y": 50
+    },
+    {
+      "height": 47,
+      "name": "Fuchsia-Life-Bar-Segment",
+      "width": 61,
+      "x": 0,
+      "y": 101
+    },
+    {
+      "height": 47,
+      "name": "Orange-Life-Bar-Segment",
+      "width": 61,
+      "x": 0,
+      "y": 148
+    },
+    {
+      "height": 109,
+      "name": "Directional-Buttons-Pressed",
+      "width": 109,
+      "x": 0,
+      "y": 195
+    },
+    {
+      "height": 78,
+      "name": "Aqua-Finger-Button-Pressed",
+      "width": 74,
+      "x": 0,
+      "y": 304
+    },
+    {
+      "height": 292,
+      "name": "Gas-Pedal@2x",
+      "width": 140,
+      "x": 0,
+      "y": 382
+    },
+    {
+      "height": 50,
+      "name": "Aqua-Shoulder-Button",
+      "width": 79,
+      "x": 0,
+      "y": 674
+    },
+    {
+      "height": 47,
+      "name": "Orange-Life-Bar-Start-Point",
+      "width": 61,
+      "x": 0,
+      "y": 724
+    },
+    {
+      "height": 47,
+      "name": "Blue-Life-Bar-Segment",
+      "width": 61,
+      "x": 0,
+      "y": 771
+    },
+    {
+      "height": 47,
+      "name": "Aqua-Life-Bar-Segment",
+      "width": 61,
+      "x": 0,
+      "y": 818
+    },
+    {
+      "height": 80,
+      "name": "Blue-Analog-Pad",
+      "width": 80,
+      "x": 0,
+      "y": 865
+    },
+    {
+      "height": 80,
+      "name": "Aqua-Analog-Pad",
+      "width": 80,
+      "x": 61,
+      "y": 101
+    },
+    {
+      "height": 39,
+      "name": "Bullet-Icon",
+      "width": 39,
+      "x": 61,
+      "y": 818
+    },
+    {
+      "height": 49,
+      "name": "Blue-Capsule-Button-Pressed",
+      "width": 109,
+      "x": 0,
+      "y": 945
+    },
+    {
+      "height": 45,
+      "name": "Heart-Icon",
+      "width": 47,
+      "x": 61,
+      "y": 771
+    },
+    {
+      "height": 29,
+      "name": "Alternate",
+      "width": 29,
+      "x": 61,
+      "y": 724
+    },
+    {
+      "height": 51,
+      "name": "Fuchsia-Capsule-Button",
+      "width": 111,
+      "x": 109,
+      "y": 945
+    },
+    {
+      "height": 43,
+      "name": "Sword-Icon",
+      "width": 37,
+      "x": 79,
+      "y": 674
+    },
+    {
+      "height": 39,
+      "name": "Blue-Energy-Bar-Segment",
+      "width": 39,
+      "x": 74,
+      "y": 304
+    },
+    {
+      "height": 82,
+      "name": "Aqua-Finger-Button",
+      "width": 79,
+      "x": 141,
+      "y": 101
+    },
+    {
+      "height": 48,
+      "name": "Aqua-Shoulder-Button-Pressed",
+      "width": 77,
+      "x": 100,
+      "y": 816
+    },
+    {
+      "height": 32,
+      "name": "Precise",
+      "width": 32,
+      "x": 74,
+      "y": 343
+    },
+    {
+      "height": 82,
+      "name": "Fuchsia-Finger-Button-",
+      "width": 79,
+      "x": 177,
+      "y": 857
+    },
+    {
+      "height": 48,
+      "name": "Fuchsia-Shoulder-Button-Pressed",
+      "width": 77,
+      "x": 80,
+      "y": 865
+    },
+    {
+      "height": 82,
+      "name": "Aqua-Round-Button-Inset",
+      "width": 79,
+      "x": 256,
+      "y": 857
+    },
+    {
+      "height": 82,
+      "name": "Blue-Round-Button-Inset",
+      "width": 79,
+      "x": 335,
+      "y": 857
+    },
+    {
+      "height": 47,
+      "name": "Shield-Icon",
+      "width": 46,
+      "x": 414,
+      "y": 818
+    },
+    {
+      "height": 51,
+      "name": "Line-Option-Button",
+      "width": 47,
+      "x": 177,
+      "y": 771
+    },
+    {
+      "height": 47,
+      "name": "Fuchsia-Life-Bar-Start-Point-",
+      "width": 61,
+      "x": 108,
+      "y": 724
+    },
+    {
+      "height": 47,
+      "name": "Blue-Life-Bar-Start-Point",
+      "width": 61,
+      "x": 116,
+      "y": 674
+    },
+    {
+      "height": 82,
+      "name": "Fuchsia-Round-Button-Inset-",
+      "width": 79,
+      "x": 224,
+      "y": 771
+    },
+    {
+      "height": 80,
+      "name": "Fuchsia-Round-Button-Inset-Pressed",
+      "width": 77,
+      "x": 303,
+      "y": 771
+    },
+    {
+      "height": 82,
+      "name": "Orange-Round-Button-Inset",
+      "width": 79,
+      "x": 460,
+      "y": 771
+    },
+    {
+      "height": 80,
+      "name": "Blue-Round-Button-Inset-Pressed",
+      "width": 77,
+      "x": 380,
+      "y": 724
+    },
+    {
+      "height": 111,
+      "name": "Directional-Buttons",
+      "width": 111,
+      "x": 539,
+      "y": 818
+    },
+    {
+      "height": 49,
+      "name": "Fuchsia-Capsule-Button-Pressed",
+      "width": 109,
+      "x": 414,
+      "y": 865
+    },
+    {
+      "height": 51,
+      "name": "Blue-Capsule-Button",
+      "width": 111,
+      "x": 177,
+      "y": 717
+    },
+    {
+      "height": 80,
+      "name": "Orange-Round-Button-Inset-Pressed",
+      "width": 77,
+      "x": 288,
+      "y": 674
+    },
+    {
+      "height": 50,
+      "name": "Orange-Shoulder-Button",
+      "width": 79,
+      "x": 414,
+      "y": 914
+    },
+    {
+      "height": 49,
+      "name": "Line-Option-Button-Pressed",
+      "width": 45,
+      "x": 493,
+      "y": 914
+    },
+    {
+      "height": 80,
+      "name": "Fuchsia-Analog-Pad",
+      "width": 80,
+      "x": 220,
+      "y": 939
+    },
+    {
+      "height": 39,
+      "name": "Aqua-Energy-Bar-Segment",
+      "width": 39,
+      "x": 493,
+      "y": 963
+    },
+    {
+      "height": 144,
+      "name": "Analog-Disc-Field",
+      "width": 144,
+      "x": 650,
+      "y": 717
+    },
+    {
+      "height": 78,
+      "name": "Blue-Finger-Button-Pressed",
+      "width": 74,
+      "x": 300,
+      "y": 945
+    },
+    {
+      "height": 48,
+      "name": "Orange-Shoulder-Button-Pressed",
+      "width": 77,
+      "x": 374,
+      "y": 964
+    },
+    {
+      "height": 146,
+      "name": "Gas-Pedal",
+      "width": 70,
+      "x": 794,
+      "y": 717
+    },
+    {
+      "height": 32,
+      "name": "Classic",
+      "width": 32,
+      "x": 380,
+      "y": 822
+    },
+    {
+      "height": 47,
+      "name": "Aqua-Life-Bar-Start-Point",
+      "width": 61,
+      "x": 539,
+      "y": 771
+    },
+    {
+      "height": 49,
+      "name": "Aqua-Capsule-Button-Pressed-",
+      "width": 109,
+      "x": 864,
+      "y": 816
+    },
+    {
+      "height": 39,
+      "name": "Orange-Energy-Bar-Start-Point",
+      "width": 39,
+      "x": 973,
+      "y": 818
+    },
+    {
+      "height": 80,
+      "name": "Aqua-Round-Button-Inset-Pressed",
+      "width": 77,
+      "x": 650,
+      "y": 861
+    },
+    {
+      "height": 78,
+      "name": "Fuchsia-Finger-Button-Pressed",
+      "width": 74,
+      "x": 538,
+      "y": 939
+    },
+    {
+      "height": 51,
+      "name": "Action-Bar-Overflow-Button",
+      "width": 47,
+      "x": 973,
+      "y": 864
+    },
+    {
+      "height": 82,
+      "name": "Orange-Finger-Button",
+      "width": 79,
+      "x": 727,
+      "y": 863
+    },
+    {
+      "height": 80,
+      "name": "Orange-Analog-Pad",
+      "width": 80,
+      "x": 612,
+      "y": 941
+    },
+    {
+      "height": 49,
+      "name": "Orange-Capsule-Button-Pressed-",
+      "width": 109,
+      "x": 864,
+      "y": 721
+    },
+    {
+      "height": 49,
+      "name": "Action-Bar-Overflow-Button-Pressed",
+      "width": 45,
+      "x": 973,
+      "y": 721
+    },
+    {
+      "height": 83,
+      "name": "Brake-Pedal",
+      "width": 93,
+      "x": 806,
+      "y": 941
+    },
+    {
+      "height": 39,
+      "name": "Fuchsia-Energy-Bar-Start-Point",
+      "width": 39,
+      "x": 600,
+      "y": 771
+    },
+    {
+      "height": 78,
+      "name": "Orange-Finger-Button-Pressed",
+      "width": 74,
+      "x": 899,
+      "y": 865
+    },
+    {
+      "height": 48,
+      "name": "Blue-Shoulder-Button-Pressed",
+      "width": 77,
+      "x": 692,
+      "y": 964
+    },
+    {
+      "height": 39,
+      "name": "Aqua-Energy-Bar-Start-Point",
+      "width": 39,
+      "x": 973,
+      "y": 771
+    },
+    {
+      "height": 39,
+      "name": "Orange-Energy-Bar-Segment",
+      "width": 39,
+      "x": 451,
+      "y": 964
+    },
+    {
+      "height": 39,
+      "name": "Blue-Energy-Bar-Start-Point",
+      "width": 39,
+      "x": 108,
+      "y": 771
+    },
+    {
+      "height": 82,
+      "name": "Blue-Finger-Button",
+      "width": 79,
+      "x": 457,
+      "y": 674
+    },
+    {
+      "height": 50,
+      "name": "Fuchsia-Shoulder-Button",
+      "width": 79,
+      "x": 365,
+      "y": 674
+    }
+  ]
+}
