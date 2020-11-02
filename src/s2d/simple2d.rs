@@ -11,7 +11,7 @@ use rendy::hal::command::{ClearValue,ClearDepthStencil};
 use rendy::hal::format::{Format};
 use specs::{DispatcherBuilder,World,WorldExt};
 use shrev::{EventChannel};
-use crate::common::{transform::{build_transform_module},Rect2D,UpdateSystem,Update};
+use crate::common::{EntityInfo,transform::{build_transform_module},Rect2D,UpdateSystem,Update};
 use winit::{window::WindowBuilder};
 use crate::assets::{Loader,S2DAssetPack,StorageCenter};
 use crate::event::{GameEventHandle};
@@ -54,6 +54,7 @@ impl Simple2d  {
 impl IModuleBundle for Simple2d  {
 
     fn build(world:&mut World,builder:&mut DispatcherBuilder<'static,'static>) {
+        world.register::<EntityInfo>();
         world.register::<Rect2D>();
         world.register::<Update>();
         build_transform_module(world,builder);
