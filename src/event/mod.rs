@@ -5,7 +5,7 @@ pub mod global;
 use crate::event::cb_event::{CABEventHandle,CABEventRoot};
 use std::collections::{HashMap};
 use std::sync::{Arc};
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub enum GameEvent {
     TouchStart((f64,f64)),
     TouchEnd((f64,f64)),
