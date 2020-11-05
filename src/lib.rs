@@ -15,3 +15,4 @@ pub use winit as win;
 pub use serde_json as json;
 pub use shred;
 pub use shrev;
+pub use specs_hierarchy;
