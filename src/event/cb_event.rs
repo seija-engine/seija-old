@@ -99,9 +99,8 @@ impl CABEventRoot {
 
         let hiddens = world.read_storage::<Hidden>();
         let is_hide = hiddens.contains(e);
-        
-        //派发捕获事件
-        if may_ev_node.is_some() && is_last == false &&  is_hide == false {
+        //派发捕获事件 
+        if may_ev_node.is_some() /*&& is_last == false*/ &&  is_hide == false {
             let ev_node = may_ev_node.unwrap();
             let evlist = ev_node.get_dispatch_event(true,ev.to_type());
             for ev in evlist {
