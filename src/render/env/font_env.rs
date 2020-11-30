@@ -20,7 +20,8 @@ pub struct FontEnv<B:Backend> {
     pub font_tex:Option<Handle<Texture>>,
     glyph_brush:GlyphBrush<'static,Vec<Vertex2D>>,
     fonts_map: HashMap<u32, FontId>,
-    mark: PhantomData<B>
+    mark: PhantomData<B>,
+    cache_meshs:HashMap<String,SpriteMesh> //todo gc it
 }
 
 impl<B> Default for FontEnv<B> where B:Backend {
@@ -29,6 +30,7 @@ impl<B> Default for FontEnv<B> where B:Backend {
             font_tex:None,
             glyph_brush:GlyphBrushBuilder::using_fonts(vec![]).initial_cache_size((512, 512)).build(),
             fonts_map: HashMap::new(),
+            cache_meshs:HashMap::new(),
             mark:PhantomData
         }
     }
@@ -167,12 +169,18 @@ impl<B> FontEnv<B> where B:Backend {
                         meshes,
                         indexs
                     };
-                    mesh2d.mesh = Some(text_mesh);
+                    mesh2d.mesh = Some(text_mesh.clone());
+                    self.cache_meshs.insert(text.text.clone(),text_mesh);
                 },
                 BrushAction::ReDraw => {
-                   if let Some(mesh) =  mesh2d.mesh.as_mut() {
-                     let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
-                     mesh.sprite_arg.model = mat.into();
+                   if mesh2d.mesh.is_none() {
+                     if let Some(cache_mesh) = self.cache_meshs.get(&text.text) {
+                         mesh2d.mesh = Some(cache_mesh.clone())
+                     }
+                   }
+                   if let Some(mesh) = mesh2d.mesh.as_mut() {
+                       let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
+                       mesh.sprite_arg.model = mat.into();
                    }
                 }
             };
