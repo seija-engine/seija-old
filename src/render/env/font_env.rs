@@ -70,6 +70,18 @@ impl<B> FontEnv<B> where B:Backend {
             if !text.is_valid() {
                 continue;
             }
+            if self.cache_meshs.contains_key(&text.text) {
+                if mesh2d.mesh.is_none() || mesh2d.is_dirty {
+                    if let Some(cache_mesh) = self.cache_meshs.get(&text.text) {
+                        mesh2d.mesh = Some(cache_mesh.clone())
+                    }
+                }
+                if let Some(mesh) = mesh2d.mesh.as_mut() {
+                      let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
+                      mesh.sprite_arg.model = mat.into();
+                }
+                continue
+            }
             let text_font = text.font.as_ref().unwrap();
             let mut font_lookup = None;
             if self.fonts_map.contains_key(&text_font.id()) {
@@ -84,7 +96,6 @@ impl<B> FontEnv<B> where B:Backend {
             };
 
             let font_id = font_lookup.unwrap();
-
             let section_text =  vec![SectionText {
                 text: text.text.as_str(),
                 scale: Scale::uniform(text.font_size as f32),
@@ -116,6 +127,7 @@ impl<B> FontEnv<B> where B:Backend {
                 layout:Default::default(),
                 text:section_text
             };
+            
             self.glyph_brush.queue_custom_layout(section, &layout);
             let action = self.glyph_brush.process_queued(|rect,data| {
                 Self::update_text_texture(factory,rect,data,font_tex,&qid);
@@ -172,17 +184,7 @@ impl<B> FontEnv<B> where B:Backend {
                     mesh2d.mesh = Some(text_mesh.clone());
                     self.cache_meshs.insert(text.text.clone(),text_mesh);
                 },
-                BrushAction::ReDraw => {
-                   if mesh2d.mesh.is_none() {
-                     if let Some(cache_mesh) = self.cache_meshs.get(&text.text) {
-                         mesh2d.mesh = Some(cache_mesh.clone())
-                     }
-                   }
-                   if let Some(mesh) = mesh2d.mesh.as_mut() {
-                       let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
-                       mesh.sprite_arg.model = mat.into();
-                   }
-                }
+                BrushAction::ReDraw => ()
             };
         }
     }
