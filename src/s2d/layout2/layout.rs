@@ -1,4 +1,5 @@
 use super::view::{LayoutView,IView};
+use super::handle::LayoutHandle;
 pub trait ILayout {
     fn layout(&self) -> &Layout;
 }
@@ -14,11 +15,11 @@ impl ILayout for Layout {
 #[derive(Default)]
 pub struct Layout {
     view:LayoutView,
-    _children:Vec<Box<dyn IView>>
+    _children:Vec<LayoutHandle>
 }
 
 impl Layout {
-    pub fn add_view(&mut self,view:Box<dyn IView>) {
-        self._children.push(view)
+    pub fn add_view(&mut self,handle:LayoutHandle) {
+        self._children.push(handle)
     }
 }
