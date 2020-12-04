@@ -1,5 +1,6 @@
 use super::view::{LayoutView,IView};
-use super::handle::LayoutHandle;
+use super::handle::{LayoutHandle,fetch_layout_storage};
+use specs::{World,Component,DenseVecStorage};
 pub trait ILayout {
     fn layout(&self) -> &Layout;
 }
@@ -18,8 +19,14 @@ pub struct Layout {
     _children:Vec<LayoutHandle>
 }
 
+impl Component for Layout {
+    type Storage = DenseVecStorage<Layout>;
+}
+
 impl Layout {
-    pub fn add_view(&mut self,handle:LayoutHandle) {
+    pub fn add_view(&mut self,handle:LayoutHandle,world:&World) {
+        let ls = fetch_layout_storage(world);
+        let view = handle.view(&ls).unwrap();
         self._children.push(handle)
     }
 }

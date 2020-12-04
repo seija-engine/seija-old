@@ -1,14 +1,19 @@
 use super::types::{Thickness,LayoutAlignment};
+use specs::{Component,DenseVecStorage};
 pub trait IView {
     fn view(&self) -> &LayoutView;
 }
 
 #[derive(Clone,Default)]
 pub struct LayoutView {
-    margin:Thickness,
-    padding:Thickness,
-    hor:LayoutAlignment,
-    ver:LayoutAlignment
+    pub margin:Thickness,
+    pub padding:Thickness,
+    pub hor:LayoutAlignment,
+    pub ver:LayoutAlignment
+}
+
+impl Component for LayoutView {
+    type Storage = DenseVecStorage<LayoutView>;
 }
 
 
