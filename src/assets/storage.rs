@@ -3,22 +3,22 @@ use specs::storage::{VecStorage,UnprotectedStorage};
 use hibitset::BitSet;
 use std::marker::PhantomData;
 use std::sync::Arc;
-use derivative::Derivative;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use crossbeam_queue::SegQueue;
 
-#[derive(Derivative)]
-#[derivative(
-    Clone(bound = ""),
-    Eq(bound = ""),
-    Hash(bound = ""),
-    PartialEq(bound = ""),
-    Debug(bound = "")
-)]
+#[derive(Eq,PartialEq,Hash,Debug)]
 pub struct Handle <A :?Sized> {
     id: Arc<u32>,
-    #[derivative(Debug = "ignore")]
     marker: PhantomData<A>,
+}
+
+impl<A> Clone for Handle<A> {
+    fn clone(&self) -> Self {
+        Handle {
+            id: self.id.clone(),
+            marker:std::marker::PhantomData
+        }
+    }
 }
 
 impl<A> Handle<A> {
@@ -75,7 +75,7 @@ impl<A: Asset> AssetStorage<A> {
     }
 
     pub fn allocate(&self) -> Handle<A> {
-        self.unused_handles.pop().unwrap_or_else(|_| self.allocate_new())
+        self.unused_handles.pop().unwrap_or_else(|| self.allocate_new())
     }
 
     pub fn clone_asset(&mut self,_handle:&Handle<A>) -> Option<Handle<A>> where A:Clone {

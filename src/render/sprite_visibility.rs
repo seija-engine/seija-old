@@ -1,6 +1,6 @@
 use hibitset::{BitSet};
 use specs::{Entity,Entities,Write,ReadStorage,Read,System,Join};
-use derivative::Derivative;
+
 use nalgebra::{Point3,Vector3};
 use crate::render::{Camera,ActiveCamera,Transparent};
 use crate::common::{Transform,Hidden,HiddenPropagate};
@@ -15,8 +15,7 @@ pub struct SpriteVisibility {
 }
 
 
-#[derive(Derivative)]
-#[derivative(Default(bound = ""), Debug(bound = ""))]
+#[derive(Default,Debug)]
 pub struct SpriteVisibilitySortingSystem {
     centroids: Vec<Internals>,
     transparent: Vec<Internals>,

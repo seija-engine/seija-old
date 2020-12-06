@@ -1,12 +1,20 @@
 use super::view::{LayoutView,IView};
 use super::handle::{LayoutHandle,fetch_layout_storage};
-use specs::{World,Component,DenseVecStorage};
+use specs::{prelude::ComponentEvent, World, WorldExt};
+use nalgebra::Vector2;
+use specs::{
+    Component, DenseVecStorage, Entities, Entity, FlaggedStorage, ReadExpect, ReaderId, System,
+    SystemData, WriteStorage,ReadStorage,Join
+};
 pub trait ILayout {
     fn layout(&self) -> &Layout;
 }
 
 impl IView for Layout {
     fn view(&self) -> &LayoutView { &self.view }
+    fn measure(&self, size:Vector2<f32>) -> Vector2<f32> {
+        todo!()
+    }
 }
 
 impl ILayout for Layout {
@@ -19,14 +27,12 @@ pub struct Layout {
     _children:Vec<LayoutHandle>
 }
 
-impl Component for Layout {
-    type Storage = DenseVecStorage<Layout>;
-}
 
 impl Layout {
-    pub fn add_view(&mut self,handle:LayoutHandle,world:&World) {
-        let ls = fetch_layout_storage(world);
-        let view = handle.view(&ls).unwrap();
+    pub fn add_view(&mut self,world:&World,handle:LayoutHandle) {
+        let mut s = world.write_storage::<LayoutView>();
+        let reader = s.register_reader();
+        
         self._children.push(handle)
     }
 }

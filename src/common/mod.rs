@@ -1,10 +1,12 @@
 pub mod transform;
 pub mod rect;
+pub mod tree;
 mod update;
 pub use update::{Update,UpdateDesc,UpdateSystem,UpdateType,UpdateCallBack};
 pub use rect::{Rect2D};
 pub use transform::transform::{Transform};
 pub use transform::component::{TransformSystem};
+pub use tree::{Tree,TreeNode,TreeEvent};
 use specs::{Component,NullStorage,FlaggedStorage,DenseVecStorage};
 
 #[derive(Default)]

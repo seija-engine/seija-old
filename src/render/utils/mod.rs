@@ -12,7 +12,6 @@ use std::hash::{Hash};
 use crate::render::types::{Texture,Backend};
 pub mod uniform;
 pub mod vertex;
-use derivative::Derivative;
 
 pub fn set_layout_bindings(bindings: impl IntoIterator<Item = (u32,DescriptorType, ShaderStageFlags)>) -> Vec<DescriptorSetLayoutBinding> {
     bindings.into_iter()
@@ -185,12 +184,16 @@ impl<I: Hash + Eq> LookupBuilder<I> {
 }
 
 
-#[derive(Debug, Clone, Copy, Derivative)]
-#[derivative(Default)]
-pub enum ChangeDetection {   
-    #[derivative(Default)]
+#[derive(Debug, Clone, Copy)]
+pub enum ChangeDetection {
     Stable,
     Changed(usize),
+}
+
+impl Default for ChangeDetection {
+    fn default() -> Self {
+        ChangeDetection::Stable
+    }
 }
 
 impl ChangeDetection {

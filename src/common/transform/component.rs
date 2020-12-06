@@ -1,4 +1,4 @@
-use crate::common::{Transform,HiddenPropagate};
+use crate::common::{HiddenPropagate, Transform, Tree, TreeEvent, TreeNode};
 use hibitset::BitSet;
 use specs::storage::ComponentEvent;
 use specs::{
@@ -7,6 +7,7 @@ use specs::{
 };
 use specs_hierarchy::HierarchyEvent;
 use specs_hierarchy::{Hierarchy, Parent as HParent};
+use hibitset::BitSetLike;
 
 #[cfg(feature = "profiler")]
 use thread_profiler::profile_scope;
@@ -114,11 +115,11 @@ impl<'a> System<'a> for TransformSystem {
 }
 
 
-#[derive(Debug)]
+
 pub struct HideHierarchySystem {
     marked_as_modified: BitSet,
     hidden_events_id: ReaderId<ComponentEvent>,
-    parent_events_id: ReaderId<HierarchyEvent>,
+    tree_events_id: ReaderId<TreeEvent>,
 }
 
 impl HideHierarchySystem {
@@ -128,8 +129,7 @@ impl HideHierarchySystem {
         HideHierarchySystem {
             marked_as_modified: BitSet::default(),
             hidden_events_id: hidden_events_id,
-            parent_events_id: world.fetch_mut::<ParentHierarchy>().track()
-        }
+            tree_events_id: world.fetch_mut::<Tree>().channel.register_reader()        }
     }
 }
 
@@ -137,32 +137,38 @@ impl HideHierarchySystem {
 impl<'a> System<'a> for HideHierarchySystem {
     type SystemData = (
         WriteStorage<'a, HiddenPropagate>,
-        ReadStorage<'a, Parent>,
-        ReadExpect<'a, ParentHierarchy>,
+        ReadStorage<'a, TreeNode>,
+        ReadExpect<'a, Tree>,
     );
 
-    fn run(&mut self, (mut hidden, parents, hierarchy): Self::SystemData) {
+    fn run(&mut self, (mut hidden, tree_nodes, tree): Self::SystemData) {
         self.marked_as_modified.clear();
         let self_hidden_events_id = &mut self.hidden_events_id;
-        let self_marked_as_modified = &mut self.marked_as_modified;
+        
 
         hidden.channel().read(self_hidden_events_id).for_each(|event| match event {
             ComponentEvent::Inserted(id) | ComponentEvent::Removed(id) => {
-                self_marked_as_modified.add(*id);
+                self.marked_as_modified.add(*id);
             }
-            ComponentEvent::Modified(_id) => {}
+            ComponentEvent::Modified(_id) => ()
         });
 
-        for event in hierarchy.changed().read(&mut self.parent_events_id) {
+        for event in tree.channel.read(&mut self.tree_events_id) {
             match *event {
-                HierarchyEvent::Removed(entity) => {
-                    self_marked_as_modified.add(entity.id());
-                }
-                HierarchyEvent::Modified(entity) => {
-                    self_marked_as_modified.add(entity.id());
-                }
+                TreeEvent::Add(_,entity) => {
+                    self.marked_as_modified.add(entity.id());
+                },
+                _ => {}
             }
         }
+        
+        let bit_iter = self.marked_as_modified.clone().into_iter();
+        for me in bit_iter {
+            println!(",:{}",me);
+        }
+        
+       
+        /*
 
         for entity in hierarchy.all() {
             {
@@ -171,7 +177,7 @@ impl<'a> System<'a> for HideHierarchySystem {
                 let parent_dirty = self_marked_as_modified.contains(parent_entity.id());
                 if parent_dirty {
                     if hidden.contains(parent_entity) {
-                        for child in hierarchy.all_children_iter(parent_entity) {
+                        for child in tree.all_children_iter(parent_entity) {
                             if let Err(e) = hidden.insert(child, HiddenPropagate::default()) {
                                 eprintln!("Failed to automatically add `HiddenPropagate`: {:?}", e);
                             };
@@ -202,7 +208,7 @@ impl<'a> System<'a> for HideHierarchySystem {
                 }
                 ComponentEvent::Modified(_id) => {}
             });
-        }
+        }*/
     }
 
 }

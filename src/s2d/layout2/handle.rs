@@ -1,16 +1,13 @@
 use specs::{World,WorldExt,Entity,ReadStorage};
-use super::view::{LayoutView,IView};
-use super::layout::Layout;
+use super::view::{LayoutView};
 
 pub struct LayoutStorage<'a> {
-    view:ReadStorage<'a,LayoutView>,
-    layout:ReadStorage<'a,Layout>
+    pub view:ReadStorage<'a,LayoutView>,
 }
 
 pub fn fetch_layout_storage(world:&World) -> LayoutStorage {
    let view = world.read_storage::<LayoutView>(); 
-   let layout = world.read_storage::<Layout>();
-   LayoutStorage {view,layout }
+   LayoutStorage {view }
 }
 
 #[derive(Clone)]
@@ -31,10 +28,12 @@ impl LayoutHandle {
             e,
             typ
         }
-    } 
-    pub fn eid(&self) -> u32 {
+    }
+
+    pub fn entity(&self) -> u32 {
         self.e.id()
     }
+
     pub fn typ(&self) -> &LayoutType {
         &self.typ
     }
@@ -48,15 +47,4 @@ impl LayoutHandle {
         }
     }
 
-    pub fn opt_view<F,R>(&self,world:&World,f:F) -> Option<R> where F:Fn(&LayoutView) -> R {
-         match self.typ {
-             LayoutType::View => {
-               world.read_storage::<LayoutView>().get(self.e).map(|v| f(v))
-             },
-             LayoutType::Layout => {
-                 world.read_storage::<Layout>().get(self.e).map(|v| f(v.view()))
-             }
-             _ => None
-         }
-    }
 }

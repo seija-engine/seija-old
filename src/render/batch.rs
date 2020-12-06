@@ -1,7 +1,6 @@
 use fnv::{FnvHashMap};
 use std::collections::hash_map::{Entry};
 use std::ops::{Range};
-use derivative::Derivative;
 
 
 pub trait GroupIterator<K, V>
@@ -44,11 +43,19 @@ impl<K, V, I> GroupIterator<K, V> for I where K: PartialEq,I: Iterator<Item = (K
     }
 }
 
-#[derive(Derivative, Debug)]
-#[derivative(Default(bound = ""))]
+#[derive(Debug)]
 pub struct OnLevelBatch<PK,D> where PK:Eq + std::hash::Hash {
     map: fnv::FnvHashMap<PK, Vec<D>>,
     data_count: usize,
+}
+
+impl<PK,D> Default for OnLevelBatch<PK,D> where PK:Eq + std::hash::Hash {
+    fn default() -> Self {
+        OnLevelBatch {
+            map:fnv::FnvHashMap::default(),
+            data_count:0
+        }
+    }
 }
 
 impl<PK,D> OnLevelBatch<PK,D> where PK:Eq + std::hash::Hash {
@@ -102,12 +109,21 @@ impl<PK,D> OnLevelBatch<PK,D> where PK:Eq + std::hash::Hash {
     }
 }
 
-#[derive(Derivative, Debug)]
-#[derivative(Default(bound = ""))]
+#[derive(Debug)]
 pub struct OrderedOneLevelBatch<PK,D> where PK: PartialEq {
     old_keys: Vec<(PK,u32)>,
     keys_list: Vec<(PK,u32)>,
     data_list:Vec<D>
+}
+
+impl<PK,D> Default for OrderedOneLevelBatch<PK,D> where PK: PartialEq {
+    fn default() -> Self {
+        OrderedOneLevelBatch {
+            old_keys:vec![],
+            keys_list:vec![],
+            data_list:vec![]
+        }
+    }
 }
 
 impl <PK,D> OrderedOneLevelBatch<PK,D> where PK: PartialEq {
