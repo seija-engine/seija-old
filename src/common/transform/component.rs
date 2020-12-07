@@ -118,6 +118,7 @@ impl<'a> System<'a> for TransformSystem {
 
 pub struct HideHierarchySystem {
     marked_as_modified: BitSet,
+    only_add:BitSet,
     hidden_events_id: ReaderId<ComponentEvent>,
     tree_events_id: ReaderId<TreeEvent>,
 }
@@ -127,6 +128,7 @@ impl HideHierarchySystem {
         let mut hidden = WriteStorage::<HiddenPropagate>::fetch(&world);
         let hidden_events_id = hidden.register_reader();
         HideHierarchySystem {
+            only_add:BitSet::new(),
             marked_as_modified: BitSet::default(),
             hidden_events_id: hidden_events_id,
             tree_events_id: world.fetch_mut::<Tree>().channel.register_reader()        }
@@ -136,17 +138,19 @@ impl HideHierarchySystem {
 
 impl<'a> System<'a> for HideHierarchySystem {
     type SystemData = (
+        Entities<'a>,
         WriteStorage<'a, HiddenPropagate>,
         ReadStorage<'a, TreeNode>,
         ReadExpect<'a, Tree>,
     );
 
-    fn run(&mut self, (mut hidden, tree_nodes, tree): Self::SystemData) {
+    fn run(&mut self, (entities,mut hiddens, tree_nodes, tree): Self::SystemData) {
         self.marked_as_modified.clear();
+        self.only_add.clear();
         let self_hidden_events_id = &mut self.hidden_events_id;
         
 
-        hidden.channel().read(self_hidden_events_id).for_each(|event| match event {
+        hiddens.channel().read(self_hidden_events_id).for_each(|event| match event {
             ComponentEvent::Inserted(id) | ComponentEvent::Removed(id) => {
                 self.marked_as_modified.add(*id);
             }
@@ -157,6 +161,7 @@ impl<'a> System<'a> for HideHierarchySystem {
             match *event {
                 TreeEvent::Add(_,entity) => {
                     self.marked_as_modified.add(entity.id());
+                    self.only_add.add(entity.id());
                 },
                 _ => {}
             }
@@ -164,7 +169,40 @@ impl<'a> System<'a> for HideHierarchySystem {
         
         let bit_iter = self.marked_as_modified.clone().into_iter();
         for me in bit_iter {
-            println!(",:{}",me);
+           let cur_entity = entities.entity(me);
+           let is_hide = hiddens.contains(cur_entity);
+           let parent_enitity = tree_nodes.get(cur_entity).and_then(|t| t.parent);
+           let is_parent_hide = parent_enitity.map(|p| hiddens.contains(p)).unwrap_or(false);
+           if is_parent_hide {
+              for child in Tree::all_children(&tree_nodes, parent_enitity.unwrap()).iter() {
+                  let centity = entities.entity(child);
+                  if !hiddens.contains(centity) {
+                     if let Err(err) = hiddens.insert(centity, HiddenPropagate::default()) {
+                        eprintln!("Failed to automatically add `HiddenPropagate`: {:?}", err);
+                     }
+                  }
+              }
+           } else {
+
+            if self.only_add.contains(cur_entity.id()) && !is_hide {
+               continue;
+            }
+
+            for child in Tree::all_children(&tree_nodes, cur_entity).iter() {
+                let centity = entities.entity(child);
+                if is_hide {
+                    if !hiddens.contains(centity) {
+                        if let Err(err) = hiddens.insert(centity, HiddenPropagate::default()) {
+                            eprintln!("Failed to automatically add `HiddenPropagate`: {:?}", err);
+                         }
+                    }
+                } else {
+                    if hiddens.contains(centity) {
+                        hiddens.remove(centity);
+                    }
+                }
+            }
+           }
         }
         
        

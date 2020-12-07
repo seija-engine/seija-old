@@ -36,11 +36,14 @@ impl IGameTest for LayoutTest {
       
         let root0 = create_stack(world,white,800f32,600f32);
         Tree::add(world, root0, None);
-        let c0 = create_image(world, b_jpg, 100f32, 100f32, 0f32, 0f32, 0f32, 0, None);
+        let c0 = create_image(world, b_jpg.clone(), 100f32, 100f32, 0f32, 0f32, 0f32, 0, None);
         Tree::add(world, c0, Some(root0));
 
-        let mut s_hidden = world.write_storage::<HiddenPropagate>();
-        s_hidden.insert(root0, HiddenPropagate).unwrap();
+       
+        let c1 = create_image(world, b_jpg, 100f32, 100f32, 120f32, 0f32, 0f32, 0, None);
+        Tree::add(world,c1,Some(root0));
+
+        self.root = Some(root0);
         /*
         let stack_entity = create_stack(world,white.clone());
         let img01 = create_image(world, b_jpg, 200f32, 200f32, 0f32, 0f32, 0f32, 0, Some(stack_entity));
@@ -63,9 +66,12 @@ impl IGameTest for LayoutTest {
         dbg!(&self.root);*/
     }
 
-    fn update(&mut self, _world:&mut World) {
-        if self.index == 0 {
-          
+    fn update(&mut self, world:&mut World) {
+        if self.index == 50 {
+            {
+                let mut s_hidden = world.write_storage::<HiddenPropagate>();
+                s_hidden.insert(self.root.unwrap(), HiddenPropagate).unwrap();
+            };
         }
 
         if self.index < 100 {

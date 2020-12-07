@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
-use specs::{Entity, WorldExt,World,Builder,Component,DefaultVecStorage};
+use hibitset::BitSet;
+use specs::{Entity, WorldExt,World,ReadStorage,DenseVecStorage,Component};
 use shrev::{EventChannel};
 #[derive(Default)]
 pub struct TreeNode {
@@ -22,7 +23,7 @@ impl TreeNode {
 }
 
 impl Component for TreeNode {
-    type Storage = DefaultVecStorage<TreeNode>;
+    type Storage = DenseVecStorage<TreeNode>;
 }
 
 pub enum TreeEvent {
@@ -97,6 +98,22 @@ impl Tree {
             }
         }
         world.delete_entities(&rm_list).unwrap();
+    }
+
+    pub fn all_children(tree_nodes:&ReadStorage<TreeNode>,entity:Entity) -> BitSet {
+        let mut set = BitSet::new();
+        Tree::add_children_to_set(entity, &mut set,&tree_nodes);
+        set
+    }
+
+    fn add_children_to_set(entity: Entity, set: &mut BitSet,tree_nodes: &ReadStorage<TreeNode>) {
+        let mnode = tree_nodes.get(entity);
+        if let Some(node) = mnode {
+            for c in node.children.iter() {
+                set.add(c.id());
+                Tree::add_children_to_set(*c,set,tree_nodes);
+            }
+        }
     }
     
 }
