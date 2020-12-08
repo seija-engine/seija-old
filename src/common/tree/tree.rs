@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
-
+use std::collections::HashMap;
 use hibitset::BitSet;
-use specs::{Entity, WorldExt,World,ReadStorage,DenseVecStorage,Component};
+use specs::{Entity,world::Index, WorldExt,World,ReadStorage,DenseVecStorage,Component};
 use shrev::{EventChannel};
 #[derive(Default)]
 pub struct TreeNode {
@@ -61,7 +61,8 @@ impl Tree {
             drop(s_tree_node);
             let tree = world.get_mut::<Tree>().unwrap();
             tree.roots.push(entity);
-            tree.channel.single_write(TreeEvent::Remove(None,entity));
+            tree.channel.single_write(TreeEvent::Add(None,entity));
+            
         }
         entity
     }
@@ -115,5 +116,24 @@ impl Tree {
             }
         }
     }
+
+    pub fn all_sort_children(tree_nodes:&ReadStorage<TreeNode>,entity:Entity) -> BitSet {
+        let mut set = BitSet::new();
+        let mut q_list:VecDeque<Entity> = VecDeque::new();
+        if let Some(cnode) = tree_nodes.get(entity) {
+            cnode.children.iter().for_each(|e| {
+                q_list.push_back(*e);
+            });
+        }
+        while let Some(ce) = q_list.pop_front() {
+            set.add(ce.id());
+            tree_nodes.get(ce).unwrap().children.iter().for_each(|e| {
+                q_list.push_back(*e);
+            });
+        }
+        set
+    }
+
+   
     
 }

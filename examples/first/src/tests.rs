@@ -5,10 +5,9 @@ use seija::s2d::{S2DLoader};
 use seija::render::types;
 use seija::rendy;
 use seija::render::components::{Mesh2D,TextRender,SpriteRender,ImageRender,LineMode,SpriteSheet};
-use seija::common::{Transform,transform::{Parent},Rect2D,Hidden,HiddenPropagate};
+use seija::common::{Transform,Rect2D,Hidden,HiddenPropagate};
 use seija::render::{Transparent};
 use seija::math::{Vector3};
-use seija::s2d::layout::{ScreenScaler};
 use seija::event::cb_event::{CABEventRoot};
 use seija::event::{EventNode,GameEventType};
 use crate::core::{create_image};
@@ -57,7 +56,7 @@ fn create_sprite(world:&mut World,sheet:Handle<SpriteSheet>,sprite_name:&str,x:f
     let rect2d = Rect2D::new(sprite.rect.width as f32 * 0.5f32,sprite.rect.height as f32 * 0.5f32,[0.5f32,0.5f32]);
     match p {
         Some(e) => {
-            world.create_entity().with(Mesh2D::default()).with(Parent {entity:e})
+            world.create_entity().with(Mesh2D::default())
             .with(sprite_render).with(trans).with(Transparent).with(rect2d).build()
                          
         },
@@ -86,7 +85,7 @@ fn create_text(world:&mut World,font:Handle<FontAsset>,text:&str,x:f32,y:f32,z:f
     trans.set_position(Vector3::new(x,y,z));
     match p {
         Some(e) => {
-            world.create_entity().with(Parent {entity:e}).with(Mesh2D::default())
+            world.create_entity().with(Mesh2D::default())
             .with(Transparent).with(render).with(Rect2D::new(200f32,100f32,[0.5f32,0.5f32])).with(trans).build()
         },
         None => {
@@ -164,14 +163,13 @@ impl IGameTest for EventTest {
     fn start(&mut self,world:&mut World) {
         let ui_root = world.create_entity().with(Transform::default())
                                            .with(Rect2D::default())
-                                           .with(ScreenScaler::with_scale_height(768f32))
                                            .with(CABEventRoot::default()).build();
         let tex_a = {
             let loader = world.write_resource::<S2DLoader>();
             loader.load_sync::<_,DefaultBackend>(TextuteLoaderInfo::new_only_path("a.jpg"),world).unwrap()
         };
-        let e = create_image(world,tex_a.clone(),100f32,100f32,0f32,0f32,2f32,0,Some(ui_root));
-        let e2 = create_image(world,tex_a.clone(),50f32,50f32,0f32,0f32,0f32,0, Some(e));
+        let e = create_image(world,tex_a.clone(),100f32,100f32,0f32,0f32,2f32,0);
+        let e2 = create_image(world,tex_a.clone(),50f32,50f32,0f32,0f32,0f32,0);
         //let e3 = create_image(world,tex_a.clone(),30f32,30f32,0f32,0f32,0f32,0, Some(e2));
        
         register_event(world,false,e,|e,_w| {

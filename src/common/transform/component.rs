@@ -3,31 +3,14 @@ use hibitset::BitSet;
 use specs::storage::ComponentEvent;
 use specs::{
     Component, DenseVecStorage, Entities, Entity, FlaggedStorage, ReadExpect, ReaderId, System,
-    SystemData, World, WriteStorage,ReadStorage,Join
+    SystemData, World, WriteStorage,ReadStorage
 };
-use specs_hierarchy::HierarchyEvent;
-use specs_hierarchy::{Hierarchy, Parent as HParent};
+
 use hibitset::BitSetLike;
 
 #[cfg(feature = "profiler")]
 use thread_profiler::profile_scope;
 
-pub type ParentHierarchy = Hierarchy<Parent>;
-
-#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
-pub struct Parent {
-    pub entity: Entity,
-}
-
-impl Component for Parent {
-    type Storage = FlaggedStorage<Self, DenseVecStorage<Self>>;
-}
-
-impl HParent for Parent {
-    fn parent_entity(&self) -> Entity {
-        self.entity
-    }
-}
 
 impl Component for Transform {
     type Storage = FlaggedStorage<Self, DenseVecStorage<Self>>;
@@ -36,32 +19,44 @@ impl Component for Transform {
 pub struct TransformSystem {
     local_modified: BitSet,
     locals_events_id: ReaderId<ComponentEvent>,
-    parent_events_id: ReaderId<HierarchyEvent>,
+    tree_events_id: ReaderId<TreeEvent>,
 }
 
 impl TransformSystem {
     pub fn new(world: &mut World) -> Self {
         <TransformSystem as System<'_>>::SystemData::setup(world);
-        let mut hierarchy = world.fetch_mut::<ParentHierarchy>();
+        let mut tree = world.fetch_mut::<Tree>();
         let mut locals = WriteStorage::<Transform>::fetch(&world);
-        let parent_events_id = hierarchy.track();
+        let tree_events_id = tree.channel.register_reader();
         let locals_events_id = locals.register_reader();
         TransformSystem {
             local_modified: BitSet::new(),
             locals_events_id,
-            parent_events_id,
+            tree_events_id
         }
+    }
+
+    pub fn is_parent_change<'a>(&self,entity:Entity,tree_nodes:&ReadStorage<'a, TreeNode>) -> bool {
+        let mut node = tree_nodes.get(entity).and_then(|t| t.parent);
+        while let Some(n) = node {
+            if self.local_modified.contains(n.id()) {
+                return true;
+            }
+            node = tree_nodes.get(n).and_then(|t| t.parent);
+        }
+        false
     }
 }
 
 impl<'a> System<'a> for TransformSystem {
     type SystemData = (
         Entities<'a>,
-        ReadExpect<'a, ParentHierarchy>,
+        ReadExpect<'a, Tree>,
         WriteStorage<'a, Transform>,
-        ReadStorage<'a, Parent>,
+        ReadStorage<'a, TreeNode>,
     );
-    fn run(&mut self,(entities, hierarchy, mut locals, parents): Self::SystemData) {
+
+    fn run(&mut self,(entities, tree, mut locals, tree_nodes): Self::SystemData) {
         #[cfg(feature = "profiler")]
         profile_scope!("TransformSystem run");
         self.local_modified.clear();
@@ -72,44 +67,39 @@ impl<'a> System<'a> for TransformSystem {
                             }
                             ComponentEvent::Removed(_id) => {}
                         });
-        for event in hierarchy.changed().read(&mut self.parent_events_id) {
+        for event in tree.channel.read(&mut self.tree_events_id) {
             match *event {
-                HierarchyEvent::Removed(entity) => {
-                    let _ = entities.delete(entity);
+                TreeEvent::Add(_,entity) => {
+                    self.local_modified.add(entity.id());
                 },
-                HierarchyEvent::Modified(entity) => {
-                    self.local_modified.add(entity.id());
+                TreeEvent::Remove(_,entity) => {
+                    self.local_modified.remove(entity.id());
                 }
             }
         }
-        let mut modified = Vec::new();
-        for (entity, _, local, _) in (&*entities, &self.local_modified, &mut locals, !&parents).join() {
-            modified.push(entity.id());
-            local.global_matrix = local.matrix();
-        }
-        modified.into_iter().for_each(|id| { self.local_modified.add(id); });
-        for entity in hierarchy.all() {
-            let self_dirty = self.local_modified.contains(entity.id());
-            if let Some(parent) = parents.get(*entity) {
-                let parent_dirty = self.local_modified.contains(parent.entity.id());
-                if parent_dirty || self_dirty {
-                    let combined_transform = {
-                        let local = locals.get(*entity);
-                        if local.is_none() {
-                            continue;
-                        }
-                        let local = local.unwrap();
-                        if let Some(parent_global) = locals.get(parent.entity) {
-                            parent_global.global_matrix * local.matrix()
-                        } else {
-                            local.matrix()
-                        }
-                    };
-                    self.local_modified.add(entity.id());
-                    locals.get_mut(*entity).expect("unreachable: We know this entity has a local because is was just modified.").global_matrix = combined_transform;
-                }
+        
+        let change_iter = self.local_modified.clone().iter();
+        for e in change_iter {
+            let entity = entities.entity(e);
+            if self.is_parent_change(entity,&tree_nodes) {
+                continue;
+            }
+            if let Some(p) = tree_nodes.get(entity).and_then(|v| v.parent) {
+                let new_mat = (locals.get(p).unwrap().global_matrix) * (locals.get(entity).unwrap().matrix());
+                locals.get_mut(entity).unwrap().global_matrix = new_mat;
+            } else {
+                let t = locals.get_mut(entity).unwrap();
+                t.global_matrix = t.matrix();
+            }
+           
+            for child in Tree::all_sort_children(&tree_nodes, entity) {
+                let centity = entities.entity(child);
+                let parent_entity = tree_nodes.get(centity).unwrap().parent.unwrap();
+                let new_mat = locals.get(parent_entity).unwrap().global_matrix * locals.get(centity).unwrap().matrix();
+                locals.get_mut(centity).unwrap().global_matrix = new_mat;
             }
         }
+
         locals.channel().read(&mut self.locals_events_id);
     }
 }
@@ -147,10 +137,9 @@ impl<'a> System<'a> for HideHierarchySystem {
     fn run(&mut self, (entities,mut hiddens, tree_nodes, tree): Self::SystemData) {
         self.marked_as_modified.clear();
         self.only_add.clear();
-        let self_hidden_events_id = &mut self.hidden_events_id;
         
 
-        hiddens.channel().read(self_hidden_events_id).for_each(|event| match event {
+        hiddens.channel().read(&mut self.hidden_events_id).for_each(|event| match event {
             ComponentEvent::Inserted(id) | ComponentEvent::Removed(id) => {
                 self.marked_as_modified.add(*id);
             }
@@ -204,49 +193,8 @@ impl<'a> System<'a> for HideHierarchySystem {
             }
            }
         }
-        
-       
-        /*
 
-        for entity in hierarchy.all() {
-            {
-                let self_dirty = self_marked_as_modified.contains(entity.id());
-                let parent_entity = parents.get(*entity).expect("Unreachable: All entities in `ParentHierarchy` should also be in `Parents`").entity;
-                let parent_dirty = self_marked_as_modified.contains(parent_entity.id());
-                if parent_dirty {
-                    if hidden.contains(parent_entity) {
-                        for child in tree.all_children_iter(parent_entity) {
-                            if let Err(e) = hidden.insert(child, HiddenPropagate::default()) {
-                                eprintln!("Failed to automatically add `HiddenPropagate`: {:?}", e);
-                            };
-                        }
-                    } else {
-                        for child in hierarchy.all_children_iter(parent_entity) {
-                            hidden.remove(child);
-                        }
-                    }
-                } else if self_dirty {
-                    if hidden.contains(*entity) {
-                        for child in hierarchy.all_children_iter(*entity) {
-                            if let Err(e) = hidden.insert(child, HiddenPropagate::default()) {
-                                eprintln!("Failed to automatically add `HiddenPropagate`: {:?}", e);
-                            };
-                        }
-                    } else {
-                        for child in hierarchy.all_children_iter(*entity) {
-                            hidden.remove(child);
-                        }
-                    }
-                }
-            };
-
-            hidden.channel().read(self_hidden_events_id).for_each(|event| match event {
-                ComponentEvent::Inserted(id) | ComponentEvent::Removed(id) => {
-                    self_marked_as_modified.add(*id);
-                }
-                ComponentEvent::Modified(_id) => {}
-            });
-        }*/
+        hiddens.channel().read(&mut self.hidden_events_id);
     }
 
 }

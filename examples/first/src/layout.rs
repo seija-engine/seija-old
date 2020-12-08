@@ -1,10 +1,11 @@
 use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader}, specs::{Entity, World, WorldExt,world::Builder}};
 use seija::assets::{TextuteLoaderInfo};
 use crate::{tests::IGameTest, core::create_image};
-use seija::common::{Transform,Rect2D,transform::Parent,Tree,TreeNode,HiddenPropagate};
+use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
 use seija::s2d::layout2::{LayoutView,LayoutHandle,StackLayout,LayoutAlignment,Thickness};
+use seija::math::{Vector3};
 #[derive(Default)]
 pub struct LayoutTest {
     root:Option<Entity>,
@@ -14,8 +15,10 @@ pub struct LayoutTest {
 }
 
 fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
+    let mut trans = Transform::default();
+    trans.set_position(Vector3::new(100f32,0f32,0f32));
     world.create_entity()
-         .with(Transform::default())
+         .with(trans)
          .with(Rect2D::new(w, h, [0.5f32,0.5f32]))
          .with(ImageRender::new(Some(tex)))
          .with(Mesh2D::default())
@@ -34,14 +37,14 @@ impl IGameTest for LayoutTest {
         };
         
       
-        let root0 = create_stack(world,white,800f32,600f32);
+        let root0 = create_stack(world,white,200f32,200f32);
         Tree::add(world, root0, None);
-        let c0 = create_image(world, b_jpg.clone(), 100f32, 100f32, 0f32, 0f32, 0f32, 0, None);
+        dbg!(root0);
+        let c0 = create_image(world, b_jpg.clone(), 50f32, 50f32, 0f32, 0f32, 0f32, 0);
         Tree::add(world, c0, Some(root0));
 
        
-        let c1 = create_image(world, b_jpg, 100f32, 100f32, 120f32, 0f32, 0f32, 0, None);
-        Tree::add(world,c1,Some(root0));
+       
 
         self.root = Some(root0);
         /*
@@ -68,10 +71,7 @@ impl IGameTest for LayoutTest {
 
     fn update(&mut self, world:&mut World) {
         if self.index == 50 {
-            {
-                let mut s_hidden = world.write_storage::<HiddenPropagate>();
-                s_hidden.insert(self.root.unwrap(), HiddenPropagate).unwrap();
-            };
+          
         }
 
         if self.index < 100 {

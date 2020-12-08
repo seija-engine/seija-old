@@ -2,11 +2,11 @@ use seija::specs::{World,WorldExt,world::Builder,Entity};
 use seija::assets::{Handle};
 use seija::render::types;
 use seija::render::components::{Mesh2D,ImageRender,ImageType,ImageFilledType};
-use seija::common::{Transform,transform::{Parent},Rect2D};
+use seija::common::{Transform,Rect2D};
 
 use seija::math::{Vector3};
 
-pub fn create_image(world:&mut World,tex:Handle<types::Texture>,w:f32,h:f32,x:f32,y:f32,z:f32,t:i32,p:Option<Entity>) -> Entity {
+pub fn create_image(world:&mut World,tex:Handle<types::Texture>,w:f32,h:f32,x:f32,y:f32,z:f32,t:i32) -> Entity {
     let mut render = ImageRender::new(Some(tex));
     let mut trans = Transform::default();
     trans.set_position(Vector3::new(x,y,z));
@@ -18,13 +18,5 @@ pub fn create_image(world:&mut World,tex:Handle<types::Texture>,w:f32,h:f32,x:f3
         //render.set_anchor(0f32,0f32);
     }
     let rect = Rect2D::new(w,h,[0.5f32,0.5f32]);
-    match p {
-        Some(e) => {
-            world.create_entity().with(render).with(Parent {entity:e}).with(Mesh2D::default())
-                                 .with(rect).with(trans).build()
-        },
-        None => {
-            world.create_entity().with(Mesh2D::default()).with(render).with(rect).with(trans).build()
-        }
-    }
+    world.create_entity().with(Mesh2D::default()).with(render).with(rect).with(trans).build()
 }

@@ -1,5 +1,5 @@
 use specs::{Component,DenseVecStorage,World,WorldExt,Join,Entity,ReadStorage,WriteStorage};
-use crate::common::{Rect2D,Transform,transform::{ParentHierarchy},Hidden,HiddenPropagate};
+use crate::common::{Rect2D,Transform,Hidden,HiddenPropagate,TreeNode};
 use crate::event::{GameEvent,EventNode,NodeEvent,EventNodeState};
 use std::sync::{Arc};
 
@@ -16,10 +16,10 @@ impl CABEventHandle {
             let hiddens = world.read_storage::<Hidden>();
             let hide_props = world.read_storage::<HiddenPropagate>();
             let mut ev_node = world.write_storage::<EventNode>();
-            let hierarchy = world.fetch::<ParentHierarchy>();
+            let tree_nodes = world.read_storage::<TreeNode>();
 
             for (e,root,t,rect,_,_) in (&world.entities(),&mut roots,&trans,&rects,!&hiddens,!&hide_props).join() {
-                root.process(world,e,ev,t,rect,&hierarchy,&trans,&rects,&mut ev_node,&mut events);   
+                root.process(world,e,ev,t,rect,&tree_nodes,&trans,&rects,&mut ev_node,&mut events);   
             }
        };
        for (ev,eid) in events {
@@ -67,13 +67,13 @@ impl Component for CABEventRoot {
 
 impl CABEventRoot {
     pub fn process(&mut self,world:&World,e:Entity,ev:&GameEvent,trans:&Transform,rect:&Rect2D,
-                   hierarchy:&ParentHierarchy,t_storage:&ReadStorage<Transform>,
+                   tree_nodes:&ReadStorage<TreeNode>,t_storage:&ReadStorage<Transform>,
                    r_storage:&ReadStorage<Rect2D>,ev_storage:&mut WriteStorage<EventNode>,events:&mut Vec<(Arc<NodeEvent>,Entity)>) {
         
-        self.process_node(world,e, ev,trans,rect,hierarchy,t_storage,r_storage,ev_storage,events);
+        self.process_node(world,e, ev,trans,rect,tree_nodes,t_storage,r_storage,ev_storage,events);
         
         if let GameEvent::TouchEnd(pos) = ev {
-            self.process_node(world,e, &GameEvent::Click(*pos),trans,rect,hierarchy,t_storage,r_storage,ev_storage,events);
+            self.process_node(world,e, &GameEvent::Click(*pos),trans,rect,tree_nodes,t_storage,r_storage,ev_storage,events);
             for ev_node in ev_storage.join() {
                 ev_node.node_state &= !(EventNodeState::MouseDown.value());
             }
@@ -82,7 +82,7 @@ impl CABEventRoot {
 
   
     fn process_node(&mut self,world:&World,e:Entity,ev:&GameEvent,t:&Transform,rect:&Rect2D
-                   ,hierarchy:&ParentHierarchy,t_storage:&ReadStorage<Transform>,
+                   ,tree_nodes:&ReadStorage<TreeNode>,t_storage:&ReadStorage<Transform>,
                    r_storage:&ReadStorage<Rect2D>,ev_storage:&mut WriteStorage<EventNode>,events:&mut Vec<(Arc<NodeEvent>,Entity)>) -> bool {
         let hide_props = world.read_storage::<HiddenPropagate>();
         if hide_props.contains(e) {
@@ -92,7 +92,7 @@ impl CABEventRoot {
         if rect.test(t, pos) == false {
             return false;
         }
-        let children = hierarchy.children(e);
+        let children = &tree_nodes.get(e).unwrap().children;
         let is_last = children.len() == 0;
         let mut ev_join = ev_storage.join();
         let may_ev_node = ev_join.get_unchecked(e.id());
@@ -113,7 +113,7 @@ impl CABEventRoot {
 
         //开始向上冒泡
         if is_last {
-            self.bubble_event(world,e,ev,hierarchy,ev_storage,events);
+            self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
         }
         let mut tr_joined = (t_storage,r_storage).join();
         for ce in children {
@@ -122,17 +122,17 @@ impl CABEventRoot {
                 continue;
             }
             let (t,rect) = may_get.unwrap();
-            if self.process_node(world,*ce, ev, t,rect, hierarchy,t_storage,r_storage,ev_storage,events) {
+            if self.process_node(world,*ce, ev, t,rect, tree_nodes,t_storage,r_storage,ev_storage,events) {
                 return true;
             }
         }
         if is_last == false {
-            self.bubble_event(world,e,ev,hierarchy,ev_storage,events);
+            self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
         }
         return true;
     }
 
-    fn bubble_event(&mut self,world:&World,e:Entity,ev:&GameEvent,hierarchy:&ParentHierarchy,
+    fn bubble_event(&mut self,world:&World,e:Entity,ev:&GameEvent,tree_nodes:&ReadStorage<TreeNode>,
                     ev_storage:&mut WriteStorage<EventNode>,events:&mut Vec<(Arc<NodeEvent>,Entity)>) {
         let is_hide = world.read_storage::<Hidden>().contains(e);
         
@@ -148,7 +148,7 @@ impl CABEventRoot {
                 return;
             }
         };
-        let mut may_parent = hierarchy.parent(e);
+        let mut may_parent = tree_nodes.get(e).unwrap().parent;
         while may_parent.is_some() {
             let parent = may_parent.unwrap();
             if let Some(ev_node) = ev_join.get_unchecked(parent.id()) {
@@ -162,7 +162,7 @@ impl CABEventRoot {
                     return;
                 }
             };
-            may_parent = hierarchy.parent(parent);
+            may_parent = tree_nodes.get(e).unwrap().parent;
         }
     }
 
