@@ -1,4 +1,4 @@
-use crate::{common::{Tree,TreeNode,TreeEvent}, window::ViewPortSize};
+use crate::{common::{Rect2D, Tree, TreeEvent, TreeNode}, window::ViewPortSize};
 use hibitset::BitSet;
 use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
@@ -40,7 +40,7 @@ impl LayoutSystem {
     fn size_request(&self,ldata:&LayoutData,entity:Entity) -> Vector2<f64> {
         let tree_nodes = &ldata.2;
         let size:Vector2<f64> = ldata.3.get(entity).map(|view|view.size).unwrap_or(Vector2::zeros());
-        if !size.is_empty() {
+        if size.magnitude() > 0.01f64 {
             return size;
         }
         if let Some(parent) = tree_nodes.get(entity).and_then(|n| n.parent) {
@@ -52,22 +52,23 @@ impl LayoutSystem {
         }
     }
 
-    fn update_layout(&mut self,ldata:&LayoutData,entity:Entity) {
+    fn update_layout(&mut self,ldata:&mut LayoutData,entity:Entity) {
         let cur_size:Vector2<f64> = self.size_request(ldata, entity);
         self.measure(ldata, entity,cur_size);
         self.arrange(ldata);
     }
 
-    fn measure(&mut self,ldata:&LayoutData,entity:Entity,size:Vector2<f64>) -> Vector2<f64> {
+    fn measure(&mut self,ldata:&mut LayoutData,entity:Entity,size:Vector2<f64>) -> Vector2<f64> {
         if let Some(stack) = ldata.4.get(entity) {
-            stack.measure(ldata, size)
-        } else if let Some(view) = ldata.3.get(entity){
-            view.measure(ldata, size)
+            stack.measure(entity, size,&mut ldata.6,&ldata.3,&ldata.2)
+        } else if let Some(view) = ldata.3.get(entity) {
+            view.measure(entity, size,&ldata.3,&mut ldata.6)
+           
         } else {
             Vector2::zeros()
         }
     }
-    fn arrange(&mut self,ldata:&LayoutData) {
+    fn arrange(&mut self,ldata:&mut LayoutData) {
 
     }
 
@@ -82,7 +83,8 @@ pub type LayoutData<'a> = (
     ReadStorage<'a,TreeNode>,
     WriteStorage<'a,LayoutView>,
     WriteStorage<'a,StackLayout>,
-    ReadExpect<'a,ViewPortSize>);
+    ReadExpect<'a,ViewPortSize>,
+    WriteStorage<'a,Rect2D>);
 
 /*
     root0 (LayoutView,StackPanel)
@@ -106,12 +108,12 @@ pub type LayoutData<'a> = (
 impl<'a> System<'a> for LayoutSystem {
     type SystemData = LayoutData<'a>;
     
-    fn run(&mut self, ldata: Self::SystemData) {
+    fn run(&mut self,mut ldata: Self::SystemData) {
        self.modified.clear();
-       let tree = &ldata.1;
-       let tree_nodes = &ldata.2;
-       let entities = &ldata.0;
-       for ev in tree.channel.read(&mut self.ev_tree) {
+      
+    
+       for ev in ldata.1.channel.read(&mut self.ev_tree) {
+           let tree_nodes = &ldata.2;
            match ev {
             TreeEvent::Add(p,e) => self.on_dirty(&tree_nodes,*p, *e),
             TreeEvent::Remove(p,_) => {
@@ -124,8 +126,8 @@ impl<'a> System<'a> for LayoutSystem {
        }
        let iter = self.modified.clone().into_iter();
        for eid in iter {
-           let cur_entity = entities.entity(eid);
-           self.update_layout(&ldata,cur_entity);
+           let cur_entity = ldata.0.entity(eid);
+           self.update_layout(&mut ldata,cur_entity);
        }
     }
 }

@@ -48,7 +48,7 @@ impl Thickness {
 }
 
 
-#[derive(PartialEq,Eq,Clone,Copy)]
+#[derive(PartialEq,Eq,Clone,Copy,Debug)]
 pub enum LayoutAlignment {
     Start = 0,
 	Center = 1,

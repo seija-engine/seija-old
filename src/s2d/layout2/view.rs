@@ -1,5 +1,7 @@
+use crate::common::Rect2D;
+
 use super::types::{Thickness,LayoutAlignment};
-use specs::{Component,FlaggedStorage};
+use specs::{Component, Entity, FlaggedStorage, ReadStorage, WriteStorage};
 use nalgebra::Vector2;
 use super::LayoutData;
 
@@ -17,7 +19,23 @@ impl Component for LayoutView {
 }
 
 impl LayoutView {
-    pub fn measure(&self,ldata:&LayoutData,size:Vector2<f64>) -> Vector2<f64> {
-        size
+    pub fn measure(&self,entity:Entity,size:Vector2<f64>,
+                   views:&WriteStorage<LayoutView>,
+                   rect2ds:&mut WriteStorage<Rect2D>) -> Vector2<f64> {
+        let view = views.get(entity).unwrap();
+        let rect2d = rect2ds.get(entity).unwrap();
+        let mut w:f64 = rect2d.width as f64;
+        let mut h:f64 = rect2d.height as f64;
+        if view.hor == LayoutAlignment::Fill {
+            w = size.x - self.margin.horizontal();
+        }
+        if view.ver == LayoutAlignment::Fill {
+            h = size.y - self.margin.vertical();
+        }
+
+        let rect2d = rect2ds.get_mut(entity).unwrap();
+        rect2d.width = w as f32;
+        rect2d.height = h as f32;
+        Vector2::new(w,h)
     }
 }

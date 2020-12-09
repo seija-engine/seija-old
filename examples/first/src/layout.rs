@@ -16,13 +16,18 @@ pub struct LayoutTest {
 
 fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     let mut trans = Transform::default();
-    trans.set_position(Vector3::new(100f32,0f32,0f32));
+    let mut img_render = ImageRender::new(Some(tex));
+    trans.set_position(Vector3::new(0f32,0f32,0f32));
+    img_render.set_color(0.5f32, 0.5f32, 0.5f32, 1f32);
+    let mut view = LayoutView::default();
+    view.margin = Thickness::new1(50f64);
     world.create_entity()
          .with(trans)
          .with(Rect2D::new(w, h, [0.5f32,0.5f32]))
-         .with(ImageRender::new(Some(tex)))
+         .with(img_render)
          .with(Mesh2D::default())
          .with(StackLayout::default())
+         .with(view)
          .build()
 }
 
@@ -37,13 +42,28 @@ impl IGameTest for LayoutTest {
         };
         
       
-        let root0 = create_stack(world,white,200f32,200f32);
+        let root0 = create_stack(world,white.clone(),640f32,480f32);
         Tree::add(world, root0, None);
-        dbg!(root0);
+       
         let c0 = create_image(world, b_jpg.clone(), 50f32, 50f32, 0f32, 0f32, 0f32, 0);
+        {
+            let mut views = world.write_storage::<LayoutView>();
+            let mut view = LayoutView::default();
+            view.hor = LayoutAlignment::Fill;
+            view.ver = LayoutAlignment::Center;
+            views.insert(c0, view).unwrap();
+        }
         Tree::add(world, c0, Some(root0));
 
-       
+        let c1 = create_image(world, b_jpg.clone(), 50f32, 50f32, 0f32, 0f32, 0f32, 0);
+        {
+            let mut views = world.write_storage::<LayoutView>();
+            let mut view = LayoutView::default();
+            view.hor = LayoutAlignment::Fill;
+            view.ver = LayoutAlignment::Center;
+            views.insert(c1, view).unwrap();
+        }
+        Tree::add(world, c1, Some(root0));
        
 
         self.root = Some(root0);
