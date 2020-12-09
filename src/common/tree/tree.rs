@@ -1,7 +1,6 @@
 use std::collections::VecDeque;
-use std::collections::HashMap;
 use hibitset::BitSet;
-use specs::{Entity,world::Index, WorldExt,World,ReadStorage,DenseVecStorage,Component};
+use specs::{Entity,WorldExt,World,ReadStorage,DenseVecStorage,Component};
 use shrev::{EventChannel};
 #[derive(Default)]
 pub struct TreeNode {

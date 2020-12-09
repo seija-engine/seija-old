@@ -3,11 +3,11 @@ use specs::{WorldExt};
 
 pub mod types;
 pub mod view;
-pub mod layout;
 pub mod stack;
 pub mod handle;
 pub mod system;
 
+pub use system::LayoutData;
 pub use stack::{StackLayout};
 pub use view::{LayoutView};
 pub use handle::{LayoutHandle};
