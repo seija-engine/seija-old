@@ -21,16 +21,29 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     img_render.set_color(0.5f32, 0.5f32, 0.5f32, 1f32);
     let mut view = LayoutView::default();
     view.margin = Thickness::new1(50f64);
+    let mut stack = StackLayout::default();
+    stack.specing = 10f32;
     world.create_entity()
          .with(trans)
          .with(Rect2D::new(w, h, [0.5f32,0.5f32]))
          .with(img_render)
          .with(Mesh2D::default())
-         .with(StackLayout::default())
+         .with(stack)
          .with(view)
          .build()
 }
 
+fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
+    let c0 = create_image(world, img.clone(), 70f32, 70f32, 0f32, 0f32, 0f32, 0);
+    {
+        let mut views = world.write_storage::<LayoutView>();
+        let mut view = LayoutView::default();
+        view.hor = LayoutAlignment::Fill;
+        view.ver = LayoutAlignment::Start;
+        views.insert(c0, view).unwrap();
+    }
+    Tree::add(world, c0, Some(parent));
+}
 
 impl IGameTest for LayoutTest {
     fn start(&mut self, world:&mut World) {
@@ -45,25 +58,11 @@ impl IGameTest for LayoutTest {
         let root0 = create_stack(world,white.clone(),640f32,480f32);
         Tree::add(world, root0, None);
        
-        let c0 = create_image(world, b_jpg.clone(), 50f32, 50f32, 0f32, 0f32, 0f32, 0);
-        {
-            let mut views = world.write_storage::<LayoutView>();
-            let mut view = LayoutView::default();
-            view.hor = LayoutAlignment::Fill;
-            view.ver = LayoutAlignment::Center;
-            views.insert(c0, view).unwrap();
+        for _ in 0..12 {
+            add_img(root0, b_jpg.clone(), world);
         }
-        Tree::add(world, c0, Some(root0));
-
-        let c1 = create_image(world, b_jpg.clone(), 50f32, 50f32, 0f32, 0f32, 0f32, 0);
-        {
-            let mut views = world.write_storage::<LayoutView>();
-            let mut view = LayoutView::default();
-            view.hor = LayoutAlignment::Fill;
-            view.ver = LayoutAlignment::Center;
-            views.insert(c1, view).unwrap();
-        }
-        Tree::add(world, c1, Some(root0));
+        
+       
        
 
         self.root = Some(root0);

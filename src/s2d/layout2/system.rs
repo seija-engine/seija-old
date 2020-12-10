@@ -1,4 +1,4 @@
-use crate::{common::{Rect2D, Tree, TreeEvent, TreeNode}, window::ViewPortSize};
+use crate::{common::{Rect2D, Transform, Tree, TreeEvent, TreeNode}, window::ViewPortSize};
 use hibitset::BitSet;
 use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
@@ -55,12 +55,12 @@ impl LayoutSystem {
     fn update_layout(&mut self,ldata:&mut LayoutData,entity:Entity) {
         let cur_size:Vector2<f64> = self.size_request(ldata, entity);
         self.measure(ldata, entity,cur_size);
-        self.arrange(ldata);
+        self.arrange(ldata,entity);
     }
 
     fn measure(&mut self,ldata:&mut LayoutData,entity:Entity,size:Vector2<f64>) -> Vector2<f64> {
         if let Some(stack) = ldata.4.get(entity) {
-            stack.measure(entity, size,&mut ldata.6,&ldata.3,&ldata.2)
+            stack.measure(entity, size,&mut ldata.6,&mut ldata.3,&ldata.2)
         } else if let Some(view) = ldata.3.get(entity) {
             view.measure(entity, size,&ldata.3,&mut ldata.6)
            
@@ -68,8 +68,10 @@ impl LayoutSystem {
             Vector2::zeros()
         }
     }
-    fn arrange(&mut self,ldata:&mut LayoutData) {
-
+    fn arrange(&mut self,ldata:&mut LayoutData,entity:Entity) {
+        if let Some(stack) = ldata.4.get(entity) {
+            stack.arrange(entity,&mut ldata.6,&ldata.2,&mut ldata.7,&ldata.3);
+        }
     }
 
     fn is_invalid_measure(&self,entity:Entity) -> bool {
@@ -84,7 +86,8 @@ pub type LayoutData<'a> = (
     WriteStorage<'a,LayoutView>,
     WriteStorage<'a,StackLayout>,
     ReadExpect<'a,ViewPortSize>,
-    WriteStorage<'a,Rect2D>);
+    WriteStorage<'a,Rect2D>,
+    WriteStorage<'a,Transform>);
 
 /*
     root0 (LayoutView,StackPanel)

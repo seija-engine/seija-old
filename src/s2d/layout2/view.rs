@@ -7,6 +7,7 @@ use super::LayoutData;
 
 #[derive(Clone,Default)]
 pub struct LayoutView {
+    pub force_size:Vector2<f64>,
     pub size:Vector2<f64>,
     pub margin:Thickness,
     pub padding:Thickness,

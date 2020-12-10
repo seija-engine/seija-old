@@ -69,6 +69,19 @@ impl Rect2D {
         let offset_y = -self.height * self.anchor[1];
         [offset_x,offset_x + self.width,offset_y,offset_y + self.height]
     }
+
+    pub fn left(&self) -> f32 {
+        -self.width * self.anchor[0]
+    }
+    pub fn right(&self) -> f32 {
+        self.width * (1f32 - self.anchor[0])
+    }
+    pub fn top(&self) -> f32 {
+        self.height * (1f32 - self.anchor[0])
+    }
+    pub fn bottom(&self) -> f32 {
+        -self.height * self.anchor[0]
+    }
 }
 
 impl Component for Rect2D {
