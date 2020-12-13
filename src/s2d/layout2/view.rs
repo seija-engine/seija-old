@@ -1,24 +1,64 @@
-use crate::common::Rect2D;
+use crate::common::{Rect2D, TreeNode};
 
-use super::types::{Thickness,LayoutAlignment};
-use specs::{Component, Entity, FlaggedStorage, ReadStorage, WriteStorage};
+use super::{IView, LayoutElement, types::{Thickness,LayoutAlignment}};
 use nalgebra::Vector2;
-use super::LayoutData;
+use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 
 #[derive(Clone,Default)]
-pub struct LayoutView {
-    pub force_size:Vector2<f64>,
+pub struct View {
+    pub entity:Option<Entity>,
     pub size:Vector2<f64>,
     pub margin:Thickness,
     pub padding:Thickness,
     pub hor:LayoutAlignment,
-    pub ver:LayoutAlignment
+    pub ver:LayoutAlignment,
+    
 }
 
-impl Component for LayoutView {
-    type Storage = FlaggedStorage<LayoutView>;
+impl Component for View {
+    type Storage = DenseVecStorage<View>;
 }
 
+impl View {
+    pub fn calc_size(&self,size:Vector2<f64>) -> Vector2<f64> {
+        let mut ret_size:Vector2<f64> = self.size;
+        if self.size.x <= 0f64 && self.hor == LayoutAlignment::Fill {
+            ret_size.x = size.x;
+        }
+        if self.size.y <= 0f64 && self.ver == LayoutAlignment::Fill {
+            ret_size.y = size.y;
+        }
+        ret_size
+    }
+
+    pub fn calc_content_size(&self,size:Vector2<f64>) -> Vector2<f64> {
+        let mut size = self.calc_size(size);
+        size.x -= self.margin.horizontal();
+        size.y -= self.margin.vertical();
+        size
+    }
+}
+
+impl IView for View {
+    fn measure(&self,entity:Entity, size:Vector2<f64>
+               ,rects:&mut WriteStorage<Rect2D>
+               ,_tree_nodes:&ReadStorage<TreeNode>
+               ,_elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
+      let content_size:Vector2<f64> = self.calc_content_size(size);
+      
+      rects.get_mut(entity).map(|rect| {
+        rect.width = content_size.x as f32;
+        rect.height = content_size.y as f32;
+      });
+      content_size
+    }
+
+    fn arrange(&self, _:Entity, _:Vector2<f64>
+        , _:&mut WriteStorage<Rect2D>
+        , _:&ReadStorage<TreeNode>
+        , _:&WriteStorage<LayoutElement>) { }
+}
+/*
 impl LayoutView {
     pub fn measure(&self,entity:Entity,size:Vector2<f64>,
                    views:&WriteStorage<LayoutView>,
@@ -39,4 +79,4 @@ impl LayoutView {
         rect2d.height = h as f32;
         Vector2::new(w,h)
     }
-}
+}*/

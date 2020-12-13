@@ -4,7 +4,26 @@ use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
 use nalgebra::Vector2;
 
-use super::{LayoutView, StackLayout};
+use super::{IView, LayoutElement, Stack};
+/*
+    root0 (LayoutView,StackPanel)
+      img0 (LayoutView)
+      img1 (LayoutView)
+      panel (LayoutView,StackPanel)
+        imga (LayoutView)
+        imgb (LayoutView)
+        imgc (LayoutView)
+    
+    grid (LayoutView,Grid)
+      grid0 (LayoutView,GridCell)
+        panel (LayoutView,StackPanel)
+          imga (LayoutView)
+          imgb (LayoutView)
+      grid1 (LayoutView,GridCell)
+        panel (LayoutView,StackPanel)
+          imga (LayoutView)
+          imgb (LayoutView)
+*/
 
 pub struct LayoutSystem {
    ev_tree:ReaderId<TreeEvent>,
@@ -37,44 +56,8 @@ impl LayoutSystem {
         }
     }
 
-    fn size_request(&self,ldata:&LayoutData,entity:Entity) -> Vector2<f64> {
-        let tree_nodes = &ldata.2;
-        let size:Vector2<f64> = ldata.3.get(entity).map(|view|view.size).unwrap_or(Vector2::zeros());
-        if size.magnitude() > 0.01f64 {
-            return size;
-        }
-        if let Some(parent) = tree_nodes.get(entity).and_then(|n| n.parent) {
-            self.size_request(ldata, parent)
-        } else {
-            let w = ldata.5.width();
-            let h = ldata.5.height();
-            Vector2::new(w,h)
-        }
-    }
-
-    fn update_layout(&mut self,ldata:&mut LayoutData,entity:Entity) {
-        let cur_size:Vector2<f64> = self.size_request(ldata, entity);
-        self.measure(ldata, entity,cur_size);
-        self.arrange(ldata,entity);
-    }
-
-    fn measure(&mut self,ldata:&mut LayoutData,entity:Entity,size:Vector2<f64>) -> Vector2<f64> {
-        if let Some(stack) = ldata.4.get(entity) {
-            stack.measure(entity, size,&mut ldata.6,&mut ldata.3,&ldata.2)
-        } else if let Some(view) = ldata.3.get(entity) {
-            view.measure(entity, size,&ldata.3,&mut ldata.6)
-           
-        } else {
-            Vector2::zeros()
-        }
-    }
-    fn arrange(&mut self,ldata:&mut LayoutData,entity:Entity) {
-        if let Some(stack) = ldata.4.get(entity) {
-            stack.arrange(entity,&mut ldata.6,&ldata.2,&mut ldata.7,&ldata.3);
-        }
-    }
-
-    fn is_invalid_measure(&self,entity:Entity) -> bool {
+  
+    fn is_invalid_measure(&self,_entity:Entity) -> bool {
         true
     }
 }
@@ -83,31 +66,12 @@ pub type LayoutData<'a> = (
     Entities<'a>,
     ReadExpect<'a,Tree>,
     ReadStorage<'a,TreeNode>,
-    WriteStorage<'a,LayoutView>,
-    WriteStorage<'a,StackLayout>,
+    WriteStorage<'a,LayoutElement>,
     ReadExpect<'a,ViewPortSize>,
     WriteStorage<'a,Rect2D>,
     WriteStorage<'a,Transform>);
 
-/*
-    root0 (LayoutView,StackPanel)
-      img0 (LayoutView)
-      img1 (LayoutView)
-      panel (LayoutView,StackPanel)
-        imga (LayoutView)
-        imgb (LayoutView)
-        imgc (LayoutView)
-    
-    grid (LayoutView,Grid)
-      grid0 (LayoutView,GridCell)
-        panel (LayoutView,StackPanel)
-          imga (LayoutView)
-          imgb (LayoutView)
-      grid1 (LayoutView,GridCell)
-        panel (LayoutView,StackPanel)
-          imga (LayoutView)
-          imgb (LayoutView)
-*/
+
 impl<'a> System<'a> for LayoutSystem {
     type SystemData = LayoutData<'a>;
     
@@ -130,7 +94,9 @@ impl<'a> System<'a> for LayoutSystem {
        let iter = self.modified.clone().into_iter();
        for eid in iter {
            let cur_entity = ldata.0.entity(eid);
-           self.update_layout(&mut ldata,cur_entity);
+           let elem = ldata.3.get(cur_entity).unwrap();
+          
+           elem.update_layout(cur_entity,&ldata.2,&mut ldata.5,&ldata.3,&ldata.4);  
        }
     }
 }

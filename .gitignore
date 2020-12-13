@@ -19,3 +19,4 @@ Cargo.lock
 .idea
 src/assets_old
 /.metals
+.vscode

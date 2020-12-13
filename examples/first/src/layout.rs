@@ -1,10 +1,10 @@
-use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader}, specs::{Entity, World, WorldExt,world::Builder}};
+use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader, layout2::LayoutElement}, specs::{Entity, World, WorldExt,world::Builder}};
 use seija::assets::{TextuteLoaderInfo};
 use crate::{tests::IGameTest, core::create_image};
 use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
-use seija::s2d::layout2::{LayoutView,LayoutHandle,StackLayout,LayoutAlignment,Thickness};
+use seija::s2d::layout2::{View,Stack,LayoutAlignment,Thickness};
 use seija::math::{Vector3};
 #[derive(Default)]
 pub struct LayoutTest {
@@ -19,28 +19,32 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     let mut img_render = ImageRender::new(Some(tex));
     trans.set_position(Vector3::new(0f32,0f32,0f32));
     img_render.set_color(0.5f32, 0.5f32, 0.5f32, 1f32);
-    let mut view = LayoutView::default();
-    view.margin = Thickness::new1(50f64);
-    let mut stack = StackLayout::default();
-    stack.specing = 10f32;
-    world.create_entity()
+    let mut stack = Stack::default();
+    stack.spacing = 10f32;
+    stack.view.margin = Thickness::new1(10f64);
+    
+     
+    let  e = world.create_entity()
          .with(trans)
          .with(Rect2D::new(w, h, [0.5f32,0.5f32]))
          .with(img_render)
          .with(Mesh2D::default())
-         .with(stack)
-         .with(view)
-         .build()
+         .with(LayoutElement::StackLayout(stack))
+         .build();
+    
+    e
 }
 
 fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
     let c0 = create_image(world, img.clone(), 70f32, 70f32, 0f32, 0f32, 0f32, 0);
     {
-        let mut views = world.write_storage::<LayoutView>();
-        let mut view = LayoutView::default();
+        let mut views = world.write_storage::<LayoutElement>();
+        let mut view = View::default();
         view.hor = LayoutAlignment::Fill;
-        view.ver = LayoutAlignment::Start;
-        views.insert(c0, view).unwrap();
+        view.ver = LayoutAlignment::Fill;
+        view.size.x = 50f64;
+        
+        views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
     }
     Tree::add(world, c0, Some(parent));
 }
@@ -58,7 +62,7 @@ impl IGameTest for LayoutTest {
         let root0 = create_stack(world,white.clone(),640f32,480f32);
         Tree::add(world, root0, None);
        
-        for _ in 0..12 {
+        for _ in 0..3 {
             add_img(root0, b_jpg.clone(), world);
         }
         
