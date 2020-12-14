@@ -1,4 +1,4 @@
-use nalgebra::Vector2;
+use nalgebra::{Vector2,Vector3};
 use specs::{WorldExt};
 use shred::{DispatcherBuilder, World};
 
@@ -14,7 +14,7 @@ pub use stack::{Stack};
 pub use view::{View};
 pub use types::{LayoutAlignment,Thickness};
 
-use crate::{common::{Rect2D, TreeNode}, window::ViewPortSize};
+use crate::{common::{Rect2D, Transform, TreeNode}, window::ViewPortSize};
 
 pub fn init_layout_system(world:&mut World,builder:&mut DispatcherBuilder<'static,'static>) {
     world.register::<LayoutElement>();
@@ -30,7 +30,9 @@ pub trait IView {
   fn arrange(&self,entity:Entity, size:Vector2<f64>
         ,rects:&mut WriteStorage<Rect2D>
         ,tree_nodes:&ReadStorage<TreeNode>
-        ,elems:&WriteStorage<LayoutElement>);
+        ,elems:&WriteStorage<LayoutElement>
+        ,trans:&mut WriteStorage<Transform>
+        ,origin:Vector3<f32>);
 }
 
 pub enum LayoutElement {
@@ -60,13 +62,15 @@ impl IView for LayoutElement {
     fn arrange(&self, entity:Entity, size:Vector2<f64>
                     , rects:&mut WriteStorage<Rect2D>
                     , tree_nodes:&ReadStorage<TreeNode>
-                    , elems:&WriteStorage<LayoutElement>) {
+                    , elems:&WriteStorage<LayoutElement>
+                    , trans:&mut WriteStorage<Transform>
+                    , origin:Vector3<f32>) {
        match self {
             LayoutElement::ViewUnit(v) => {
-                v.arrange(entity,size, rects,tree_nodes,elems)
+                v.arrange(entity,size, rects,tree_nodes,elems,trans,origin)
             },
             LayoutElement::StackLayout(stack) => {
-                stack.arrange(entity,size, rects,tree_nodes,elems)
+                stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin)
             }
         } 
     }
@@ -77,11 +81,30 @@ impl LayoutElement {
     fn update_layout(&self,entity:Entity,tree_nodes:&ReadStorage<TreeNode>
                               ,rects:&mut WriteStorage<Rect2D>
                               ,elems:&WriteStorage<LayoutElement>
-                              ,view_size:&ViewPortSize) {
+                              ,view_size:&ViewPortSize
+                              ,trans:&mut WriteStorage<Transform>
+                              ) {
         let size:Vector2<f64> = self.size_request(entity,tree_nodes, rects,elems,view_size);
        
         self.measure(entity,size, rects,tree_nodes,elems);
-        self.arrange(entity, size, rects, tree_nodes, elems);
+        let origin = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
+        self.arrange(entity, size, rects, tree_nodes, elems,trans,origin);
+    }
+
+    fn origin_request(entity:Entity
+                      ,tree_nodes:&ReadStorage<TreeNode>
+                      ,view_size:&ViewPortSize
+                      ,rects:&WriteStorage<Rect2D>) -> Vector3<f32> {
+        let parent = tree_nodes.get(entity).and_then(|t| t.parent);
+        if let Some(p) = parent {
+            let rect = rects.get(p).unwrap();
+            Vector3::new(rect.left(),rect.top(),0f32)
+        } else {
+            let w = view_size.width() as f32;
+            let h = view_size.height() as f32;
+            Vector3::new(-w * 0.5f32,h * 0.5f32,0f32)
+        }
+        
     }
     
     fn size_request(&self,entity:Entity

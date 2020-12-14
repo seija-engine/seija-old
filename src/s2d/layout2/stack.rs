@@ -1,7 +1,7 @@
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
-use crate::common::{Rect2D, TreeNode};
-use nalgebra::Vector2;
-use super::{IView, LayoutElement, View};
+use crate::common::{Rect2D, Transform, TreeNode};
+use nalgebra::{Vector2,Vector3};
+use super::{IView, LayoutElement, View,LayoutAlignment};
 
 impl Component for Stack {
     type Storage = DenseVecStorage<Stack>;
@@ -66,8 +66,55 @@ impl IView for Stack {
    fn arrange(&self, entity:Entity, size:Vector2<f64>
     , rects:&mut WriteStorage<Rect2D>
     , tree_nodes:&ReadStorage<TreeNode>
-    , elems:&WriteStorage<LayoutElement>) {
-
+    , elems:&WriteStorage<LayoutElement>
+    , trans:&mut WriteStorage<Transform>
+    , origin:Vector3<f32>) {
+       self.view.arrange(entity, size, rects, tree_nodes, elems, trans, origin);
+       let child_origin = self.view.calc_orign(entity, rects);
+       let (width,height) = {
+           let rect = rects.get(entity).unwrap();
+           (rect.width,rect.height)
+       };
+       let m_child = tree_nodes.get(entity).map(|v| &v.children);
+       let mut add_number = 0f32;
+       if let Some(child) = m_child {
+         for centity in child {
+            if let Some(elem) = elems.get(*centity) {
+                let mut new_pos:Vector3<f32> = Vector3::default();
+                let (child_width,child_height) = {
+                    let rect = rects.get(*centity).unwrap();
+                    (rect.width,rect.height)
+                };
+                match self.orientation {
+                    Orientation::Horizontal => {
+                        new_pos.x = add_number;
+                        match elem.fview(|v| v.ver) {
+                            LayoutAlignment::Start => new_pos.y = 0f32,
+                            LayoutAlignment::Center => {
+                                new_pos.y = -height * 0.5f32 + child_height * 0.5f32;
+                            },
+                            LayoutAlignment::End => {
+                                new_pos.y = -height + child_height;
+                            },
+                            LayoutAlignment::Fill => new_pos.y = 0f32,
+                        }
+                        elem.fview(|v| *v.pos.write().unwrap() = new_pos);
+                        println!("new pos: {:?}",new_pos);
+                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
+                        add_number += child_width;
+                    },
+                    Orientation::Vertical => {
+                        new_pos.y = add_number;
+                        elem.fview(|v| *v.pos.write().unwrap() = new_pos);
+                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
+                        add_number += child_height;
+                    }
+                }
+                add_number += self.spacing;
+            }
+         }
+       }
+        
    }
 }
 /*

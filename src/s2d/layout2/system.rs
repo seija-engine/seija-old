@@ -2,7 +2,7 @@ use crate::{common::{Rect2D, Transform, Tree, TreeEvent, TreeNode}, window::View
 use hibitset::BitSet;
 use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
-use nalgebra::Vector2;
+use nalgebra::{Vector2,Vector3};
 
 use super::{IView, LayoutElement, Stack};
 /*
@@ -96,7 +96,7 @@ impl<'a> System<'a> for LayoutSystem {
            let cur_entity = ldata.0.entity(eid);
            let elem = ldata.3.get(cur_entity).unwrap();
           
-           elem.update_layout(cur_entity,&ldata.2,&mut ldata.5,&ldata.3,&ldata.4);  
+           elem.update_layout(cur_entity,&ldata.2,&mut ldata.5,&ldata.3,&ldata.4,&mut ldata.6);  
        }
     }
 }

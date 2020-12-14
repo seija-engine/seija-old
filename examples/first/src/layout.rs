@@ -40,10 +40,10 @@ fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
     {
         let mut views = world.write_storage::<LayoutElement>();
         let mut view = View::default();
-        view.hor = LayoutAlignment::Fill;
+        view.hor = LayoutAlignment::Center;
         view.ver = LayoutAlignment::Fill;
         view.size.x = 50f64;
-        
+        //view.size.y = 50f64;
         views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
     }
     Tree::add(world, c0, Some(parent));
