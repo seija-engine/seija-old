@@ -80,7 +80,7 @@ impl IView for View {
             origin.y - offset_h + y,
             origin.z
         );
-        println!("x:{} y:{} vec:{:?}",x,y,new_pos);
+        
         trans.get_mut(entity).unwrap().set_position(new_pos);
     }
 }

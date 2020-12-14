@@ -4,7 +4,7 @@ use crate::{tests::IGameTest, core::create_image};
 use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
-use seija::s2d::layout2::{View,Stack,LayoutAlignment,Thickness};
+use seija::s2d::layout2::{Orientation,View,Stack,LayoutAlignment,Thickness};
 use seija::math::{Vector3};
 #[derive(Default)]
 pub struct LayoutTest {
@@ -22,7 +22,7 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     let mut stack = Stack::default();
     stack.spacing = 10f32;
     stack.view.margin = Thickness::new1(10f64);
-    
+    stack.orientation = Orientation::Horizontal;
      
     let  e = world.create_entity()
          .with(trans)
@@ -40,10 +40,10 @@ fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
     {
         let mut views = world.write_storage::<LayoutElement>();
         let mut view = View::default();
-        view.hor = LayoutAlignment::Center;
+        view.hor = LayoutAlignment::Fill;
         view.ver = LayoutAlignment::Fill;
         view.size.x = 50f64;
-        //view.size.y = 50f64;
+        view.size.y = 50f64;
         views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
     }
     Tree::add(world, c0, Some(parent));

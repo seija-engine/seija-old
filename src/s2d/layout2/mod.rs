@@ -10,7 +10,7 @@ pub mod system;
 
 use specs::{Entity,Component, DenseVecStorage, ReadStorage, WriteStorage};
 pub use system::LayoutData;
-pub use stack::{Stack};
+pub use stack::{Stack,Orientation};
 pub use view::{View};
 pub use types::{LayoutAlignment,Thickness};
 

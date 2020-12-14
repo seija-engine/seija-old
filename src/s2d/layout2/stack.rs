@@ -80,11 +80,11 @@ impl IView for Stack {
        if let Some(child) = m_child {
          for centity in child {
             if let Some(elem) = elems.get(*centity) {
-                let mut new_pos:Vector3<f32> = Vector3::default();
                 let (child_width,child_height) = {
                     let rect = rects.get(*centity).unwrap();
                     (rect.width,rect.height)
                 };
+                let mut new_pos:Vector3<f32> = Vector3::default();
                 match self.orientation {
                     Orientation::Horizontal => {
                         new_pos.x = add_number;
@@ -96,21 +96,44 @@ impl IView for Stack {
                             LayoutAlignment::End => {
                                 new_pos.y = -height + child_height;
                             },
-                            LayoutAlignment::Fill => new_pos.y = 0f32,
+                            LayoutAlignment::Fill => {
+                                new_pos.y = 0f32;
+                                rects.get_mut(*centity).map(|v| {
+                                    v.height = height;
+                                });
+                            },
                         }
                         elem.fview(|v| *v.pos.write().unwrap() = new_pos);
-                        println!("new pos: {:?}",new_pos);
+                        
                         elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
                         add_number += child_width;
+                        add_number += self.spacing;
                     },
                     Orientation::Vertical => {
                         new_pos.y = add_number;
+                        match elem.fview(|v| v.hor) {
+                            LayoutAlignment::Start => new_pos.x = 0f32,
+                            LayoutAlignment::Center => {
+                                new_pos.x = width * 0.5f32 - (child_width * 0.5f32);
+                            },
+                            LayoutAlignment::End => {
+                                new_pos.x = width - child_height;
+                            },
+                            LayoutAlignment::Fill => {
+                                new_pos.x = 0f32;
+                                rects.get_mut(*centity).map(|v| {
+                                    v.width = width;
+                                });
+                            },
+                        }
+                        
                         elem.fview(|v| *v.pos.write().unwrap() = new_pos);
                         elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
-                        add_number += child_height;
+                        add_number -= child_height;
+                        add_number -= self.spacing;
                     }
                 }
-                add_number += self.spacing;
+                
             }
          }
        }
