@@ -21,7 +21,8 @@ impl Default for Orientation {
 pub struct Stack {
    pub view:View,
    pub orientation: Orientation,
-   pub spacing:f32
+   pub spacing:f32,
+   pub over_hide:bool
 }
 
 impl IView for Stack {
@@ -29,14 +30,20 @@ impl IView for Stack {
               ,rects:&mut WriteStorage<Rect2D>
               ,tree_nodes:&ReadStorage<TreeNode>
               ,elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
+       let mut ret_size:Vector2<f64> = size;
        let content_size:Vector2<f64> = self.view.calc_content_size(size);
        rects.get_mut(entity).map(|rect| {
               rect.width = content_size.x as f32;
               rect.height = content_size.y as f32;
        });
+       
        let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                   content_size.y - self.view.padding.vertical());
        let m_child = tree_nodes.get(entity).map(|v| &v.children);
+       match self.orientation {
+           Orientation::Horizontal => ret_size.x = 0f64,
+           Orientation::Vertical => ret_size.y = 0f64
+       }
        if let Some(child) = m_child {
            for centity in child {
                if let Some(elem) = elems.get(*centity) {
@@ -47,20 +54,28 @@ impl IView for Stack {
                            if csize.x > inner_size.x {
                                csize.x = inner_size.x;
                            }
-                           elem.measure(*centity, csize, rects, tree_nodes, elems);
+                           let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems);
+                           ret_size.x += msize.x;
+                           ret_size.x += self.spacing as f64;
                        },
                        Orientation::Vertical => {
                             csize.x = inner_size.x;
                             if csize.y > inner_size.y {
                                 csize.y = inner_size.y;
                             }
-                            elem.measure(*centity, csize, rects, tree_nodes, elems);
+                            let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems);
+                            ret_size.y += msize.y;
+                            ret_size.y += self.spacing as f64;
                        }
                    }
                }
            }
        }
-       size
+       if self.over_hide {
+           size
+       } else {
+           ret_size
+       }
    }
 
    fn arrange(&self, entity:Entity, size:Vector2<f64>
