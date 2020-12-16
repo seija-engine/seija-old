@@ -1,7 +1,7 @@
 use crate::common::{Rect2D, Transform, TreeNode};
 use std::sync::RwLock;
 use std::cell::Cell;
-use super::{IView, LayoutElement, types::{Thickness,LayoutAlignment}};
+use super::{IView, GridCell,LayoutElement, types::{Thickness,LayoutAlignment}};
 use nalgebra::{Vector2,Vector3};
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 
@@ -50,7 +50,8 @@ impl IView for View {
     fn measure(&self,entity:Entity, size:Vector2<f64>
                ,rects:&mut WriteStorage<Rect2D>
                ,_tree_nodes:&ReadStorage<TreeNode>
-               ,_elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
+               ,_elems:&WriteStorage<LayoutElement>
+               ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
       let content_size:Vector2<f64> = self.calc_content_size(size);
       
       rects.get_mut(entity).map(|rect| {

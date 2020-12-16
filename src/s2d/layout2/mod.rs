@@ -12,13 +12,14 @@ use specs::{Entity,Component, DenseVecStorage, ReadStorage, WriteStorage};
 pub use system::LayoutData;
 pub use stack::{Stack,Orientation};
 pub use view::{View};
-pub use types::{LayoutAlignment,Thickness};
-pub use grid::Grid;
+pub use types::{LayoutAlignment,Thickness,LNumber};
+pub use grid::{Grid,GridCell};
 
 use crate::{common::{Rect2D, Transform, TreeNode}, window::ViewPortSize};
 
 pub fn init_layout_system(world:&mut World,builder:&mut DispatcherBuilder<'static,'static>) {
     world.register::<LayoutElement>();
+    world.register::<GridCell>();
     let layout_system = system::LayoutSystem::new(world);
     builder.add(layout_system, "layout", &[]);
 }
@@ -27,7 +28,8 @@ pub trait IView {
   fn measure(&self,entity:Entity,size:Vector2<f64>
              ,rects:&mut WriteStorage<Rect2D>
              ,tree_nodes:&ReadStorage<TreeNode>
-             ,elems:&WriteStorage<LayoutElement>) -> Vector2<f64>;
+             ,elems:&WriteStorage<LayoutElement>
+             ,cells:&ReadStorage<GridCell>) -> Vector2<f64>;
   fn arrange(&self,entity:Entity, size:Vector2<f64>
         ,rects:&mut WriteStorage<Rect2D>
         ,tree_nodes:&ReadStorage<TreeNode>
@@ -50,11 +52,12 @@ impl IView for LayoutElement {
     fn measure(&self,entity:Entity, size:Vector2<f64>
                ,rects:&mut WriteStorage<Rect2D>
                ,tree_nodes:&ReadStorage<TreeNode>
-               ,elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
+               ,elems:&WriteStorage<LayoutElement>
+               ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
         match self {
-            LayoutElement::ViewUnit(v) => v.measure(entity,size, rects,tree_nodes,elems),
-            LayoutElement::StackLayout(stack) => stack.measure(entity,size, rects,tree_nodes,elems),
-            LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems)
+            LayoutElement::ViewUnit(v) => v.measure(entity,size, rects,tree_nodes,elems,cells),
+            LayoutElement::StackLayout(stack) => stack.measure(entity,size, rects,tree_nodes,elems,cells),
+            LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems,cells)
         }
     }
     
@@ -79,10 +82,11 @@ impl LayoutElement {
                               ,elems:&WriteStorage<LayoutElement>
                               ,view_size:&ViewPortSize
                               ,trans:&mut WriteStorage<Transform>
+                              ,cells:&ReadStorage<GridCell>
                               ) {
         let size:Vector2<f64> = self.size_request(entity,tree_nodes, rects,elems,view_size);
        
-        self.measure(entity,size, rects,tree_nodes,elems);
+        self.measure(entity,size, rects,tree_nodes,elems,cells);
         let origin = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
         self.arrange(entity, size, rects, tree_nodes, elems,trans,origin);
     }

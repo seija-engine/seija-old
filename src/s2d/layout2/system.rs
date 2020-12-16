@@ -4,7 +4,7 @@ use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
 use nalgebra::{Vector2,Vector3};
 
-use super::{IView, LayoutElement, Stack};
+use super::{GridCell, IView, LayoutElement, Stack};
 /*
     root0 (LayoutView,StackPanel)
       img0 (LayoutView)
@@ -69,7 +69,8 @@ pub type LayoutData<'a> = (
     WriteStorage<'a,LayoutElement>,
     ReadExpect<'a,ViewPortSize>,
     WriteStorage<'a,Rect2D>,
-    WriteStorage<'a,Transform>);
+    WriteStorage<'a,Transform>,
+    ReadStorage<'a,GridCell>);
 
 
 impl<'a> System<'a> for LayoutSystem {
@@ -96,7 +97,12 @@ impl<'a> System<'a> for LayoutSystem {
            let cur_entity = ldata.0.entity(eid);
            let elem = ldata.3.get(cur_entity).unwrap();
           
-           elem.update_layout(cur_entity,&ldata.2,&mut ldata.5,&ldata.3,&ldata.4,&mut ldata.6);  
+           elem.update_layout(cur_entity,&ldata.2
+                              ,&mut ldata.5
+                              ,&ldata.3
+                              ,&ldata.4
+                              ,&mut ldata.6
+                              ,&ldata.7);  
        }
     }
 }

@@ -67,3 +67,8 @@ impl Into<u32> for LayoutAlignment {
 impl LayoutAlignment {
     pub fn u32(self) -> u32 {self as u32 }
 }
+
+pub enum LNumber {
+    Const(f32),
+    Rate(f32)
+}

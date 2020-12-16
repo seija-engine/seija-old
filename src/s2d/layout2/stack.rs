@@ -1,7 +1,7 @@
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 use crate::common::{Rect2D, Transform, TreeNode};
 use nalgebra::{Vector2,Vector3};
-use super::{IView, LayoutElement, View,LayoutAlignment};
+use super::{IView, LayoutElement, View,LayoutAlignment,GridCell};
 
 impl Component for Stack {
     type Storage = DenseVecStorage<Stack>;
@@ -29,7 +29,8 @@ impl IView for Stack {
    fn measure(&self,entity:Entity, size:Vector2<f64>
               ,rects:&mut WriteStorage<Rect2D>
               ,tree_nodes:&ReadStorage<TreeNode>
-              ,elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
+              ,elems:&WriteStorage<LayoutElement>
+              ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
        let mut ret_size:Vector2<f64> = size;
        let content_size:Vector2<f64> = self.view.calc_content_size(size);
        rects.get_mut(entity).map(|rect| {
@@ -54,7 +55,7 @@ impl IView for Stack {
                            if csize.x > inner_size.x {
                                csize.x = inner_size.x;
                            }
-                           let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems);
+                           let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems,cells);
                            ret_size.x += msize.x;
                            ret_size.x += self.spacing as f64;
                        },
@@ -63,7 +64,7 @@ impl IView for Stack {
                             if csize.y > inner_size.y {
                                 csize.y = inner_size.y;
                             }
-                            let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems);
+                            let msize:Vector2<f64> = elem.measure(*centity, csize, rects, tree_nodes, elems,cells);
                             ret_size.y += msize.y;
                             ret_size.y += self.spacing as f64;
                        }
