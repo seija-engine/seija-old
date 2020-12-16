@@ -4,7 +4,7 @@ use crate::{tests::IGameTest, core::create_image};
 use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
-use seija::s2d::layout2::{Orientation,View,Stack,LayoutAlignment,Thickness};
+use seija::s2d::layout2::{Orientation,Grid,GridCell,View,Stack,LayoutAlignment,Thickness};
 use seija::math::{Vector3,Vector2};
 #[derive(Default)]
 pub struct LayoutTest {
@@ -35,7 +35,28 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     e
 }
 
-fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
+fn create_grid(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
+    let mut trans = Transform::default();
+    let mut img_render = ImageRender::new(Some(tex));
+    img_render.set_color(0.5f32, 0.5f32, 0.5f32, 1f32);
+    let mut gird = Grid {
+        view:View::default(),
+        cols:vec![],
+        rows:vec![]
+    };
+    gird.view.hor = LayoutAlignment::Fill;
+    gird.view.ver = LayoutAlignment::Fill;
+    //gird.view.margin = Thickness::new1(10f64);
+    world.create_entity()
+         .with(trans)
+         .with(Rect2D::new(w, h, [0.5f32,0.5f32]))
+         .with(img_render)
+         .with(Mesh2D::default())
+         .with(LayoutElement::GridLayout(gird))
+         .build()
+}
+
+fn add_img(img:Handle<Texture>, world:&mut World) -> Entity {
     let c0 = create_image(world, img.clone(), 70f32, 70f32, 0f32, 0f32, 0f32, 0);
     {
         let mut views = world.write_storage::<LayoutElement>();
@@ -46,7 +67,42 @@ fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
        
         views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
     }
-    Tree::add(world, c0, Some(parent));
+    c0
+}
+
+impl LayoutTest {
+    pub fn test_stack(&mut self, world:&mut World,white:Handle<Texture>,b_jpg:Handle<Texture>) {
+        let root0 = create_stack(world,white.clone(),640f32,480f32);
+        Tree::add(world, root0, None);
+       
+        for _ in 0..3 {
+            let e = add_img( b_jpg.clone(), world);
+            Tree::add(world, e, Some(root0));
+        }
+    }
+
+    pub fn test_grid(&mut self, world:&mut World,white:Handle<Texture>,b_jpg:Handle<Texture>) {
+        let root = create_grid(world, white.clone(),100f32,100f32);
+        Tree::add(world, root, None);
+
+        let img0 = add_img( b_jpg.clone(), world);
+        world.write_storage::<GridCell>().insert(img0, GridCell::new(0, 0, 0, 0)).unwrap();
+        Tree::add(world, img0, Some(root));
+
+        let img1 = add_img( b_jpg.clone(), world);
+        world.write_storage::<GridCell>().insert(img1, GridCell::new(0, 1, 0, 0)).unwrap();
+        Tree::add(world, img1, Some(root));
+
+        let img2 = add_img( b_jpg.clone(), world);
+        world.write_storage::<GridCell>().insert(img2, GridCell::new(1, 0, 0, 0)).unwrap();
+        Tree::add(world, img2, Some(root));
+
+        let img3 = add_img( b_jpg.clone(), world);
+        world.write_storage::<GridCell>().insert(img3, GridCell::new(1, 1, 0, 0)).unwrap();
+        Tree::add(world, img3, Some(root));
+    }
+
+    
 }
 
 impl IGameTest for LayoutTest {
@@ -58,47 +114,11 @@ impl IGameTest for LayoutTest {
             (b,w)
         };
         
-      
-        let root0 = create_stack(world,white.clone(),640f32,480f32);
-        Tree::add(world, root0, None);
+        self.test_grid(world, white, b_jpg)
        
-        for _ in 0..3 {
-            add_img(root0, b_jpg.clone(), world);
-        }
-        
-       
-       
-
-        self.root = Some(root0);
-        /*
-        let stack_entity = create_stack(world,white.clone());
-        let img01 = create_image(world, b_jpg, 200f32, 200f32, 0f32, 0f32, 0f32, 0, Some(stack_entity));
-        let handle = {
-            let mut view_storage = world.write_storage::<LayoutView>();
-            let mut img_view = LayoutView::default();
-            img_view.hor = LayoutAlignment::Fill;
-            img_view.ver = LayoutAlignment::Start;
-            img_view.margin = Thickness::new1(20f64);
-            view_storage.insert(img01, img_view).unwrap();
-            LayoutHandle::new(img01,LayoutType::View)
-        };
-
-        stack_add_child(world,stack_entity,handle);
-        self.stack_entity = Some(stack_entity);
-        self.img01 = Some(img01);
-
-        self.root = Some(world.create_entity().build());
-        dbg!(&self.stack_entity);
-        dbg!(&self.root);*/
     }
 
     fn update(&mut self, world:&mut World) {
-        if self.index == 50 {
-          
-        }
-
-        if self.index < 100 {
-            self.index +=1
-        }
+       
     }
 }

@@ -5,8 +5,9 @@ use crate::common::{Rect2D,TreeNode,Transform};
 use crate::s2d::layout2::{LayoutElement};
 pub struct Grid {
    pub view:View,
-   pub cols:Vec<LNumber>,
    pub rows:Vec<LNumber>,
+   pub cols:Vec<LNumber>,
+   
 }
 
 pub struct GridCell { 
@@ -25,7 +26,13 @@ impl Component for GridCell {
     type Storage = DenseVecStorage<GridCell>;
 }
 
-
+impl Grid {
+    fn calc_size(&self,max:f32,lst:&Vec<LNumber>) -> Vec<f32> {
+        let ret_list = Vec::with_capacity(lst.len());
+        
+        ret_list
+    }
+}
 
 impl IView for Grid {
     fn measure(&self,entity:Entity 
@@ -37,10 +44,7 @@ impl IView for Grid {
         let content_size:Vector2<f64> = self.view.measure(entity, size, rects, tree_nodes, elems,cells);
         let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                    content_size.y - self.view.padding.vertical());
-        let mut cols_size:Vec<f32> = vec![];
-        for ln in self.cols.iter() {
-
-        }
+        
         let m_childs = tree_nodes.get(entity).map(|v| &v.children);
         if let Some(childs) = m_childs {
             for child_entity in childs {
@@ -48,7 +52,7 @@ impl IView for Grid {
                }
             }
         }
-        todo!()
+        size
     }
 
     fn arrange(&self,entity:Entity
@@ -57,6 +61,6 @@ impl IView for Grid {
                     ,tree_nodes:&ReadStorage<TreeNode>
                     ,elems:&WriteStorage<LayoutElement>
                     ,trans:&mut WriteStorage<Transform>, origin:Vector3<f32>) {
-        todo!()
+       
     }
 }
