@@ -47,7 +47,7 @@ impl IView for Stack {
        if let Some(child) = m_child {
            for centity in child {
                if let Some(elem) = elems.get(*centity) {
-                   let mut csize:Vector2<f64> = elem.fview(|v| v.size);
+                   let mut csize:Vector2<f64> = elem.fview(|v| v.size.get());
                    match self.orientation {
                        Orientation::Horizontal => {
                            csize.y = inner_size.y;

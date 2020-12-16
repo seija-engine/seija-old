@@ -2,7 +2,7 @@ use nalgebra::{Vector2,Vector3};
 use specs::{WorldExt};
 use shred::{DispatcherBuilder, World};
 
-
+mod grid;
 pub mod types;
 pub mod view;
 pub mod stack;
@@ -13,6 +13,7 @@ pub use system::LayoutData;
 pub use stack::{Stack,Orientation};
 pub use view::{View};
 pub use types::{LayoutAlignment,Thickness};
+pub use grid::Grid;
 
 use crate::{common::{Rect2D, Transform, TreeNode}, window::ViewPortSize};
 
@@ -37,7 +38,8 @@ pub trait IView {
 
 pub enum LayoutElement {
     ViewUnit(View),
-    StackLayout(Stack)
+    StackLayout(Stack),
+    GridLayout(Grid)
 }
 
 impl Component for LayoutElement {
@@ -50,12 +52,9 @@ impl IView for LayoutElement {
                ,tree_nodes:&ReadStorage<TreeNode>
                ,elems:&WriteStorage<LayoutElement>) -> Vector2<f64> {
         match self {
-            LayoutElement::ViewUnit(v) => {
-                v.measure(entity,size, rects,tree_nodes,elems)
-            },
-            LayoutElement::StackLayout(stack) => {
-                stack.measure(entity,size, rects,tree_nodes,elems)
-            }
+            LayoutElement::ViewUnit(v) => v.measure(entity,size, rects,tree_nodes,elems),
+            LayoutElement::StackLayout(stack) => stack.measure(entity,size, rects,tree_nodes,elems),
+            LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems)
         }
     }
     
@@ -66,12 +65,9 @@ impl IView for LayoutElement {
                     , trans:&mut WriteStorage<Transform>
                     , origin:Vector3<f32>) {
        match self {
-            LayoutElement::ViewUnit(v) => {
-                v.arrange(entity,size, rects,tree_nodes,elems,trans,origin)
-            },
-            LayoutElement::StackLayout(stack) => {
-                stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin)
-            }
+            LayoutElement::ViewUnit(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin),
+            LayoutElement::StackLayout(stack) => stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin),
+            LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin)
         } 
     }
     
@@ -112,7 +108,7 @@ impl LayoutElement {
                          ,rects:&WriteStorage<Rect2D>
                          ,elems:&WriteStorage<LayoutElement>
                          ,view_size:&ViewPortSize)  -> Vector2<f64> {
-        let fsize:Vector2<f64> = self.fview(|v| v.size);
+        let fsize:Vector2<f64> = self.fview(|v| v.size.get());
         if fsize.magnitude() > 0f64 {
             return fsize;
         }
@@ -132,12 +128,9 @@ impl LayoutElement {
 
     fn fview<F,R>(&self,f:F) -> R where F:Fn(&View) -> R {
         match self {
-            LayoutElement::ViewUnit(view) => {
-              f(view) 
-            },
-            LayoutElement::StackLayout(stack) => {
-               f(&stack.view)
-            }
+            LayoutElement::ViewUnit(view) => f(view) ,
+            LayoutElement::StackLayout(stack) => f(&stack.view),
+            LayoutElement::GridLayout(grid) => f(&grid.view)
         }
     }
 }

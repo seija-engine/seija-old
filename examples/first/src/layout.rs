@@ -5,7 +5,7 @@ use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
 use seija::s2d::layout2::{Orientation,View,Stack,LayoutAlignment,Thickness};
-use seija::math::{Vector3};
+use seija::math::{Vector3,Vector2};
 #[derive(Default)]
 pub struct LayoutTest {
     root:Option<Entity>,
@@ -42,8 +42,8 @@ fn add_img(parent:Entity,img:Handle<Texture>, world:&mut World) {
         let mut view = View::default();
         view.hor = LayoutAlignment::Fill;
         view.ver = LayoutAlignment::Fill;
-        view.size.x = 50f64;
-        view.size.y = 50f64;
+        view.size.set(Vector2::new(50f64,50f64));
+       
         views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
     }
     Tree::add(world, c0, Some(parent));

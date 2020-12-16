@@ -1,5 +1,6 @@
 use crate::common::{Rect2D, Transform, TreeNode};
 use std::sync::RwLock;
+use std::cell::Cell;
 use super::{IView, LayoutElement, types::{Thickness,LayoutAlignment}};
 use nalgebra::{Vector2,Vector3};
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
@@ -7,14 +8,14 @@ use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 #[derive(Default)]
 pub struct View {
     pub pos:RwLock<Vector3<f32>>,
-    pub entity:Option<Entity>,
-    pub size:Vector2<f64>,
+    pub size:Cell<Vector2<f64>>,
     pub margin:Thickness,
     pub padding:Thickness,
     pub hor:LayoutAlignment,
-    pub ver:LayoutAlignment,
-    
+    pub ver:LayoutAlignment,   
 }
+
+unsafe impl Sync for View {}
 
 impl Component for View {
     type Storage = DenseVecStorage<View>;
@@ -22,11 +23,11 @@ impl Component for View {
 
 impl View {
     pub fn calc_size(&self,size:Vector2<f64>) -> Vector2<f64> {
-        let mut ret_size:Vector2<f64> = self.size;
-        if self.size.x <= 0f64 && self.hor == LayoutAlignment::Fill {
+        let mut ret_size:Vector2<f64> = self.size.get();
+        if ret_size.x <= 0f64 && self.hor == LayoutAlignment::Fill {
             ret_size.x = size.x;
         }
-        if self.size.y <= 0f64 && self.ver == LayoutAlignment::Fill {
+        if ret_size.y <= 0f64 && self.ver == LayoutAlignment::Fill {
             ret_size.y = size.y;
         }
         ret_size
