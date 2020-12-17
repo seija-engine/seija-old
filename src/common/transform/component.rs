@@ -74,6 +74,9 @@ impl<'a> System<'a> for TransformSystem {
                 },
                 TreeEvent::Remove(_,entity) => {
                     self.local_modified.remove(entity.id());
+                },
+                TreeEvent::Update(_,_,entity) => {
+                    self.local_modified.remove(entity.id());
                 }
             }
         }

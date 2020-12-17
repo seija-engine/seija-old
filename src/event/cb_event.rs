@@ -92,7 +92,8 @@ impl CABEventRoot {
         if rect.test(t, pos) == false {
             return false;
         }
-        let children = &tree_nodes.get(e).unwrap().children;
+        let zero_vec:Vec<Entity> = vec![];
+        let children:&Vec<Entity> = &tree_nodes.get(e).map(|t| &t.children).unwrap_or(&zero_vec);
         let is_last = children.len() == 0;
         let mut ev_join = ev_storage.join();
         let may_ev_node = ev_join.get_unchecked(e.id());
@@ -148,7 +149,7 @@ impl CABEventRoot {
                 return;
             }
         };
-        let mut may_parent = tree_nodes.get(e).unwrap().parent;
+        let mut may_parent = tree_nodes.get(e).and_then(|p| p.parent);
         while may_parent.is_some() {
             let parent = may_parent.unwrap();
             if let Some(ev_node) = ev_join.get_unchecked(parent.id()) {
