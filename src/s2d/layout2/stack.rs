@@ -84,8 +84,9 @@ impl IView for Stack {
     , tree_nodes:&ReadStorage<TreeNode>
     , elems:&WriteStorage<LayoutElement>
     , trans:&mut WriteStorage<Transform>
-    , origin:Vector3<f32>) {
-       self.view.arrange(entity, size, rects, tree_nodes, elems, trans, origin);
+    , origin:Vector3<f32>
+    , cells:&ReadStorage<GridCell>) {
+       self.view.arrange(entity, size, rects, tree_nodes, elems, trans, origin,cells);
        let child_origin = self.view.calc_orign(entity, rects);
        let (width,height) = {
            let rect = rects.get(entity).unwrap();
@@ -119,9 +120,9 @@ impl IView for Stack {
                                 });
                             },
                         }
-                        elem.fview(|v| *v.pos.write().unwrap() = new_pos);
+                        elem.fview(|v| v.pos.set(new_pos));
                         
-                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
+                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin,cells);
                         add_number += child_width;
                         add_number += self.spacing;
                     },
@@ -143,8 +144,8 @@ impl IView for Stack {
                             },
                         }
                         
-                        elem.fview(|v| *v.pos.write().unwrap() = new_pos);
-                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin);
+                        elem.fview(|v| v.pos.set(new_pos));
+                        elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin,cells);
                         add_number -= child_height;
                         add_number -= self.spacing;
                     }

@@ -35,7 +35,8 @@ pub trait IView {
         ,tree_nodes:&ReadStorage<TreeNode>
         ,elems:&WriteStorage<LayoutElement>
         ,trans:&mut WriteStorage<Transform>
-        ,origin:Vector3<f32>);
+        ,origin:Vector3<f32>
+        ,cells:&ReadStorage<GridCell>);
 }
 
 pub enum LayoutElement {
@@ -66,11 +67,12 @@ impl IView for LayoutElement {
                     , tree_nodes:&ReadStorage<TreeNode>
                     , elems:&WriteStorage<LayoutElement>
                     , trans:&mut WriteStorage<Transform>
-                    , origin:Vector3<f32>) {
+                    , origin:Vector3<f32>
+                    , cells:&ReadStorage<GridCell>) {
        match self {
-            LayoutElement::ViewUnit(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin),
-            LayoutElement::StackLayout(stack) => stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin),
-            LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin)
+            LayoutElement::ViewUnit(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
+            LayoutElement::StackLayout(stack) => stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
+            LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin,cells)
         } 
     }
     
@@ -88,7 +90,7 @@ impl LayoutElement {
        
         self.measure(entity,size, rects,tree_nodes,elems,cells);
         let origin = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
-        self.arrange(entity, size, rects, tree_nodes, elems,trans,origin);
+        self.arrange(entity, size, rects, tree_nodes, elems,trans,origin,cells);
     }
 
     fn origin_request(entity:Entity

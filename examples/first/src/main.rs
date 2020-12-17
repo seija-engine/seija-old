@@ -75,7 +75,7 @@ fn main() {
     let mut s2d = Simple2d::new();
     s2d.with_window(|wb| {
         wb.window.title = String::from("Seija Runing");
-        wb.window.inner_size = Some(Size::Logical(LogicalSize::new(1024f64,768f64)))
+        wb.window.inner_size = Some(Size::Logical(LogicalSize::new(320f64,240f64)))
        
     });
     s2d.with_bg_color([0.0f32,0.0f32,0.0f32,1f32]);

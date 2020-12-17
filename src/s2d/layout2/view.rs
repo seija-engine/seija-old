@@ -7,7 +7,7 @@ use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 
 #[derive(Default)]
 pub struct View {
-    pub pos:RwLock<Vector3<f32>>,
+    pub pos:Cell<Vector3<f32>>,
     pub size:Cell<Vector2<f64>>,
     pub margin:Thickness,
     pub padding:Thickness,
@@ -24,10 +24,10 @@ impl Component for View {
 impl View {
     pub fn calc_size(&self,size:Vector2<f64>) -> Vector2<f64> {
         let mut ret_size:Vector2<f64> = self.size.get();
-        if ret_size.x <= 0f64 && self.hor == LayoutAlignment::Fill {
+        if ret_size.x <= 0f64 || self.hor == LayoutAlignment::Fill {
             ret_size.x = size.x;
         }
-        if ret_size.y <= 0f64 && self.ver == LayoutAlignment::Fill {
+        if ret_size.y <= 0f64 || self.ver == LayoutAlignment::Fill {
             ret_size.y = size.y;
         }
         ret_size
@@ -51,9 +51,8 @@ impl IView for View {
                ,rects:&mut WriteStorage<Rect2D>
                ,_tree_nodes:&ReadStorage<TreeNode>
                ,_elems:&WriteStorage<LayoutElement>
-               ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
+               ,_cells:&ReadStorage<GridCell>) -> Vector2<f64> {
       let content_size:Vector2<f64> = self.calc_content_size(size);
-      
       rects.get_mut(entity).map(|rect| {
         rect.width = content_size.x as f32;
         rect.height = content_size.y as f32;
@@ -68,9 +67,10 @@ impl IView for View {
         , _:&ReadStorage<TreeNode>
         , _:&WriteStorage<LayoutElement>
         ,trans:&mut WriteStorage<Transform>
-        ,origin:Vector3<f32>) {
+        ,origin:Vector3<f32>
+        ,cells:&ReadStorage<GridCell>) {
         let (x,y) = {
-            let pos = self.pos.read().unwrap();
+            let pos:Vector3<f32> = self.pos.get();
             (pos.x,pos.y)
         };
         let rect = rect2ds.get(entity).unwrap();
