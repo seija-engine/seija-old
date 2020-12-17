@@ -1,5 +1,6 @@
 use crate::common::{HiddenPropagate, Transform, Tree, TreeEvent, TreeNode};
 use hibitset::BitSet;
+use nalgebra::{Matrix, Matrix4};
 use specs::storage::ComponentEvent;
 use specs::{
     Component, DenseVecStorage, Entities, Entity, FlaggedStorage, ReadExpect, ReaderId, System,
@@ -70,13 +71,17 @@ impl<'a> System<'a> for TransformSystem {
         for event in tree.channel.read(&mut self.tree_events_id) {
             match *event {
                 TreeEvent::Add(_,entity) => {
-                    self.local_modified.add(entity.id());
+                    if locals.contains(entity) {
+                        self.local_modified.add(entity.id());
+                    }
                 },
                 TreeEvent::Remove(_,entity) => {
                     self.local_modified.remove(entity.id());
                 },
                 TreeEvent::Update(_,_,entity) => {
-                    self.local_modified.remove(entity.id());
+                    if locals.contains(entity) {
+                        self.local_modified.add(entity.id());
+                    }
                 }
             }
         }
@@ -88,7 +93,7 @@ impl<'a> System<'a> for TransformSystem {
                 continue;
             }
             if let Some(p) = tree_nodes.get(entity).and_then(|v| v.parent) {
-                let new_mat = (locals.get(p).unwrap().global_matrix) * (locals.get(entity).unwrap().matrix());
+                let new_mat:Matrix4<f32> = (locals.get(p).unwrap().global_matrix) * (locals.get(entity).unwrap().matrix());
                 locals.get_mut(entity).unwrap().global_matrix = new_mat;
             } else {
                 let t = locals.get_mut(entity).unwrap();
@@ -98,7 +103,7 @@ impl<'a> System<'a> for TransformSystem {
             for child in Tree::all_sort_children(&tree_nodes, entity) {
                 let centity = entities.entity(child);
                 let parent_entity = tree_nodes.get(centity).unwrap().parent.unwrap();
-                let new_mat = locals.get(parent_entity).unwrap().global_matrix * locals.get(centity).unwrap().matrix();
+                let new_mat:Matrix4<f32> = locals.get(parent_entity).unwrap().global_matrix * locals.get(centity).unwrap().matrix();
                 locals.get_mut(centity).unwrap().global_matrix = new_mat;
             }
         }

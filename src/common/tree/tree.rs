@@ -55,27 +55,26 @@ impl Tree {
         let mut oldp: Option<Entity> = None;
         {
             let mut tree_nodes: WriteStorage<TreeNode> = world.write_storage::<TreeNode>();
-            if !tree_nodes.contains(entity)
-                || parent.map(|e| !tree_nodes.contains(e)).unwrap_or(false)
-            {
+            if !tree_nodes.contains(entity) || parent.map(|e| !tree_nodes.contains(e)).unwrap_or(false) {
                 return entity;
             }
+            
             if let Some(old_parent) = tree_nodes.get(entity).unwrap().parent {
                 oldp = Some(old_parent);
                 tree_nodes.get_mut(old_parent).unwrap().remove(&entity);
             } else {
-                let index = world
-                    .fetch_mut::<Tree>()
-                    .roots
-                    .iter()
-                    .position(|c| c.id() == entity.id());
+                let index:Option<usize> = world.fetch_mut::<Tree>().roots.iter().position(|c| c.id() == entity.id());
                 if let Some(index) = index {
                     world.fetch_mut::<Tree>().roots.remove(index);
                 }
             }
+
+            
             if let Some(p) = parent {
                 tree_nodes.get_mut(p).unwrap().children.push(entity);
+                tree_nodes.get_mut(entity).unwrap().parent = parent;
             } else {
+                tree_nodes.get_mut(entity).unwrap().parent = None;
                 drop(tree_nodes);
                 let tree = world.get_mut::<Tree>().unwrap();
                 tree.roots.push(entity);
@@ -83,8 +82,7 @@ impl Tree {
         };
 
         let tree = world.get_mut::<Tree>().unwrap();
-        tree.channel
-            .single_write(TreeEvent::Update(oldp, parent, entity));
+        tree.channel.single_write(TreeEvent::Update(oldp, parent, entity));
         entity
     }
 

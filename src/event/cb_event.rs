@@ -150,8 +150,7 @@ impl CABEventRoot {
             }
         };
         let mut may_parent = tree_nodes.get(e).and_then(|p| p.parent);
-        while may_parent.is_some() {
-            let parent = may_parent.unwrap();
+        while let Some(parent) = may_parent {
             if let Some(ev_node) = ev_join.get_unchecked(parent.id()) {
                 if is_hide == false {
                     let evlist = ev_node.get_dispatch_event(false,ev.to_type());
@@ -163,7 +162,7 @@ impl CABEventRoot {
                     return;
                 }
             };
-            may_parent = tree_nodes.get(e).unwrap().parent;
+            may_parent = tree_nodes.get(parent).unwrap().parent;
         }
     }
 
