@@ -56,12 +56,24 @@ pub enum LayoutAlignment {
 	Fill = 3
 }
 
+
 impl Default for LayoutAlignment {
     fn default() -> Self { LayoutAlignment::Fill }
 }
 
 impl Into<u32> for LayoutAlignment {
     fn into(self) -> u32 { self as u32 }
+}
+
+impl From<u32> for LayoutAlignment {
+    fn from(n: u32) -> LayoutAlignment {
+        match n {
+            0 => LayoutAlignment::Start,
+            1 => LayoutAlignment::Center,
+            2 => LayoutAlignment::End,
+            _ => LayoutAlignment::Fill
+        }
+    }
 }
 
 impl LayoutAlignment {

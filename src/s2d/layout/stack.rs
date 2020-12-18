@@ -11,6 +11,16 @@ pub enum Orientation {
     Horizontal,
     Vertical,
 }
+
+impl From<u32> for Orientation {
+    fn from(n: u32) -> Orientation {
+        match n {
+            0 => Orientation::Horizontal,
+            _ => Orientation::Vertical
+        }
+    }
+}
+
 impl Default for Orientation {
     fn default() -> Self {
         Orientation::Horizontal

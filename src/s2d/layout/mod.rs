@@ -40,7 +40,7 @@ pub trait IView {
 }
 
 pub enum LayoutElement {
-    ViewUnit(View),
+    View(View),
     StackLayout(Stack),
     GridLayout(Grid)
 }
@@ -56,7 +56,7 @@ impl IView for LayoutElement {
                ,elems:&WriteStorage<LayoutElement>
                ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
         match self {
-            LayoutElement::ViewUnit(v) => v.measure(entity,size, rects,tree_nodes,elems,cells),
+            LayoutElement::View(v) => v.measure(entity,size, rects,tree_nodes,elems,cells),
             LayoutElement::StackLayout(stack) => stack.measure(entity,size, rects,tree_nodes,elems,cells),
             LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems,cells)
         }
@@ -70,7 +70,7 @@ impl IView for LayoutElement {
                     , origin:Vector3<f32>
                     , cells:&ReadStorage<GridCell>) {
        match self {
-            LayoutElement::ViewUnit(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
+            LayoutElement::View(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
             LayoutElement::StackLayout(stack) => stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
             LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin,cells)
         } 
@@ -114,8 +114,11 @@ impl LayoutElement {
                          ,rects:&WriteStorage<Rect2D>
                          ,elems:&WriteStorage<LayoutElement>
                          ,view_size:&ViewPortSize)  -> Vector2<f64> {
-        let fsize:Vector2<f64> = self.fview(|v| v.size.get());
+        let mut fsize:Vector2<f64> = self.fview(|v| v.size.get());
         if fsize.magnitude() > 0f64 {
+            let (mh,mv) = self.fview(|v| (v.margin.horizontal(),v.margin.vertical()));
+            fsize.x += mh;
+            fsize.y += mv;
             return fsize;
         }
        if let Some(parent) = tree_nodes.get(entity).and_then(|t| t.parent) {
@@ -132,11 +135,19 @@ impl LayoutElement {
    
     
 
-    fn fview<F,R>(&self,f:F) -> R where F:Fn(&View) -> R {
+    pub fn fview<F,R>(&self,f:F) -> R where F:Fn(&View) -> R {
         match self {
-            LayoutElement::ViewUnit(view) => f(view) ,
+            LayoutElement::View(view) => f(view) ,
             LayoutElement::StackLayout(stack) => f(&stack.view),
             LayoutElement::GridLayout(grid) => f(&grid.view)
+        }
+    }
+
+    pub fn fview_mut<F,R>(&mut self,f:F) -> R where F:Fn(&mut View) -> R {
+        match self {
+            LayoutElement::View(view) => f(view) ,
+            LayoutElement::StackLayout(stack) => f(&mut stack.view),
+            LayoutElement::GridLayout(grid) => f(&mut grid.view)
         }
     }
 }

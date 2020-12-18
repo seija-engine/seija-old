@@ -102,6 +102,9 @@ impl<'a> System<'a> for LayoutSystem {
        let iter = self.modified.clone().into_iter();
        for eid in iter {
            let cur_entity = ldata.0.entity(eid);
+           if  !ldata.5.contains(cur_entity) || !ldata.6.contains(cur_entity) {
+               continue;
+           }
            if let Some(elem) =  ldata.3.get(cur_entity) {
             elem.update_layout(cur_entity,&ldata.2
                 ,&mut ldata.5
