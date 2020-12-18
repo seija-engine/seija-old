@@ -2,7 +2,7 @@ use super::{IView, LNumber, View};
 use specs::{Entity,WriteStorage,ReadStorage,Component,DenseVecStorage};
 use nalgebra::{Vector2,Vector3};
 use crate::common::{Rect2D,TreeNode,Transform};
-use crate::s2d::layout2::{LayoutElement};
+use crate::s2d::layout::{LayoutElement};
 use std::cell::RefCell;
 
 #[derive(Default)]

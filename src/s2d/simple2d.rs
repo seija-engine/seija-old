@@ -15,7 +15,7 @@ use crate::common::{EntityInfo,transform::{build_transform_module},Rect2D,Update
 use winit::{window::WindowBuilder};
 use crate::assets::{Loader,S2DAssetPack,StorageCenter};
 use crate::event::{GameEventHandle};
-use crate::s2d::layout2::{init_layout_system};
+use crate::s2d::layout::{init_layout_system};
 
 pub type DefaultBackend = rendy::vulkan::Backend;
 

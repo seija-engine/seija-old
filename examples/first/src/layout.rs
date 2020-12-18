@@ -1,10 +1,10 @@
-use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader, layout2::LayoutElement}, specs::{Entity, World, WorldExt,world::Builder}};
+use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader, layout::LayoutElement}, specs::{Entity, World, WorldExt,world::Builder}};
 use seija::assets::{TextuteLoaderInfo};
 use crate::{tests::IGameTest, core::create_image};
 use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
 use seija::render::components::{ImageRender,Mesh2D};
 type DefaultBackend = seija::rendy::vulkan::Backend;
-use seija::s2d::layout2::{Orientation,LNumber,Grid,GridCell,View,Stack,LayoutAlignment,Thickness};
+use seija::s2d::layout::{Orientation,LNumber,Grid,GridCell,View,Stack,LayoutAlignment,Thickness};
 use seija::math::{Vector3,Vector2};
 #[derive(Default)]
 pub struct LayoutTest {
