@@ -86,11 +86,13 @@ impl LayoutElement {
                               ,trans:&mut WriteStorage<Transform>
                               ,cells:&ReadStorage<GridCell>
                               ) {
-        let size:Vector2<f64> = self.size_request(entity,tree_nodes, rects,elems,view_size);
-       
-        self.measure(entity,size, rects,tree_nodes,elems,cells);
-        let origin = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
-        self.arrange(entity, size, rects, tree_nodes, elems,trans,origin,cells);
+        let size_x = self.size_request_x(entity,tree_nodes, rects,elems,view_size);
+        let size_y = self.size_request_y(entity,tree_nodes, rects,elems,view_size);
+        let req_size:Vector2<f64> = Vector2::new(size_x,size_y);
+        dbg!(&req_size);
+        self.measure(entity,req_size, rects,tree_nodes,elems,cells);
+        let origin:Vector3<f32> = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
+        self.arrange(entity, req_size, rects, tree_nodes, elems,trans,origin,cells);
     }
 
     fn origin_request(entity:Entity
@@ -109,28 +111,46 @@ impl LayoutElement {
         
     }
     
-    fn size_request(&self,entity:Entity
+    fn size_request_x(&self,entity:Entity
                          ,tree_nodes:&ReadStorage<TreeNode>
                          ,rects:&WriteStorage<Rect2D>
                          ,elems:&WriteStorage<LayoutElement>
-                         ,view_size:&ViewPortSize)  -> Vector2<f64> {
-        let mut fsize:Vector2<f64> = self.fview(|v| v.size.get());
-        if fsize.magnitude() > 0f64 {
-            let (mh,mv) = self.fview(|v| (v.margin.horizontal(),v.margin.vertical()));
-            fsize.x += mh;
-            fsize.y += mv;
-            return fsize;
+                         ,view_size:&ViewPortSize
+                         )  -> f64 {
+        let fsize:Vector2<f64> = self.fview(|v| v.size.get());
+        if fsize.x > 0f64 {
+            let mh= self.fview(|v| v.margin.horizontal());
+            return fsize.x + mh;
         }
-       if let Some(parent) = tree_nodes.get(entity).and_then(|t| t.parent) {
-           let elem = elems.get(parent).unwrap();
-           let mut size:Vector2<f64> = elem.size_request(parent,tree_nodes, rects, elems,view_size);
-           let (h,v) = elem.fview(|e| (e.padding.horizontal(),e.padding.vertical()));
-           size.x -= h;
-           size.y -= v;
-           size
-       } else {
-           Vector2::new(view_size.width(),view_size.height())
-       }
+        if let Some(parent) = tree_nodes.get(entity).and_then(|t| t.parent) {
+            let elem = elems.get(parent).unwrap();
+            let size_x = elem.size_request_x(parent,tree_nodes, rects, elems,view_size);
+            let h = elem.fview(|e|e.padding.horizontal());
+            size_x - h
+        } else {
+            view_size.width()
+        }
+    }
+
+    fn size_request_y(&self,entity:Entity
+                         ,tree_nodes:&ReadStorage<TreeNode>
+                         ,rects:&WriteStorage<Rect2D>
+                         ,elems:&WriteStorage<LayoutElement>
+                         ,view_size:&ViewPortSize
+                         )  -> f64 {
+        let  fsize:Vector2<f64> = self.fview(|v| v.size.get());
+        if fsize.y > 0f64 {
+            let mv= self.fview(|v| v.margin.vertical());
+            return fsize.y + mv;
+        }
+        if let Some(parent) = tree_nodes.get(entity).and_then(|t| t.parent) {
+            let elem = elems.get(parent).unwrap();
+            let  size_y = elem.size_request_y(parent,tree_nodes, rects, elems,view_size);
+            let v = elem.fview(|e|e.padding.vertical());
+            size_y - v
+        } else {
+            view_size.height()
+        }
     }
    
     

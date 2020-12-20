@@ -1,6 +1,7 @@
 use seija::specs::{World,WorldExt,world::Builder,Entity};
 use seija::assets::{Handle};
 use seija::render::types;
+use seija::render::{Transparent};
 use seija::render::components::{Mesh2D,ImageRender,ImageType,ImageFilledType};
 use seija::common::{Transform,Rect2D};
 
@@ -16,7 +17,12 @@ pub fn create_image(world:&mut World,tex:Handle<types::Texture>,w:f32,h:f32,x:f3
     } else if t == 2 {
         render.set_type(ImageType::Sliced(30f32,30f32,10f32,25f32));
         //render.set_anchor(0f32,0f32);
+    } 
+    if t == 3 {
+        render.set_color(1f32,0f32,0f32,0.1f32);
+    } else {
+        render.set_color(1f32,1f32,1f32,1f32);
     }
     let rect = Rect2D::new(w,h,[0.5f32,0.5f32]);
-    world.create_entity().with(Mesh2D::default()).with(render).with(rect).with(trans).build()
+    world.create_entity().with(Mesh2D::default()).with(Transparent).with(render).with(rect).with(trans).build()
 }

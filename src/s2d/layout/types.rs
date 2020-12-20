@@ -1,9 +1,9 @@
 #[derive(PartialEq,Clone,Default)]
 pub struct Thickness {
-    left:f64,
-    top:f64,
-    right:f64,
-    bottom:f64
+   pub left:f64,
+   pub top:f64,
+   pub right:f64,
+   pub bottom:f64
 }
 
 impl Thickness {

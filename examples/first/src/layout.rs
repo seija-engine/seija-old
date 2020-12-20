@@ -64,7 +64,7 @@ fn add_img(img:Handle<Texture>, world:&mut World) -> Entity {
         view.ver = LayoutAlignment::Fill;
         view.size.set(Vector2::new(50f64,50f64));
        
-        views.insert(c0, LayoutElement::ViewUnit(view)).unwrap();
+        views.insert(c0, LayoutElement::View(view)).unwrap();
     }
     c0
 }
@@ -101,6 +101,34 @@ impl LayoutTest {
         //Tree::add(world, img3, Some(root));
     }
 
+    pub fn test_simple(&mut self, world:&mut World,white:Handle<Texture>) {
+        let root = create_image(world, white.clone(), 70f32, 70f32, 100f32, 0f32, 0f32, 0);
+       
+        {
+            let mut views = world.write_storage::<LayoutElement>();
+            let mut view = View::default();
+            view.hor = LayoutAlignment::Fill;
+            view.ver = LayoutAlignment::Fill;
+            view.margin = Thickness::new1(10f64);
+            view.padding = Thickness::new1(10f64);
+            views.insert(root, LayoutElement::View(view)).unwrap();
+        };
+        Tree::add(world, root, None);
+
+        let c1 = create_image(world, white.clone(), 70f32, 70f32, 0f32, 0f32, 0f32, 3);
+        {
+            let mut views = world.write_storage::<LayoutElement>();
+            let mut view = View::default();
+            view.hor = LayoutAlignment::Fill;
+            view.ver = LayoutAlignment::Fill;
+            view.margin = Thickness::new1(10f64);
+            view.padding = Thickness::new1(10f64);
+            views.insert(c1, LayoutElement::View(view)).unwrap();
+        };
+        
+        Tree::add(world, c1, Some(root));
+    }
+
     
 }
 
@@ -113,7 +141,7 @@ impl IGameTest for LayoutTest {
             (b,w)
         };
         
-        self.test_grid(world, white, b_jpg)
+       self.test_simple(world,white.clone());
        
     }
 
