@@ -47,10 +47,8 @@ impl IView for Stack {
               rect.width = content_size.x as f32;
               rect.height = content_size.y as f32;
        });
-       println!("satck_size:{:?}",content_size);
        let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                   content_size.y - self.view.padding.vertical());
-       dbg!(&inner_size);
        let m_child = tree_nodes.get(entity).map(|v| &v.children);
        match self.orientation {
            Orientation::Horizontal => ret_size.x = 0f64,

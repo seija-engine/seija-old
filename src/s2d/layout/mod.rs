@@ -11,7 +11,7 @@ pub mod system;
 use specs::{Entity,Component, DenseVecStorage, ReadStorage, WriteStorage};
 pub use system::LayoutData;
 pub use stack::{Stack,Orientation};
-pub use view::{View};
+pub use view::{View,ContentView};
 pub use types::{LayoutAlignment,Thickness,LNumber};
 pub use grid::{Grid,GridCell};
 
@@ -41,6 +41,7 @@ pub trait IView {
 
 pub enum LayoutElement {
     View(View),
+    ContentView(ContentView),
     StackLayout(Stack),
     GridLayout(Grid)
 }
@@ -58,7 +59,8 @@ impl IView for LayoutElement {
         match self {
             LayoutElement::View(v) => v.measure(entity,size, rects,tree_nodes,elems,cells),
             LayoutElement::StackLayout(stack) => stack.measure(entity,size, rects,tree_nodes,elems,cells),
-            LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems,cells)
+            LayoutElement::GridLayout(grid) => grid.measure(entity, size, rects, tree_nodes, elems,cells),
+            LayoutElement::ContentView(content_view) => content_view.measure(entity, size, rects, tree_nodes, elems, cells)
         }
     }
     
@@ -72,7 +74,8 @@ impl IView for LayoutElement {
        match self {
             LayoutElement::View(v) => v.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
             LayoutElement::StackLayout(stack) => stack.arrange(entity,size, rects,tree_nodes,elems,trans,origin,cells),
-            LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin,cells)
+            LayoutElement::GridLayout(grid) => grid.arrange(entity, size, rects, tree_nodes, elems, trans, origin,cells),
+            LayoutElement::ContentView(content_view) => content_view.arrange(entity, size, rects, tree_nodes, elems, trans, origin, cells)
         } 
     }
     
@@ -159,7 +162,8 @@ impl LayoutElement {
         match self {
             LayoutElement::View(view) => f(view) ,
             LayoutElement::StackLayout(stack) => f(&stack.view),
-            LayoutElement::GridLayout(grid) => f(&grid.view)
+            LayoutElement::GridLayout(grid) => f(&grid.view),
+            LayoutElement::ContentView(content_view) => f(&content_view.view)
         }
     }
 
@@ -167,7 +171,8 @@ impl LayoutElement {
         match self {
             LayoutElement::View(view) => f(view) ,
             LayoutElement::StackLayout(stack) => f(&mut stack.view),
-            LayoutElement::GridLayout(grid) => f(&mut grid.view)
+            LayoutElement::GridLayout(grid) => f(&mut grid.view),
+            LayoutElement::ContentView(context_view) => f(&mut context_view.view)
         }
     }
 }
