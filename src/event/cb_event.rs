@@ -93,15 +93,14 @@ impl CABEventRoot {
             return false;
         }
         let zero_vec:Vec<Entity> = vec![];
-        let children:&Vec<Entity> = &tree_nodes.get(e).map(|t| &t.children).unwrap_or(&zero_vec);
-        let is_last = children.len() == 0;
+        
         let mut ev_join = ev_storage.join();
         let may_ev_node = ev_join.get_unchecked(e.id());
 
         let hiddens = world.read_storage::<Hidden>();
         let is_hide = hiddens.contains(e);
         //派发捕获事件 
-        if may_ev_node.is_some() /*&& is_last == false*/ &&  is_hide == false {
+        if may_ev_node.is_some()  &&  is_hide == false {
             let ev_node = may_ev_node.unwrap();
             let evlist = ev_node.get_dispatch_event(true,ev.to_type());
             for ev in evlist {
@@ -113,11 +112,14 @@ impl CABEventRoot {
         };
 
         //开始向上冒泡
+        let children:&Vec<Entity> = &tree_nodes.get(e).map(|t| &t.children).unwrap_or(&zero_vec);
+        let is_last = children.len() == 0;
         if is_last {
             self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
         }
+
         let mut tr_joined = (t_storage,r_storage).join();
-        for ce in children {
+        for ce in children.iter().rev() {
             let may_get = tr_joined.get_unchecked(ce.id());
             if may_get.is_none() {
                 continue;

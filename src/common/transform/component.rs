@@ -103,8 +103,14 @@ impl<'a> System<'a> for TransformSystem {
             for child in Tree::all_sort_children(&tree_nodes, entity) {
                 let centity = entities.entity(child);
                 let parent_entity = tree_nodes.get(centity).unwrap().parent.unwrap();
-                let new_mat:Matrix4<f32> = locals.get(parent_entity).unwrap().global_matrix * locals.get(centity).unwrap().matrix();
-                locals.get_mut(centity).unwrap().global_matrix = new_mat;
+                if let Some(trans) = locals.get(parent_entity) {
+                    if let Some(ctrans) = locals.get(centity) {
+                        let new_mat:Matrix4<f32> = trans.global_matrix * ctrans.matrix();
+                        locals.get_mut(centity).unwrap().global_matrix = new_mat;
+                    }
+                    
+                }
+                
             }
         }
 

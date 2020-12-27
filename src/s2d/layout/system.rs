@@ -89,7 +89,7 @@ impl<'a> System<'a> for LayoutSystem {
                     self.on_dirty(&tree_nodes, *pentity);
                 }
             },
-            TreeEvent::Update(oldp,p,e) => {
+            TreeEvent::Update(oldp,p,_e) => {
                 if let Some(oldp) = oldp {
                     self.on_dirty(&tree_nodes, *oldp);
                 }

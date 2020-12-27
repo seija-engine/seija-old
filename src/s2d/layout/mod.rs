@@ -92,7 +92,7 @@ impl LayoutElement {
         let size_x = self.size_request_x(entity,tree_nodes, rects,elems,view_size);
         let size_y = self.size_request_y(entity,tree_nodes, rects,elems,view_size);
         let req_size:Vector2<f64> = Vector2::new(size_x,size_y);
-        dbg!(&req_size);
+        
         self.measure(entity,req_size, rects,tree_nodes,elems,cells);
         let origin:Vector3<f32> = LayoutElement::origin_request(entity, tree_nodes, view_size, rects);
         self.arrange(entity, req_size, rects, tree_nodes, elems,trans,origin,cells);

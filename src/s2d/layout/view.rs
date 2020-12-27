@@ -7,6 +7,41 @@ use nalgebra::{Vector2, Vector3};
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 use std::cell::Cell;
 
+pub enum ViewType {
+    Static,
+    Absolute
+}
+impl Default for ViewType {
+    fn default() -> Self {
+        ViewType::Static
+    }
+}
+
+impl From<u32> for ViewType {
+    fn from(typ: u32) -> ViewType {
+        match typ {
+            0 => ViewType::Static,
+            1 => ViewType::Absolute,
+            _ => ViewType::Absolute
+        }
+    }
+}
+
+impl ViewType {
+    pub fn is_absolute(&self) -> bool {
+        match self {
+            ViewType::Static => false,
+            ViewType::Absolute => true
+        }
+    }
+    pub fn is_static(&self) -> bool {
+        match self {
+            ViewType::Static => true,
+            ViewType::Absolute => false
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct View {
     pub pos: Cell<Vector3<f32>>,
@@ -15,6 +50,7 @@ pub struct View {
     pub padding: Thickness,
     pub hor: LayoutAlignment,
     pub ver: LayoutAlignment,
+    pub view_type:ViewType
 }
 
 unsafe impl Sync for View {}
@@ -24,7 +60,8 @@ impl Component for View {
 }
 
 impl View {
-    pub fn calc_size(&self, size: Vector2<f64>) -> Vector2<f64> {
+    
+    pub fn calc_content_size(&self, size: Vector2<f64>) -> Vector2<f64> {
         let mut ret_size: Vector2<f64> = self.size.get();
 
         if ret_size.y <= 0f64 && self.hor == LayoutAlignment::Fill {
@@ -35,12 +72,6 @@ impl View {
         }
 
         ret_size
-    }
-
-    pub fn calc_content_size(&self, size: Vector2<f64>) -> Vector2<f64> {
-        let size = self.calc_size(size);
-
-        size
     }
 
     pub fn calc_orign(&self, entity: Entity, rects: &WriteStorage<Rect2D>) -> Vector3<f32> {
@@ -119,7 +150,7 @@ impl IView for ContentView {
         elems: &WriteStorage<LayoutElement>,
         cells: &ReadStorage<GridCell>,
     ) -> Vector2<f64> {
-        let content_size:Vector2<f64> = self.view.measure(entity, size, rects, tree_nodes, elems, cells);
+        let mut content_size:Vector2<f64> = self.view.measure(entity, size, rects, tree_nodes, elems, cells);
         let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                    content_size.y - self.view.padding.vertical());
         
@@ -127,10 +158,22 @@ impl IView for ContentView {
         if let Some(child) = m_child {
             for centity in child {
                 if let Some(elem) = elems.get(*centity) {
-                    elem.measure(*centity, inner_size, rects, tree_nodes, elems,cells);
+                   let child_size:Vector2<f64> = elem.measure(*centity, inner_size, rects, tree_nodes, elems,cells);
+                   let is_static:bool = elem.fview(|v| v.view_type.is_static());
+                   if child_size.x > content_size.x && is_static {
+                       content_size.x = child_size.x
+                   }
+                   if child_size.y > content_size.y  && is_static {
+                    content_size.y = child_size.y
+                }
                 }
             }
         }
+
+        rects.get_mut(entity).map(|rect| {
+            rect.width = content_size.x as f32;
+            rect.height = content_size.y as f32;
+        });
         content_size
     }
 
