@@ -1,24 +1,23 @@
 use crate::render::types::{Backend,Texture};
+use glsl_layout::float;
 use rendy::command::{QueueId};
 use crate::assets::{Handle,AssetStorage};
 use crate::common::{Transform,Rect2D,Horizontal,Vertical};
 use specs::{WriteStorage,ReadStorage,Join};
 use rendy::factory::{Factory,ImageState};
-use glyph_brush::rusttype::{Scale,Rect as FontRect};
-use glyph_brush::{GlyphBrushBuilder,FontId,GlyphBrush,BrushAction,
-                  SectionText,Layout,BuiltInLineBreaker,VariedSection,
-                  LineBreaker,LineBreak,HorizontalAlign,VerticalAlign};
+// use glyph_brush::rusttype::{Scale,Rect as FontRect};
+use glyph_brush::{BrushAction, BuiltInLineBreaker, Extra, FontId, GlyphBrush, GlyphBrushBuilder, HorizontalAlign, Layout, LineBreak, LineBreaker, Rectangle, Section, SectionText, Text, VerticalAlign, ab_glyph::PxScale};
 use crate::render::components::{TextRender,LineMode,Mesh2D};
 use rendy::texture::{TextureBuilder,pixel::{R8Unorm},Texture as RTexture};
 use crate::render::pod::{Vertex2D,SpriteArg};
 use crate::render::{FontAsset,SpriteMesh};
 use rendy::hal;
-use std::collections::{HashMap};
+use std::{ collections::{HashMap}};
 use std::marker::PhantomData;
 
 pub struct FontEnv<B:Backend> {
     pub font_tex:Option<Handle<Texture>>,
-    glyph_brush:GlyphBrush<'static,Vec<Vertex2D>>,
+    glyph_brush:GlyphBrush<Vec<Vertex2D>>,
     fonts_map: HashMap<u32, FontId>,
     mark: PhantomData<B>,
     cache_meshs:HashMap<String,SpriteMesh> //todo gc it
@@ -56,16 +55,19 @@ impl LineBreaker for CustomLineBreaker {
 impl<B> FontEnv<B> where B:Backend {
     pub fn process<'a>(&mut self,tex_storage:&mut AssetStorage<Texture>,font_storage:&AssetStorage<FontAsset>,
                        text_iter:(&mut WriteStorage<'a,TextRender>,&mut WriteStorage<'a,Mesh2D>,
-                                  &ReadStorage<'a,Transform>,&ReadStorage<Rect2D>),qid:QueueId,
+                                  &ReadStorage<'a,Transform>,&mut WriteStorage<Rect2D>),qid:QueueId,
                        factory:&mut Factory<B>) {
+       
         if self.font_tex.is_none() {
             let (w, h) = self.glyph_brush.texture_dimensions();
             let tex = create_font_texture(w, h,qid,factory);
             let tex_id = tex_storage.insert(tex);
             self.font_tex = Some(tex_id);
         };
+        
         let font_tex_handle = self.font_tex.as_ref().unwrap();
         let font_tex = tex_storage.get(font_tex_handle).and_then(B::unwrap_texture).expect("Glyph texture is created synchronously");
+       
         for (text,mesh2d,t,rect) in text_iter.join() {
             if !text.is_valid() {
                 continue;
@@ -73,12 +75,18 @@ impl<B> FontEnv<B> where B:Backend {
             if self.cache_meshs.contains_key(&text.text) {
                 if mesh2d.mesh.is_none() || mesh2d.is_dirty {
                     if let Some(cache_mesh) = self.cache_meshs.get(&text.text) {
-                        mesh2d.mesh = Some(cache_mesh.clone())
+                        mesh2d.mesh = Some(cache_mesh.clone());
+                        if text.auto_size {
+                            let (w,h) = cache_mesh.calc_size();
+                            rect.width =  w;
+                            rect.height = h;
+                         }
                     }
                 }
                 if let Some(mesh) = mesh2d.mesh.as_mut() {
                       let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
                       mesh.sprite_arg.model = mat.into();
+
                 }
                 continue
             }
@@ -96,12 +104,8 @@ impl<B> FontEnv<B> where B:Backend {
             };
 
             let font_id = font_lookup.unwrap();
-            let section_text =  vec![SectionText {
-                text: text.text.as_str(),
-                scale: Scale::uniform(text.font_size as f32),
-                color: text.color.into(),
-                font_id
-            }];
+            let col3 = t.global_matrix().column(3);
+            
             let (h,v) = text.anchor.to_hv_align();
             let layout = match text.line_mode {
                 LineMode::Single => Layout::SingleLine {
@@ -118,21 +122,24 @@ impl<B> FontEnv<B> where B:Backend {
                 }
             };
             
-            let global = t.global_matrix();
-            let col3 = global.column(3);
-            let section = VariedSection {
-                screen_position:(0f32,0f32),
-                bounds:(rect.width,rect.height),
-                z:col3[2],
-                layout:Default::default(),
-                text:section_text
-            };
             
-            self.glyph_brush.queue_custom_layout(section, &layout);
+            let section_text:Text<Extra> = Text::new(text.text.as_str())
+                                         .with_scale(PxScale::from(text.font_size  as f32))
+                                         .with_font_id(font_id)
+                                         .with_color(text.color)
+                                         .with_z(col3[2]);
+           
+            let section = if text.auto_size {
+                Section::default().add_text(section_text)
+            } else { 
+                Section::default().add_text(section_text).with_bounds((rect.width,rect.height))
+            };
+            self.glyph_brush.queue_custom_layout(section,&layout);
+           
             let action = self.glyph_brush.process_queued(|rect,data| {
                 Self::update_text_texture(factory,rect,data,font_tex,&qid);
             }, move |vert| {
-                let z = vert.z;
+                let z = vert.extra.z;
                 let left = vert.pixel_coords.min.x as f32;
                 let right = vert.pixel_coords.max.x as f32;
                 let top = -vert.pixel_coords.min.y as f32;
@@ -169,10 +176,12 @@ impl<B> FontEnv<B> where B:Backend {
                        indexs.push(index + 3u16);
                        indexs.push(index + 2u16);
                     }
+                    
                     let mut meshes:Vec<Vertex2D> = Vec::with_capacity(verts_list.len() * 4);
                     for verts in verts_list {
                         meshes.extend(verts);
                     }
+
                     let text_mesh = SpriteMesh {
                         sprite_arg:SpriteArg {
                             model:mat.into(),
@@ -181,6 +190,12 @@ impl<B> FontEnv<B> where B:Backend {
                         meshes,
                         indexs
                     };
+
+                    if text.auto_size {
+                        let (w,h) = text_mesh.calc_size();
+                        rect.width =  w;
+                        rect.height = h;
+                    }
                     mesh2d.mesh = Some(text_mesh.clone());
                     self.cache_meshs.insert(text.text.clone(),text_mesh);
                 },
@@ -189,7 +204,7 @@ impl<B> FontEnv<B> where B:Backend {
         }
     }
 
-    fn update_text_texture(factory:&mut Factory<B>,rect:FontRect<u32>,data:&[u8],tex:&RTexture<B>,qid:&QueueId) {
+    fn update_text_texture(factory:&mut Factory<B>,rect:Rectangle<u32>,data:&[u8],tex:&RTexture<B>,qid:&QueueId) {
         unsafe {
             factory.upload_image(tex.image().clone(),
                 rect.width(),
@@ -200,8 +215,8 @@ impl<B> FontEnv<B> where B:Backend {
                     layers: 0..1,
                 },
                 hal::image::Offset {
-                    x: rect.min.x as _,
-                    y: rect.min.y as _,
+                    x: rect.min[0] as _,
+                    y: rect.min[1] as _,
                     z: 0,
                 },
                 hal::image::Extent {

@@ -71,14 +71,14 @@ impl IGame for TestGame {
 
 fn main() {
    
-    let test_game = TestGame::new("layout");
+    let test_game = TestGame::new("font");
     let mut s2d = Simple2d::new();
     s2d.with_window(|wb| {
         wb.window.title = String::from("Seija Runing");
         wb.window.inner_size = Some(Size::Logical(LogicalSize::new(320f64,240f64)))
        
     });
-    s2d.with_bg_color([0.0f32,0.0f32,0.0f32,1f32]);
+    s2d.with_bg_color([0.6f32,0.6f32,0.6f32,1f32]);
     let mut app = AppBuilder::new().with_update_limiter(LimitSetting::Sleep(30)).build(s2d,test_game);
     app.run();
 }

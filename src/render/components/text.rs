@@ -24,7 +24,8 @@ pub struct TextRender {
     pub color:[f32;4],
     pub font:Option<Handle<FontAsset>>,
     pub line_mode:LineMode,
-    pub anchor:AnchorAlign
+    pub anchor:AnchorAlign,
+    pub auto_size:bool
 }
 
 impl Component for TextRender {
@@ -39,13 +40,15 @@ impl  TextRender {
             color: [0f32,0f32,0f32,1f32],
             font,
             line_mode:LineMode::Single,
-            anchor:AnchorAlign::Center
+            anchor:AnchorAlign::Center,
+            auto_size:false
         }
     }
 
     pub fn set_text(&mut self,txt:&str) {
         self.text = String::from(txt);
     }
+
 
     pub fn set_font_size(&mut self,font_size:i32) {
         self.font_size = font_size;

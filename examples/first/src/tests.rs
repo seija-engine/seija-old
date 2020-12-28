@@ -96,7 +96,9 @@ fn create_text(world:&mut World,font:Handle<FontAsset>,text:&str,x:f32,y:f32,z:f
 }
 /**********************************FontTest**********************************************/
 #[derive(Default)]
-pub struct FontTest {}
+pub struct FontTest {
+    e:Option<Entity>
+}
 
 impl IGameTest for FontTest {
     fn start(&mut self,world:&mut World) {
@@ -104,20 +106,29 @@ impl IGameTest for FontTest {
             let loader = world.write_resource::<S2DLoader>();
             loader.load_sync::<_,DefaultBackend>(FontAssetLoaderInfo::new("WenQuanYiMicroHei.ttf") ,world).unwrap()
         };
+        
         //for i in 1..200 {
+            
+            //
             let mut trans = Transform::default();
-            //trans.set_position(Vector3::new(-220f32,0f32,0f32));
-            trans.set_rotation_euler(0.0,0.0,45f32 * 0.0174533);
+            trans.set_position(Vector3::new(0f32,0f32,0f32));
             let mut render = TextRender::new(Some(font.clone()) );
-            render.set_text("确定");
-            render.set_font_size(16);
+            render.set_text("确定___!!");
+            render.auto_size = true;
+            render.set_font_size(24);
             render.set_line_mode(LineMode::Wrap);
-            render.set_color(0.0f32,0.0f32,0.0f32,1.0f32);
-            world.create_entity().with(Transparent).with(render).with(trans).with(Rect2D::new(200f32,200f32,[0.5f32,0.5f32])).build();   
+            render.set_color(1.0f32,0.0f32,0.0f32,1.0f32);
+            let le = world.create_entity().with(Transparent).with(Mesh2D::default()).with(render).with(trans).with(Rect2D::new(200f32,200f32,[0.5f32,0.5f32])).build();
+            self.e = Some(le)
         //}   
     }
 
-    fn update(&mut self,world:&mut World) {}
+    fn update(&mut self,world:&mut World) {
+       let eee = self.e.unwrap();
+       let rects = world.read_storage::<Rect2D>();
+       let  rect = rects.get(eee).unwrap();
+       println!("{} {}",rect.width,rect.height);
+    }
 }
 /**********************************SpriteTest**********************************************/
 #[derive(Default)]

@@ -50,7 +50,8 @@ pub struct View {
     pub padding: Thickness,
     pub hor: LayoutAlignment,
     pub ver: LayoutAlignment,
-    pub view_type:ViewType
+    pub view_type:ViewType,
+    pub use_rect_size:bool
 }
 
 unsafe impl Sync for View {}
@@ -61,8 +62,8 @@ impl Component for View {
 
 impl View {
     
-    pub fn calc_content_size(&self, size: Vector2<f64>) -> Vector2<f64> {
-        let mut ret_size: Vector2<f64> = self.size.get();
+    pub fn calc_content_size(&self, size: Vector2<f64>,rect:&Rect2D) -> Vector2<f64> {
+        let mut ret_size: Vector2<f64> = self.get_size(rect);
 
         if ret_size.y <= 0f64 && self.hor == LayoutAlignment::Fill {
             ret_size.x = size.x - self.margin.horizontal();
@@ -78,6 +79,14 @@ impl View {
         let rect = rects.get(entity).unwrap();
         Vector3::new(rect.left(), rect.top(), 0f32)
     }
+
+    pub fn get_size(&self,rect:&Rect2D) -> Vector2<f64> {
+        if self.use_rect_size {
+            Vector2::new(rect.width as f64,rect.height  as f64)
+        } else {
+            self.size.get()
+        }
+    }
 }
 
 impl IView for View {
@@ -90,7 +99,7 @@ impl IView for View {
         _elems: &WriteStorage<LayoutElement>,
         _cells: &ReadStorage<GridCell>,
     ) -> Vector2<f64> {
-        let content_size: Vector2<f64> = self.calc_content_size(size);
+        let content_size: Vector2<f64> = self.calc_content_size(size,rects.get(entity).unwrap());
 
         rects.get_mut(entity).map(|rect| {
             rect.width = content_size.x as f32;

@@ -42,7 +42,7 @@ impl IView for Stack {
               ,elems:&WriteStorage<LayoutElement>
               ,cells:&ReadStorage<GridCell>) -> Vector2<f64> {
        let mut ret_size:Vector2<f64> = size;
-       let content_size:Vector2<f64> = self.view.calc_content_size(size);
+       let content_size:Vector2<f64> = self.view.calc_content_size(size,rects.get(entity).unwrap());
        rects.get_mut(entity).map(|rect| {
               rect.width = content_size.x as f32;
               rect.height = content_size.y as f32;
@@ -61,7 +61,7 @@ impl IView for Stack {
                              hor,
                              ver,
                              mh,
-                             mv) = elem.fview(|v| (v.size.get(),v.hor,v.ver,v.margin.horizontal(),v.margin.vertical()));
+                             mv) = elem.fview(|v| (v.get_size(rects.get(*centity).unwrap()),v.hor,v.ver,v.margin.horizontal(),v.margin.vertical()));
                    match self.orientation {
                        Orientation::Horizontal => {
                            child_size.y = inner_size.y;

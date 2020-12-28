@@ -1,4 +1,4 @@
-use glyph_brush::rusttype::{Font};
+use glyph_brush::ab_glyph::FontArc;
 pub struct FontAsset {
-    pub font:Font<'static>
+    pub font:FontArc
 }

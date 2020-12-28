@@ -9,7 +9,7 @@ use crate::render::components::{SpriteSheet,Sprite,TextureCoordinate};
 use fnv::FnvHashMap;
 use crate::render::{FontAsset};
 use specs::{World};
-use glyph_brush::rusttype::{Font};
+use glyph_brush::ab_glyph::{FontArc};
 
 pub struct TextuteLoaderInfo {
     path:String,
@@ -215,7 +215,7 @@ impl IAssetLoaderInfo for FontAssetLoaderInfo {
 
     fn load_data(&self, _:&StorageCenter, source:&LoaderEnv) -> Result<Result<Self::CData,Self::Asset>,AssetLoadError> {
         let bytes = source.load_fs_source(self.path.as_str())?;
-        let font_asset = Font::from_bytes(bytes).map(|font| FontAsset {font} ).map_err(|_| AssetLoadError::FormatError)?;
+        let font_asset = FontArc::try_from_vec(bytes).map(|font| FontAsset {font} ).map_err(|_| AssetLoadError::FormatError)?;
         Ok(Err(font_asset))
     }
 

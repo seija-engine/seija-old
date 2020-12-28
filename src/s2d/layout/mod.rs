@@ -120,7 +120,7 @@ impl LayoutElement {
                          ,elems:&WriteStorage<LayoutElement>
                          ,view_size:&ViewPortSize
                          )  -> f64 {
-        let fsize:Vector2<f64> = self.fview(|v| v.size.get());
+        let fsize:Vector2<f64> = self.fview(|v| v.get_size(rects.get(entity).unwrap()));
         if fsize.x > 0f64 {
             let mh= self.fview(|v| v.margin.horizontal());
             return fsize.x + mh;
@@ -141,7 +141,7 @@ impl LayoutElement {
                          ,elems:&WriteStorage<LayoutElement>
                          ,view_size:&ViewPortSize
                          )  -> f64 {
-        let  fsize:Vector2<f64> = self.fview(|v| v.size.get());
+        let  fsize:Vector2<f64> = self.fview(|v|v.get_size(rects.get(entity).unwrap()));
         if fsize.y > 0f64 {
             let mv= self.fview(|v| v.margin.vertical());
             return fsize.y + mv;
