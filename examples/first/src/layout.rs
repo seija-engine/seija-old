@@ -1,4 +1,4 @@
-use seija::{assets::Handle, render::types::Texture, s2d::{S2DLoader, layout::LayoutElement}, specs::{Entity, World, WorldExt,world::Builder}};
+use seija::{assets::{FontAssetLoaderInfo, Handle}, render::{FontAsset, Transparent, components::TextRender, types::Texture}, s2d::{S2DLoader, layout::LayoutElement}, specs::{Entity, World, WorldExt,world::Builder}};
 use seija::assets::{TextuteLoaderInfo};
 use crate::{tests::IGameTest, core::create_image};
 use seija::common::{Transform,Rect2D,Tree,TreeNode,HiddenPropagate};
@@ -18,7 +18,7 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
     let mut trans = Transform::default();
     let mut img_render = ImageRender::new(Some(tex));
     trans.set_position(Vector3::new(0f32,0f32,0f32));
-    img_render.set_color(0.5f32, 0.5f32, 0.5f32, 1f32);
+    img_render.set_color(0.5f32, 0.5f32, 0.9f32, 1f32);
     let mut stack = Stack::default();
     stack.spacing = 10f32;
     stack.view.margin = Thickness::new1(10f64);
@@ -30,6 +30,7 @@ fn create_stack(world:&mut World,tex:Handle<Texture>,w:f32,h:f32) -> Entity {
          .with(img_render)
          .with(Mesh2D::default())
          .with(LayoutElement::StackLayout(stack))
+         .with(Transparent)
          .build();
     
     e
@@ -69,13 +70,30 @@ fn add_img(img:Handle<Texture>, world:&mut World) -> Entity {
     c0
 }
 
+fn add_text(world:&mut World,font:Handle<FontAsset>,str:&str) -> Entity {
+    let mut render = TextRender::new(Some(font));
+    render.set_text(str);
+    render.set_color(1f32, 0f32, 0f32, 1f32);
+    render.auto_size = true;
+    let mut view = View::default();
+    view.use_rect_size = true;
+    let elem = LayoutElement::View(view);
+    world.create_entity().with(Transparent).with(elem).with(Mesh2D::default()).with(render).with(Transform::default()).with(Rect2D::new(200f32,200f32,[0.5f32,0.5f32])).build()
+         
+}
+
 impl LayoutTest {
     pub fn test_stack(&mut self, world:&mut World,white:Handle<Texture>,b_jpg:Handle<Texture>) {
         let root0 = create_stack(world,white.clone(),640f32,480f32);
         Tree::add(world, root0, None);
-       
-        for _ in 0..3 {
-            let e = add_img( b_jpg.clone(), world);
+        let font =  {
+            let loader = world.write_resource::<S2DLoader>();
+            loader.load_sync::<_,DefaultBackend>(FontAssetLoaderInfo::new("WenQuanYiMicroHei.ttf") ,world).unwrap()
+        };
+
+        let strs = ["A","BB","DDDDDD","1"];
+        for idx in 0..4 {
+            let e = add_text(world,font.clone(),strs[idx]);
             Tree::add(world, e, Some(root0));
         }
     }
@@ -141,7 +159,7 @@ impl IGameTest for LayoutTest {
             (b,w)
         };
         
-       self.test_simple(world,white.clone());
+       self.test_stack(world, white, b_jpg);
        
     }
 

@@ -71,7 +71,7 @@ impl IGame for TestGame {
 
 fn main() {
    
-    let test_game = TestGame::new("font");
+    let test_game = TestGame::new("layout");
     let mut s2d = Simple2d::new();
     s2d.with_window(|wb| {
         wb.window.title = String::from("Seija Runing");

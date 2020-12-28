@@ -58,9 +58,10 @@ impl IModuleBundle for Simple2d  {
         world.register::<Rect2D>();
         world.register::<Update>();
         build_transform_module(world,builder);
-        init_layout_system(world, builder);
+       
         builder.add(SpriteVisibilitySortingSystem::new(), &"sprite_visibility_system", &[]);
         builder.add(SpriteMeshSystem::<DefaultBackend>::new(),&"sprite_mesh",&[&"sprite_visibility_system"]);
+        init_layout_system(world, builder);
         world.insert(SpriteVisibility::default());
         GameEventHandle::register(world);
     }
