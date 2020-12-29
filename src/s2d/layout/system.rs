@@ -1,4 +1,4 @@
-use crate::{common::{Rect2D, Transform, Tree, TreeEvent, TreeNode}, window::ViewPortSize};
+use crate::{common::{Rect2D, Transform, Tree, TreeEvent, TreeNode}, render::components::Mesh2D, window::ViewPortSize};
 use hibitset::BitSet;
 use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
 use shrev::{ReaderId};
@@ -105,6 +105,8 @@ impl<'a> System<'a> for LayoutSystem {
            if  !ldata.5.contains(cur_entity) || !ldata.6.contains(cur_entity) {
                continue;
            }
+
+         
            if let Some(elem) =  ldata.3.get(cur_entity) {
             elem.update_layout(cur_entity,&ldata.2
                 ,&mut ldata.5

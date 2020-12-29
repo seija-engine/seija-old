@@ -12,9 +12,10 @@ pub struct Rect<T> {
 
 #[derive(Debug)]
 pub struct Rect2D {
-    pub width:f32,
-    pub height:f32,
-    pub anchor:[f32;2]
+   pub width:f32,
+   pub height:f32,
+   pub anchor:[f32;2],
+   pub dirty:bool
 }
 
 impl Default for Rect2D {
@@ -22,7 +23,8 @@ impl Default for Rect2D {
         Rect2D {
             width:0f32,
             height:0f32,
-            anchor:[0.5f32,0.5f32]
+            anchor:[0.5f32,0.5f32],
+            dirty:false
         }
     }
 }
@@ -32,9 +34,52 @@ impl Rect2D {
         Rect2D {
             width: w,
             height: h,
-            anchor
+            anchor,
+            dirty:false
         }
     }
+
+    pub fn dirty(&mut self) {
+        self.dirty = true
+    }
+
+    pub fn clear_dirty(&mut self) {
+        self.dirty = false
+    }
+
+    pub fn width(&self) -> f32 {
+        self.width
+    }
+
+    pub fn set_width(&mut self,width:f32) {
+        if self.width != width {
+            self.dirty()
+        }
+        self.width = width
+    }
+
+    pub fn height(&self) -> f32 {
+        self.height
+    }
+
+    pub fn set_height(&mut self,height:f32) {
+        if self.height != height {
+            self.dirty()
+        }
+        self.height = height
+    }
+
+    pub fn anchor(&self) -> [f32;2] {
+        self.anchor
+    }
+
+    pub fn set_anchor(&mut self,anchor:[f32;2]) {
+        if self.anchor != anchor {
+            self.dirty()
+        }
+        self.anchor = anchor
+    }
+
 
     pub fn test(&self,t:&Transform,point:&(f64,f64)) -> bool {
         if self.width <= 0f32 || self.height <= 0f32 {

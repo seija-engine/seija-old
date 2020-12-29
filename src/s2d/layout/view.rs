@@ -82,7 +82,7 @@ impl View {
 
     pub fn get_size(&self,rect:&Rect2D) -> Vector2<f64> {
         if self.use_rect_size {
-            Vector2::new(rect.width as f64,rect.height  as f64)
+            Vector2::new(rect.width() as f64,rect.height() as f64)
         } else {
             self.size.get()
         }
@@ -102,8 +102,9 @@ impl IView for View {
         let content_size: Vector2<f64> = self.calc_content_size(size,rects.get(entity).unwrap());
 
         rects.get_mut(entity).map(|rect| {
-            rect.width = content_size.x as f32;
-            rect.height = content_size.y as f32;
+            rect.set_width(content_size.x as f32);
+            rect.set_height(content_size.y as f32);
+            //println!("set view {} {}",rect.width,rect.height);
         });
 
         content_size
@@ -125,15 +126,14 @@ impl IView for View {
             (pos.x, pos.y, pos.z)
         };
         let rect = rect2ds.get(entity).unwrap();
-        let [ax, ay] = rect.anchor;
-        let offset_w = rect.width * ax;
-        let offset_h = rect.height * ay;
+        let [ax, ay] = rect.anchor();
+        let offset_w = rect.width() * ax;
+        let offset_h = rect.height() * ay;
         let new_pos: Vector3<f32> = Vector3::new(
             origin.x + offset_w + x + self.margin.left as f32,
             origin.y - offset_h + y - self.margin.top as f32,
             origin.z + z,
         );
-
         trans.get_mut(entity).unwrap().set_position(new_pos);
     }
 }
@@ -180,8 +180,8 @@ impl IView for ContentView {
         }
 
         rects.get_mut(entity).map(|rect| {
-            rect.width = content_size.x as f32;
-            rect.height = content_size.y as f32;
+            rect.set_width(content_size.x as f32);
+            rect.set_height(content_size.y as f32);
         });
         content_size
     }

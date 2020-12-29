@@ -121,15 +121,15 @@ impl ImageGenericInfo {
         };
         let col3 =  global.column(3);
         let z = col3[2];
-        let offset_x = -rect.width * rect.anchor[0];
-        let offset_y = -rect.height * rect.anchor[1];
+        let offset_x = -rect.width() * rect.anchor()[0];
+        let offset_y = -rect.height() * rect.anchor()[1];
         let meshes = vec![
               Vertex2D { //left top
-                 pos: [0f32 + offset_x,rect.height + offset_y,z].into(),
+                 pos: [0f32 + offset_x,rect.height() + offset_y,z].into(),
                  uv:  [uv_rect.x,uv_rect.y].into()
               },
               Vertex2D { //right top
-                pos: [rect.width + offset_x,rect.height + offset_y,z].into(),
+                pos: [rect.width() + offset_x,rect.height() + offset_y,z].into(),
                 uv:  [uv_rect.x + uv_rect.width,uv_rect.y].into()
              },
              Vertex2D {//left bottom
@@ -137,7 +137,7 @@ impl ImageGenericInfo {
                 uv:  [uv_rect.x,uv_rect.y + uv_rect.height].into()
              },
              Vertex2D {//right bottom
-                pos: [rect.width + offset_x,0f32 + offset_y,z].into(),
+                pos: [rect.width() + offset_x,0f32 + offset_y,z].into(),
                 uv:  [uv_rect.x + uv_rect.width,uv_rect.y + uv_rect.height].into()
              },
         ];
@@ -158,10 +158,10 @@ impl ImageGenericInfo {
         let col3 =  global.column(3);
         let z = col3[2];
         let (border_left,border_right,border_top,border_bottom) = self.typ.cast_sliced().unwrap();
-        let offset_x = rect.width * rect.anchor[0];
-        let offset_y = rect.height * rect.anchor[1];
-        let (x0,x1,x2,x3) = (- offset_x,border_left - offset_x,rect.width - border_right - offset_x,rect.width - offset_x);
-        let (y0,y1,y2,y3) = (rect.height - offset_y,rect.height - border_top - offset_y,border_bottom - offset_y,- offset_y);
+        let offset_x = rect.width() * rect.anchor()[0];
+        let offset_y = rect.height() * rect.anchor()[1];
+        let (x0,x1,x2,x3) = (- offset_x,border_left - offset_x,rect.width() - border_right - offset_x,rect.width() - offset_x);
+        let (y0,y1,y2,y3) = (rect.height() - offset_y,rect.height() - border_top - offset_y,border_bottom - offset_y,- offset_y);
         
         
         let  left_uv_width  = uv_rect.width * (border_left / raw_size.0 as f32);
@@ -245,12 +245,12 @@ impl ImageGenericInfo {
 
         let (fill_typ,fill_val) = self.typ.cast_filled().unwrap();
 
-        let anchor_offset_x = -rect.width * rect.anchor[0];
-        let anchor_offset_y = -rect.height * rect.anchor[1];
+        let anchor_offset_x = -rect.width() * rect.anchor()[0];
+        let anchor_offset_y = -rect.height() * rect.anchor()[1];
 
         let mut left = 0f32 + anchor_offset_x;
-        let mut right = rect.width + anchor_offset_x;
-        let mut top = rect.height + anchor_offset_y;
+        let mut right = rect.width() + anchor_offset_x;
+        let mut top = rect.height() + anchor_offset_y;
         let mut bottom = 0f32 + anchor_offset_y;
         let mut uv_left = uv_rect.x;
         let mut uv_right = uv_rect.x + uv_rect.width;
@@ -260,22 +260,22 @@ impl ImageGenericInfo {
         let sub_uv = 1f32 - fill_val;
         match fill_typ {
             ImageFilledType::HorizontalLeft => {
-                let sub_val = rect.width - rect.width * fill_val;
+                let sub_val = rect.width() - rect.width() * fill_val;
                 right = right - sub_val;
                 uv_right = uv_right - (uv_rect.width * sub_uv);
             },
             ImageFilledType::HorizontalRight => {
-                let sub_val = rect.width - rect.width * fill_val;
+                let sub_val = rect.width() - rect.width() * fill_val;
                 left = left + sub_val;
                 uv_left = uv_left + (uv_rect.width * sub_uv);
             },
             ImageFilledType::VerticalTop => {
-                let sub_val = rect.height - rect.height * fill_val;
+                let sub_val = rect.height() - rect.height() * fill_val;
                 bottom = bottom + sub_val;
                 uv_bottom = uv_bottom - (uv_rect.height * sub_uv);
             },
             ImageFilledType::VerticalBottom => {
-                let sub_val = rect.height - rect.height * fill_val;
+                let sub_val = rect.height() - rect.height() * fill_val;
                 top = top - sub_val;
                 uv_top = uv_top + (uv_rect.height * sub_uv);
             },

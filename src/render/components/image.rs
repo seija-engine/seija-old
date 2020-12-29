@@ -48,6 +48,9 @@ impl ImageRender {
     }
 
     pub fn process_mesh(&mut self,trans:&Transform,raw_tex_size:(u32,u32),rect:&Rect2D,mesh2d:&mut Mesh2D) {
+        if rect.width <= 0f32 && rect.height <= 0f32 {
+            return
+        }
         match mesh2d.mesh.as_mut() {
             Some(mesh) => {
                 if mesh2d.is_dirty {

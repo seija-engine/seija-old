@@ -1,11 +1,9 @@
 use crate::render::types::{Backend,Texture};
-use glsl_layout::float;
 use rendy::command::{QueueId};
 use crate::assets::{Handle,AssetStorage};
 use crate::common::{Transform,Rect2D,Horizontal,Vertical};
 use specs::{WriteStorage,ReadStorage,Join};
 use rendy::factory::{Factory,ImageState};
-// use glyph_brush::rusttype::{Scale,Rect as FontRect};
 use glyph_brush::{BrushAction, BuiltInLineBreaker, Extra, FontId, GlyphBrush, GlyphBrushBuilder, HorizontalAlign, Layout, LineBreak, LineBreaker, Rectangle, Section, SectionText, Text, VerticalAlign, ab_glyph::PxScale};
 use crate::render::components::{TextRender,LineMode,Mesh2D};
 use rendy::texture::{TextureBuilder,pixel::{R8Unorm},Texture as RTexture};
@@ -15,21 +13,31 @@ use rendy::hal;
 use std::{ collections::{HashMap}};
 use std::marker::PhantomData;
 
+#[derive(Hash,PartialEq,Eq)]
+pub struct TextHashKey {
+    text:String,
+    w:i32,
+    h:i32,
+    font_size:i32
+}
+
+impl TextHashKey {
+    pub fn new(text: String, w: f32, h: f32, font_size: i32) -> Self { Self { text,w:(w * 100f32) as i32,h:(h * 100f32) as i32, font_size } }
+}
+
 pub struct FontEnv<B:Backend> {
     pub font_tex:Option<Handle<Texture>>,
     glyph_brush:GlyphBrush<Vec<Vertex2D>>,
     fonts_map: HashMap<u32, FontId>,
     mark: PhantomData<B>,
-    cache_meshs:HashMap<String,SpriteMesh> //todo gc it
 }
 
 impl<B> Default for FontEnv<B> where B:Backend {
     fn default() -> Self {
         FontEnv {
             font_tex:None,
-            glyph_brush:GlyphBrushBuilder::using_fonts(vec![]).initial_cache_size((512, 512)).build(),
+            glyph_brush:GlyphBrushBuilder::using_fonts(vec![]).cache_redraws(false).initial_cache_size((512, 512)).build(),
             fonts_map: HashMap::new(),
-            cache_meshs:HashMap::new(),
             mark:PhantomData
         }
     }
@@ -71,25 +79,8 @@ impl<B> FontEnv<B> where B:Backend {
         for (text,mesh2d,t,rect) in text_iter.join() {
             if !text.is_valid() {
                 continue;
-            }
-            if self.cache_meshs.contains_key(&text.text) {
-                if mesh2d.mesh.is_none() || mesh2d.is_dirty {
-                    if let Some(cache_mesh) = self.cache_meshs.get(&text.text) {
-                        mesh2d.mesh = Some(cache_mesh.clone());
-                        if text.auto_size {
-                            let (w,h) = cache_mesh.calc_size();
-                            rect.width =  w;
-                            rect.height = h;
-                         }
-                    }
-                }
-                if let Some(mesh) = mesh2d.mesh.as_mut() {
-                      let  mat:[[f32; 4]; 4] = (*t.global_matrix()).into();
-                      mesh.sprite_arg.model = mat.into();
-
-                }
-                continue
-            }
+            } 
+            rect.clear_dirty();
             let text_font = text.font.as_ref().unwrap();
             let mut font_lookup = None;
             if self.fonts_map.contains_key(&text_font.id()) {
@@ -132,7 +123,7 @@ impl<B> FontEnv<B> where B:Backend {
             let section = if text.auto_size {
                 Section::default().add_text(section_text)
             } else { 
-                Section::default().add_text(section_text).with_bounds((rect.width,rect.height))
+                Section::default().add_text(section_text).with_bounds((rect.width(),rect.height()))
             };
             self.glyph_brush.queue_custom_layout(section,&layout);
            
@@ -193,11 +184,10 @@ impl<B> FontEnv<B> where B:Backend {
 
                     if text.auto_size {
                         let (w,h) = text_mesh.calc_size();
-                        rect.width =  w;
+                        rect.width = w;
                         rect.height = h;
                     }
                     mesh2d.mesh = Some(text_mesh.clone());
-                    self.cache_meshs.insert(text.text.clone(),text_mesh);
                 },
                 BrushAction::ReDraw => ()
             };

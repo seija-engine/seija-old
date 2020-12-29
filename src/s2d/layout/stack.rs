@@ -44,8 +44,8 @@ impl IView for Stack {
        let mut ret_size:Vector2<f64> = size;
        let content_size:Vector2<f64> = self.view.calc_content_size(size,rects.get(entity).unwrap());
        rects.get_mut(entity).map(|rect| {
-              rect.width = content_size.x as f32;
-              rect.height = content_size.y as f32;
+              rect.set_width(content_size.x as f32);
+              rect.set_height(content_size.y as f32);
        });
        let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                   content_size.y - self.view.padding.vertical());
@@ -109,7 +109,7 @@ impl IView for Stack {
        let child_origin = self.view.calc_orign(entity, rects);
        let (width,height) = {
            let rect = rects.get(entity).unwrap();
-           (rect.width,rect.height)
+           (rect.width(),rect.height())
        };
        let m_child = tree_nodes.get(entity).map(|v| &v.children);
        
@@ -122,7 +122,7 @@ impl IView for Stack {
             if let Some(elem) = elems.get(*centity) {
                 let (child_width,child_height) = {
                     let rect = rects.get(*centity).unwrap();
-                    (rect.width,rect.height)
+                    (rect.width(),rect.height())
                 };
                 let mut new_pos:Vector3<f32> = Vector3::default();
                 match self.orientation {

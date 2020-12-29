@@ -104,7 +104,7 @@ impl SpriteRender {
     }
 
     pub fn process_mesh(&mut self,t:&Transform,storage:&AssetStorage<SpriteSheet>,rect2d:&Rect2D,mesh2d:&mut Mesh2D) {
-        if ! self.is_valid() {
+        if ! self.is_valid() || (rect2d.width <= 0f32 && rect2d.height <= 0f32) {
             return;
         }
         match mesh2d.mesh.as_mut() {

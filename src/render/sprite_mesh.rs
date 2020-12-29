@@ -87,14 +87,22 @@ impl<'a, B: Backend> System<'a> for SpriteMeshSystem<B> {
             font_storage,
         ): Self::SystemData,
     ) {
-        for (img, mesh2d, t, rect) in (&mut images, &mut mesh2ds, &trans, &rects).join() {
+        for (img, mesh2d, t, rect) in (&mut images, &mut mesh2ds, &trans, &mut rects).join() {
             if let Some(tex_id) = img.texture.as_ref() {
                 let tex = tex_storage.get(tex_id).unwrap();
+                if rect.dirty {
+                    mesh2d.is_dirty = true;
+                    rect.clear_dirty()
+                }
                 img.process_mesh(&t, tex.texture_size(), &rect, mesh2d);
             }
         }
 
-        for (sprite, mesh2d, t, rect) in (&mut sprites, &mut mesh2ds, &trans, &rects).join() {
+        for (sprite, mesh2d, t, rect) in (&mut sprites, &mut mesh2ds, &trans, &mut rects).join() {
+            if rect.dirty {
+                mesh2d.is_dirty = true;
+                rect.clear_dirty()
+            }
             sprite.process_mesh(&t, &sprite_sheet_storage, &rect, mesh2d);
         }
 
