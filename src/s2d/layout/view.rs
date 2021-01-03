@@ -7,6 +7,7 @@ use nalgebra::{Vector2, Vector3};
 use specs::{Component, DenseVecStorage, Entity, ReadStorage, WriteStorage};
 use std::cell::Cell;
 
+#[derive(Clone,Copy)]
 pub enum ViewType {
     Static,
     Absolute
@@ -100,13 +101,13 @@ impl IView for View {
         _cells: &ReadStorage<GridCell>,
     ) -> Vector2<f64> {
         let content_size: Vector2<f64> = self.calc_content_size(size,rects.get(entity).unwrap());
-
+        
         rects.get_mut(entity).map(|rect| {
             rect.set_width(content_size.x as f32);
             rect.set_height(content_size.y as f32);
-            //println!("set view {} {}",rect.width,rect.height);
+            
         });
-
+       
         content_size
     }
 
@@ -133,7 +134,7 @@ impl IView for View {
             origin.x + offset_w + x + self.margin.left as f32,
             origin.y - offset_h + y - self.margin.top as f32,
             origin.z + z,
-        );
+        );       
         trans.get_mut(entity).unwrap().set_position(new_pos);
     }
 }

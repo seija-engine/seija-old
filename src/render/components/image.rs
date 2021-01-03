@@ -51,6 +51,7 @@ impl ImageRender {
         if rect.width <= 0f32 && rect.height <= 0f32 {
             return
         }
+        
         match mesh2d.mesh.as_mut() {
             Some(mesh) => {
                 if mesh2d.is_dirty {

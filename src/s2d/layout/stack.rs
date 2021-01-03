@@ -61,7 +61,15 @@ impl IView for Stack {
                              hor,
                              ver,
                              mh,
-                             mv) = elem.fview(|v| (v.get_size(rects.get(*centity).unwrap()),v.hor,v.ver,v.margin.horizontal(),v.margin.vertical()));
+                             mv,view_type) = elem.fview(|v| (v.get_size(rects.get(*centity).unwrap()),
+                                                             v.hor,v.ver,
+                                                             v.margin.horizontal(),v.margin.vertical(),
+                                                             v.view_type
+                                                            ));
+                   if !view_type.is_static() {
+                       elem.measure(*centity, child_size, rects, tree_nodes, elems,cells);
+                       continue
+                   }
                    match self.orientation {
                        Orientation::Horizontal => {
                            child_size.y = inner_size.y;
@@ -124,6 +132,11 @@ impl IView for Stack {
                     let rect = rects.get(*centity).unwrap();
                     (rect.width(),rect.height())
                 };
+                let is_static = elem.fview(|v| v.view_type.is_static());
+                if !is_static {
+                    elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin,cells);
+                    continue
+                }
                 let mut new_pos:Vector3<f32> = Vector3::default();
                 match self.orientation {
                     Orientation::Horizontal => {

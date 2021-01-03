@@ -9,11 +9,7 @@ pub struct GlobalEventNode {
 }
 
 impl GlobalEventNode {
-    pub fn fire_event(&self,ev:&GameEvent) {
-       if let Some(call) = self.events.get(&ev.to_type()) {
-           call.run(ev);
-       }
-    }
+   
 
     pub fn insert(&mut self,typ:GameEventType,call:Box<dyn GameEventCallBack>) {
         self.events.insert(typ, Arc::new(call));

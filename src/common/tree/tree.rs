@@ -170,16 +170,17 @@ impl Tree {
         }
     }
 
-    pub fn all_sort_children(tree_nodes: &ReadStorage<TreeNode>, entity: Entity) -> BitSet {
-        let mut set = BitSet::new();
+    pub fn all_sort_children(tree_nodes: &ReadStorage<TreeNode>, entity: Entity) -> Vec<u32> {
+        let mut set = vec![];
         let mut q_list: VecDeque<Entity> = VecDeque::new();
         if let Some(cnode) = tree_nodes.get(entity) {
             cnode.children.iter().for_each(|e| {
+               
                 q_list.push_back(*e);
             });
         }
         while let Some(ce) = q_list.pop_front() {
-            set.add(ce.id());
+            set.push(ce.id());
             tree_nodes.get(ce).unwrap().children.iter().for_each(|e| {
                 q_list.push_back(*e);
             });

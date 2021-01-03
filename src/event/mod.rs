@@ -201,9 +201,19 @@ impl GameEventHandle {
                            
                            if *state == ElementState::Pressed {
                                self.cab_event_handle.process(&GameEvent::TouchStart(self.mouse_pos),world);
+                               for ev in GameEventHandle::get_global_calls(world,GameEventType::TouchStart).iter() {
+                                  let gev = GameEvent::TouchStart(self.mouse_pos);
+                                  ev.run(&gev)
+                               }
                            } else {
                                self.cab_event_handle.process(&GameEvent::TouchEnd(self.mouse_pos),world);
+                               for ev in GameEventHandle::get_global_calls(world,GameEventType::TouchStart).iter() {
+                                let gev = GameEvent::TouchEnd(self.mouse_pos);
+                                ev.run(&gev)
+                             }
                            }
+
+                           
                         },
                         WindowEvent::CursorMoved {position,..} => {
                             self.mouse_pos = self.conv_pos(position.x as f64, position.y as f64);
