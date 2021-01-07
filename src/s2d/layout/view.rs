@@ -200,10 +200,34 @@ impl IView for ContentView {
     ) {
         self.view.arrange(entity, size, rects, tree_nodes, elems, trans, origin, cells);
         let child_origin:Vector3<f32> = self.view.calc_orign(entity, rects);
+        let (width,height) = {
+            let rect = rects.get(entity).unwrap();
+            (rect.width(),rect.height())
+        };
+
         let m_child = tree_nodes.get(entity).map(|v| &v.children);
         if let Some(child) = m_child {
             for centity in child {
                 if let Some(elem) = elems.get(*centity) {
+                    let (child_width,child_height) = {
+                        let rect = rects.get(*centity).unwrap();
+                        (rect.width(),rect.height())
+                    };
+
+                    let (hor,ver) = elem.fview(|v| (v.hor,v.ver));
+                    let mut new_pos:Vector3<f32> = Vector3::default();
+                    match hor {
+                        LayoutAlignment::Center => new_pos.x = width * 0.5f32 - (child_width * 0.5f32),
+                        LayoutAlignment::End =>  new_pos.x = width - child_height - self.view.padding.right as f32,
+                        _ => new_pos.x = 0f32 + self.view.padding.left as f32
+                    }
+
+                    match ver {
+                        LayoutAlignment::Center => new_pos.y = -height * 0.5f32 + child_height * 0.5f32,
+                        LayoutAlignment::End => new_pos.y = -height + child_height + self.view.padding.bottom as f32,
+                        _ => new_pos.y = 0f32 - self.view.padding.top as f32
+                    }
+                    elem.fview(|v| {v.pos.set(new_pos);});
                     elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin,cells);
                 }
             }
