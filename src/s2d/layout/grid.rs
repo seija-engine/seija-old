@@ -26,10 +26,10 @@ pub struct GridCell {
 impl GridCell {
     pub fn new(col: usize, row: usize, col_span: usize, row_span: usize) -> Self { Self { col, row, col_span, row_span } }
     pub fn calc_index(&self) -> (usize,usize,usize,usize) {
-        let sx = self.row;
-        let ex = if self.row_span > 1 { self.row + self.row_span - 1 } else { self.row };
-        let sy = self.col;
-        let ey = if self.col_span > 1 {  self.col + self.col_span - 1 } else {self.col };
+        let sx = self.col;
+        let ex = if self.col_span > 1 { self.col + self.col_span - 1 } else { self.col };
+        let sy = self.row;
+        let ey = if self.row_span > 1 {  self.row + self.row_span - 1 } else {self.row };
         (sx,ex,sy,ey)
     }
 }
@@ -75,26 +75,27 @@ impl IView for Grid {
         let content_size:Vector2<f64> = self.view.measure(entity, size, rects, tree_nodes, elems,cells);
         let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                    content_size.y - self.view.padding.vertical());
-        let row_sizes = self.calc_size(inner_size.x as f32, &self.rows);
-        let col_sizes = self.calc_size(inner_size.y as f32, &self.cols);
+        let col_sizes = self.calc_size(inner_size.x as f32, &self.cols);
+        let row_sizes = self.calc_size(inner_size.y as f32, &self.rows);
         let m_childs = tree_nodes.get(entity).map(|v| &v.children);
-        
-        if let Some(childs) = m_childs {
-            for child_entity in childs {
-               if let Some(cell) = cells.get(*child_entity) {
-                   let (sx,ex,sy,ey) = cell.calc_index();
-                   let mut width:f32 = 0f32;
-                   for idx in sx..(ex + 1) {
-                       width += row_sizes[idx];
+        if row_sizes.len() > 0 && col_sizes.len() > 0 {
+            if let Some(childs) = m_childs {
+                for child_entity in childs {
+                   if let Some(cell) = cells.get(*child_entity) {
+                       let (sx,ex,sy,ey) = cell.calc_index();
+                       let mut width:f32 = 0f32;
+                       for idx in sx..(ex + 1) {
+                           width += col_sizes[idx];
+                       }
+                       let mut height:f32 = 0f32;
+                       for idx in sy..(ey + 1) {
+                        height += row_sizes[idx];
+                       }
+                      elems.get(*child_entity).map(|v|
+                        v.measure(*child_entity, Vector2::new(width as f64,height as f64), rects, tree_nodes, elems, cells));
                    }
-                   let mut height:f32 = 0f32;
-                   for idx in sy..(ey + 1) {
-                    height += col_sizes[idx];
-                   }
-                  elems.get(*child_entity).map(|v|
-                    v.measure(*child_entity, Vector2::new(width as f64,height as f64), rects, tree_nodes, elems, cells));
-               }
-            }
+                }
+            }       
         }
         self._row_sizes.replace(row_sizes);
         self._col_sizes.replace(col_sizes);
@@ -118,11 +119,11 @@ impl IView for Grid {
                     let (sx,_,sy,_) = cell.calc_index();
                     let mut x:f32 = 0f32;
                     for idx in 0..sx {
-                        x += self._row_sizes.borrow()[idx];
+                        x += self._col_sizes.borrow()[idx];
                     }
                     let mut y:f32 = 0f32;
                     for idx in 0..sy {
-                        y -= self._col_sizes.borrow()[idx];
+                        y -= self._row_sizes.borrow()[idx];
                     }
                     
                     if let Some(elem) = elems.get(*child_entity) {
