@@ -66,7 +66,7 @@ impl View {
     pub fn calc_content_size(&self, size: Vector2<f64>,rect:&Rect2D) -> Vector2<f64> {
         let mut ret_size: Vector2<f64> = self.get_size(rect);
 
-        if ret_size.y <= 0f64 && self.hor == LayoutAlignment::Fill {
+        if ret_size.x <= 0f64 && self.hor == LayoutAlignment::Fill {
             ret_size.x = size.x - self.margin.horizontal();
         }
         if ret_size.y <= 0f64 && self.ver == LayoutAlignment::Fill {
@@ -134,7 +134,8 @@ impl IView for View {
             origin.x + offset_w + x + self.margin.left as f32,
             origin.y - offset_h + y - self.margin.top as f32,
             origin.z + z,
-        );       
+        );
+
         trans.get_mut(entity).unwrap().set_position(new_pos);
     }
 }
@@ -175,11 +176,18 @@ impl IView for ContentView {
                    }
                    if child_size.y > content_size.y  && is_static {
                     content_size.y = child_size.y
+                   }
                 }
+            }
+
+            for centity in child {
+                if let Some(elem) = elems.get(*centity) {
+                   elem.measure(*centity, content_size, rects, tree_nodes, elems,cells);
                 }
             }
         }
 
+        
         rects.get_mut(entity).map(|rect| {
             rect.set_width(content_size.x as f32);
             rect.set_height(content_size.y as f32);
@@ -214,8 +222,9 @@ impl IView for ContentView {
                         (rect.width(),rect.height())
                     };
 
-                    let (hor,ver) = elem.fview(|v| (v.hor,v.ver));
+                    let (hor,ver,z) = elem.fview(|v| (v.hor,v.ver,v.pos.get().z));
                     let mut new_pos:Vector3<f32> = Vector3::default();
+                    new_pos.z = z;
                     match hor {
                         LayoutAlignment::Center => new_pos.x = width * 0.5f32 - (child_width * 0.5f32),
                         LayoutAlignment::End =>  new_pos.x = width - child_height - self.view.padding.right as f32,

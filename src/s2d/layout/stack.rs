@@ -51,8 +51,8 @@ impl IView for Stack {
                                                   content_size.y - self.view.padding.vertical());
        let m_child = tree_nodes.get(entity).map(|v| &v.children);
        match self.orientation {
-           Orientation::Horizontal => ret_size.x = 0f64,
-           Orientation::Vertical => ret_size.y = 0f64
+           Orientation::Horizontal => ret_size.x = self.view.padding.left,
+           Orientation::Vertical => ret_size.y = self.view.padding.top
        }
        if let Some(child) = m_child {
            for centity in child {
@@ -99,9 +99,17 @@ impl IView for Stack {
                }
            }
        }
+
+       
        if self.over_hide {
            size
        } else {
+           ret_size.x += self.view.padding.right;
+           ret_size.y += self.view.padding.bottom;
+           rects.get_mut(entity).map(|rect| {
+              rect.set_width(ret_size.x as f32);
+              rect.set_height(ret_size.y as f32);
+           });
            ret_size
        }
    }
