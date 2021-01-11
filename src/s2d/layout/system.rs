@@ -1,6 +1,6 @@
 use crate::{common::{Rect2D, Transform, Tree, TreeEvent, TreeNode}, render::components::Mesh2D, window::ViewPortSize};
 use hibitset::BitSet;
-use specs::{System,World,ReadExpect,Entity,ReadStorage,WriteStorage,Entities};
+use specs::{Entities, Entity, ReadExpect, ReadStorage, System, SystemData, World, WriteStorage, prelude::ComponentEvent};
 use shrev::{ReaderId};
 use nalgebra::{Vector2,Vector3};
 
@@ -27,14 +27,17 @@ use super::{GridCell, IView, LayoutElement, Stack};
 
 pub struct LayoutSystem {
    ev_tree:ReaderId<TreeEvent>,
+   ev_view:ReaderId<ComponentEvent>,
    modified:BitSet,
 }
 
 impl LayoutSystem {
     pub fn new(world:&mut World) -> LayoutSystem {
-        let tree = world.get_mut::<Tree>().unwrap();
+        let tree = world.get_mut::<Tree>().unwrap().channel.register_reader();
+        let ev_view = WriteStorage::<LayoutElement>::fetch(world).channel_mut().register_reader();
         LayoutSystem {
-           ev_tree:tree.channel.register_reader(),
+           ev_tree:tree,
+           ev_view,
            modified:BitSet::new()
         }
     }
@@ -78,7 +81,15 @@ impl<'a> System<'a> for LayoutSystem {
     
     fn run(&mut self,mut ldata: Self::SystemData) {
        self.modified.clear();
-      
+       for ev in ldata.3.channel().read(&mut self.ev_view) {
+           match ev {
+               ComponentEvent::Modified(e) => {
+                 let entity = ldata.0.entity(*e);
+                 self.on_dirty(&ldata.2, entity);
+               }
+               _ => ()
+           }
+       }
     
        for ev in ldata.1.channel.read(&mut self.ev_tree) {
            let tree_nodes = &ldata.2;
@@ -99,6 +110,9 @@ impl<'a> System<'a> for LayoutSystem {
             },
            }
        }
+      
+
+
        let iter = self.modified.clone().into_iter();
        for eid in iter {
            let cur_entity = ldata.0.entity(eid);
@@ -116,5 +130,7 @@ impl<'a> System<'a> for LayoutSystem {
                 ,&ldata.7);
            }
        }
+
+       ldata.3.channel().read(&mut self.ev_view);
     }
 }

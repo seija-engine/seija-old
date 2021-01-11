@@ -8,7 +8,7 @@ pub mod view;
 pub mod stack;
 pub mod system;
 
-use specs::{Entity,Component, DenseVecStorage, ReadStorage, WriteStorage};
+use specs::{Entity,Component, DenseVecStorage, ReadStorage, WriteStorage,FlaggedStorage};
 pub use system::LayoutData;
 pub use stack::{Stack,Orientation};
 pub use view::{View,ContentView};
@@ -47,7 +47,7 @@ pub enum LayoutElement {
 }
 
 impl Component for LayoutElement {
-    type Storage = DenseVecStorage<LayoutElement>;
+    type Storage = FlaggedStorage<Self,DenseVecStorage<LayoutElement>>;
 }
 
 impl IView for LayoutElement {
