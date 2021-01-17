@@ -75,6 +75,7 @@ impl IView for Grid {
         let content_size:Vector2<f64> = self.view.measure(entity, size, rects, tree_nodes, elems,cells);
         let inner_size:Vector2<f64> = Vector2::new(content_size.x - self.view.padding.horizontal(),
                                                    content_size.y - self.view.padding.vertical());
+        
         let col_sizes = self.calc_size(inner_size.x as f32, &self.cols);
         let row_sizes = self.calc_size(inner_size.y as f32, &self.rows);
         let m_childs = tree_nodes.get(entity).map(|v| &v.children);

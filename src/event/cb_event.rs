@@ -89,7 +89,7 @@ impl CABEventRoot {
             return false;
         }
         let pos = ev.get_pos();
-        if rect.test(t, pos) == false {
+        if !rect.test(t, pos) {
             return false;
         }
         let zero_vec:Vec<Entity> = vec![];
@@ -99,22 +99,26 @@ impl CABEventRoot {
 
         let hiddens = world.read_storage::<Hidden>();
         let is_hide = hiddens.contains(e);
+        let mut is_through = false;
         //派发捕获事件 
-        if may_ev_node.is_some()  &&  is_hide == false {
-            let ev_node = may_ev_node.unwrap();
-            let evlist = ev_node.get_dispatch_event(true,ev.to_type());
-            for ev in evlist {
-                events.push((ev,e));
+        if let Some(ev_node) = may_ev_node {
+            is_through = ev_node.is_through;
+            if !is_hide && !ev_node.is_through {
+                let evlist:Vec<Arc<NodeEvent>> = ev_node.get_dispatch_event(true,ev.to_type());
+                for ev in evlist {
+                    events.push((ev,e));
+                }
+                if ev_node.is_stop_capture {
+                    return true;
+                }
             }
-            if ev_node.is_stop_capture {
-                return true;
-            }
-        };
+        }
 
-        //开始向上冒泡
         let children:&Vec<Entity> = &tree_nodes.get(e).map(|t| &t.children).unwrap_or(&zero_vec);
         let is_last = children.len() == 0;
-        if is_last {
+        
+        //开始向上冒泡
+        if is_last && !is_through {
             self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
         }
 
@@ -129,10 +133,11 @@ impl CABEventRoot {
                 return true;
             }
         }
-        if is_last == false {
-            self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
-        }
-        return true;
+        //if !is_last {
+        //    self.bubble_event(world,e,ev,tree_nodes,ev_storage,events);
+        //}
+        
+        return !is_through;
     }
 
     fn bubble_event(&mut self,world:&World,e:Entity,ev:&GameEvent,tree_nodes:&ReadStorage<TreeNode>,

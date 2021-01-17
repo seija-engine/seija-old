@@ -112,7 +112,6 @@ impl<'a> System<'a> for LayoutSystem {
        }
       
 
-
        let iter = self.modified.clone().into_iter();
        for eid in iter {
            let cur_entity = ldata.0.entity(eid);

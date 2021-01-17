@@ -95,7 +95,8 @@ pub struct EventNode {
     capture_event:HashMap<GameEventType,Arc<NodeEvent>>,
     bubble_event:HashMap<GameEventType,Arc<NodeEvent>>,
     is_stop_capture:bool,
-    is_stop_bubble:bool
+    is_stop_bubble:bool,
+    pub is_through:bool
 }
 
 impl EventNode {
