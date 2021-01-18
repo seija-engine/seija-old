@@ -45,7 +45,7 @@ impl ViewType {
 
 #[derive(Default)]
 pub struct View {
-    pub pos: Cell<Vector3<f32>>,
+    pub pos: Cell<Vector2<f32>>,
     pub size: Cell<Vector2<f64>>,
     pub margin: Thickness,
     pub padding: Thickness,
@@ -122,21 +122,19 @@ impl IView for View {
         origin: Vector3<f32>,
         _cells: &ReadStorage<GridCell>,
     ) {
-        let (x, y, z) = {
-            let pos: Vector3<f32> = self.pos.get();
-            (pos.x, pos.y, pos.z)
+        let (x, y) = {
+            let pos: Vector2<f32> = self.pos.get();
+            (pos.x, pos.y)
         };
         let rect = rect2ds.get(entity).unwrap();
         let [ax, ay] = rect.anchor();
         let offset_w = rect.width() * ax;
         let offset_h = rect.height() * ay;
-        let new_pos: Vector3<f32> = Vector3::new(
-            origin.x + offset_w + x + self.margin.left as f32,
-            origin.y - offset_h + y - self.margin.top as f32,
-            origin.z + z,
-        );
+       
+        let new_x = origin.x + offset_w + x + self.margin.left as f32;
+        let new_y = origin.y - offset_h + y - self.margin.top as f32;
 
-        trans.get_mut(entity).unwrap().set_position(new_pos);
+        trans.get_mut(entity).unwrap().set_position_xy(new_x,new_y);
     }
 }
 
@@ -222,9 +220,8 @@ impl IView for ContentView {
                         (rect.width(),rect.height())
                     };
 
-                    let (hor,ver,z) = elem.fview(|v| (v.hor,v.ver,v.pos.get().z));
-                    let mut new_pos:Vector3<f32> = Vector3::default();
-                    new_pos.z = z;
+                    let (hor,ver) = elem.fview(|v| (v.hor,v.ver));
+                    let mut new_pos:Vector2<f32> = Vector2::default();
                     match hor {
                         LayoutAlignment::Center => new_pos.x = width * 0.5f32 - (child_width * 0.5f32),
                         LayoutAlignment::End =>  new_pos.x = width - child_height - self.view.padding.right as f32,

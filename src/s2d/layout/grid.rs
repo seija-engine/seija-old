@@ -128,7 +128,7 @@ impl IView for Grid {
                     }
                     
                     if let Some(elem) = elems.get(*child_entity) {
-                        let mut new_pos:Vector3<f32> = elem.fview(|v| v.pos.get());
+                        let mut new_pos:Vector2<f32> = elem.fview(|v| v.pos.get());
                         new_pos.x = x;
                         new_pos.y = y;
                         elem.fview(|v| v.pos.set(new_pos));

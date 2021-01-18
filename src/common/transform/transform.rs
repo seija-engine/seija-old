@@ -87,6 +87,11 @@ impl Transform {
         self.isometry.translation.vector.y = value;
     }
 
+    pub fn set_position_xy(&mut self,x:f32,y:f32) {
+        self.isometry.translation.vector.x = x;
+        self.isometry.translation.vector.y = y;
+    }
+
     pub fn set_position(&mut self,position: Vector3<f32>) -> &mut Self {
         self.isometry.translation.vector = position;
         self

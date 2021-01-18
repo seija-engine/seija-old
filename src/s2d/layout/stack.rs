@@ -145,7 +145,7 @@ impl IView for Stack {
                     elem.arrange(*centity, size, rects, tree_nodes, elems, trans, child_origin,cells);
                     continue
                 }
-                let mut new_pos:Vector3<f32> = Vector3::default();
+                let mut new_pos:Vector2<f32> = Vector2::default();
                 match self.orientation {
                     Orientation::Horizontal => {
                         new_pos.x = add_number;

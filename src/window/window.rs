@@ -1,6 +1,6 @@
 use winit::{window::{WindowBuilder,WindowAttributes,Window},event::{Event,WindowEvent},event_loop::{EventLoop,ControlFlow}};
 use rendy::hal::command::{ClearColor};
-use winit::platform::desktop::EventLoopExtDesktop;
+use winit::platform::run_return::EventLoopExtRunReturn;
 pub struct WindowModule {
   window:Option<Window>,
   win_attr:Option<WindowAttributes>,
@@ -36,6 +36,7 @@ impl WindowModule {
     }
 
     pub fn get_window(&self) -> &Window {
+        
         self.window.as_ref().unwrap()
     }
 
