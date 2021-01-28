@@ -11,7 +11,7 @@ use rendy::hal::command::{ClearValue,ClearDepthStencil};
 use rendy::hal::format::{Format};
 use specs::{DispatcherBuilder,World,WorldExt};
 use shrev::{EventChannel};
-use crate::common::{EntityInfo,transform::{build_transform_module},Rect2D,UpdateSystem,Update};
+use crate::common::{Tree,EntityInfo,transform::{build_transform_module},Rect2D,UpdateSystem,Update};
 use winit::{window::WindowBuilder};
 use crate::assets::{Loader,S2DAssetPack,StorageCenter};
 use crate::event::{GameEventHandle};
@@ -57,12 +57,15 @@ impl IModuleBundle for Simple2d  {
         world.register::<EntityInfo>();
         world.register::<Rect2D>();
         world.register::<Update>();
-        build_transform_module(world,builder);
         
+        world.insert(Tree::default());
+        init_layout_system(world, builder);
+        build_transform_module(world,builder);
         builder.add(SpriteVisibilitySortingSystem::new(), &"sprite_visibility_system", &[]);
         builder.add(SpriteMeshSystem::<DefaultBackend>::new(),&"sprite_mesh",&[&"sprite_visibility_system"]);
-        init_layout_system(world, builder);
+       
         world.insert(SpriteVisibility::default());
+       
         GameEventHandle::register(world);
     }
 
