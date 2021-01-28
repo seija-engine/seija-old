@@ -224,7 +224,7 @@ impl IView for ContentView {
                     let mut new_pos:Vector2<f32> = Vector2::default();
                     match hor {
                         LayoutAlignment::Center => new_pos.x = width * 0.5f32 - (child_width * 0.5f32),
-                        LayoutAlignment::End =>  new_pos.x = width - child_height - self.view.padding.right as f32,
+                        LayoutAlignment::End =>  new_pos.x = width - child_width - self.view.padding.right as f32,
                         _ => new_pos.x = 0f32 + self.view.padding.left as f32
                     }
 
