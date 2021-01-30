@@ -220,17 +220,17 @@ impl IView for ContentView {
                         (rect.width(),rect.height())
                     };
 
-                    let (hor,ver) = elem.fview(|v| (v.hor,v.ver));
+                    let (hor,ver,mar) = elem.fview(|v| (v.hor,v.ver,v.margin.clone()));
                     let mut new_pos:Vector2<f32> = Vector2::default();
                     match hor {
                         LayoutAlignment::Center => new_pos.x = width * 0.5f32 - (child_width * 0.5f32),
-                        LayoutAlignment::End =>  new_pos.x = width - child_width - self.view.padding.right as f32,
+                        LayoutAlignment::End =>  new_pos.x = width - child_width - self.view.padding.right as f32 - mar.right as f32,
                         _ => new_pos.x = 0f32 + self.view.padding.left as f32
                     }
 
                     match ver {
                         LayoutAlignment::Center => new_pos.y = -height * 0.5f32 + child_height * 0.5f32,
-                        LayoutAlignment::End => new_pos.y = -height + child_height + self.view.padding.bottom as f32,
+                        LayoutAlignment::End => new_pos.y = -height + child_height + self.view.padding.bottom as f32 + mar.bottom as f32,
                         _ => new_pos.y = 0f32 - self.view.padding.top as f32
                     }
                     elem.fview(|v| {v.pos.set(new_pos);});

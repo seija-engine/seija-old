@@ -92,4 +92,18 @@ impl AnchorAlign {
             AnchorAlign::BottomRight => (Horizontal::Right,Vertical::Bottom),
         }
     }
+
+    pub fn to_anchor(&self) -> [f32;2] {
+        match self {
+            AnchorAlign::TopLeft => [1f32,0f32],
+            AnchorAlign::Top =>  [1f32,0.5f32],
+            AnchorAlign::TopRight => [1f32,1f32],
+            AnchorAlign::Left => [0f32,0.5f32],
+            AnchorAlign::Center => [0.5f32,0.5f32],
+            AnchorAlign::Right => [1f32,0.5f32],
+            AnchorAlign::BottomLeft => [0f32,0f32],
+            AnchorAlign::Bottom => [0.5f32,0f32],
+            AnchorAlign::BottomRight => [0f32,1f32],
+        }
+    }
 }

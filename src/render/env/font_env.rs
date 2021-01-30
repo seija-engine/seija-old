@@ -98,6 +98,7 @@ impl<B> FontEnv<B> where B:Backend {
             let col3 = t.global_matrix().column(3);
             
             let (h,v) = text.anchor.to_hv_align();
+            //rect.anchor = text.anchor.to_anchor();
             let layout = match text.line_mode {
                 LineMode::Single => Layout::SingleLine {
                     line_breaker: CustomLineBreaker::None,
