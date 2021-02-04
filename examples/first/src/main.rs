@@ -1,3 +1,4 @@
+use input::InputTest;
 use seija::window::{ViewPortSize};
 use seija::common::{Transform};
 use seija::s2d::{S2DLoader};
@@ -12,6 +13,7 @@ use seija::win::dpi::{Size,LogicalSize};
 pub mod core;
 mod tests;
 mod layout;
+mod input;
 use tests::{FontTest,IGameTest,SpriteTest,EventTest,UITest};
 
 
@@ -33,6 +35,7 @@ impl TestGame {
                 "event"  => Box::new(EventTest::default()),
                 "ui"     => Box::new(UITest::default()),
                 "layout" => Box::new(layout::LayoutTest::default()),
+                "input" => Box::new(input::InputTest::default()),
                 _ => { panic!("error test name") }
             }
         };
@@ -71,7 +74,7 @@ impl IGame for TestGame {
 
 fn main() {
    
-    let test_game = TestGame::new("layout");
+    let test_game = TestGame::new("input");
     let mut s2d = Simple2d::new();
     s2d.with_window(|wb| {
         wb.window.title = String::from("Seija Runing");

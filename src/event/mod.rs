@@ -13,11 +13,12 @@ pub enum GameEvent {
     Move((f64,f64)),
     MouseEnter((f64,f64)),
     MouseLeave((f64,f64)),
-    KeyBoard(u32,bool)
+    KeyBoard(u32,bool),
+    RecvChar(char)
 }
 
 pub trait GameEventCallBack  :Send + Sync{
-    fn run(&self,ev:&GameEvent);
+    fn run(&self,ev:&GameEvent,world:&mut World);
 }
 
 #[derive(PartialEq,Eq,Hash,Clone,Debug)]
@@ -28,7 +29,8 @@ pub enum GameEventType {
     MouseMove = 3,
     MouseEnter = 4,
     MouseLeave = 5,
-    KeyBoard = 6
+    KeyBoard = 6,
+    RecvChar = 7,
 }
 
 impl GameEventType {
@@ -41,6 +43,7 @@ impl GameEventType {
             4 => Some(GameEventType::MouseEnter),
             5 => Some(GameEventType::MouseLeave),
             6 => Some(GameEventType::KeyBoard),
+            7 => Some(GameEventType::RecvChar),
             _ => None
         }
     }
@@ -56,6 +59,7 @@ impl GameEvent {
             GameEvent::MouseEnter(_) => GameEventType::MouseEnter,
             GameEvent::MouseLeave(_) => GameEventType::MouseLeave,
             GameEvent::KeyBoard(_,_) => GameEventType::KeyBoard,
+            GameEvent::RecvChar(_) => GameEventType::RecvChar
         }
     }
 
@@ -204,13 +208,13 @@ impl GameEventHandle {
                                self.cab_event_handle.process(&GameEvent::TouchStart(self.mouse_pos),world);
                                for ev in GameEventHandle::get_global_calls(world,GameEventType::TouchStart).iter() {
                                   let gev = GameEvent::TouchStart(self.mouse_pos);
-                                  ev.run(&gev)
+                                  ev.run(&gev,world)
                                }
                            } else {
                                self.cab_event_handle.process(&GameEvent::TouchEnd(self.mouse_pos),world);
                                for ev in GameEventHandle::get_global_calls(world,GameEventType::TouchStart).iter() {
                                 let gev = GameEvent::TouchEnd(self.mouse_pos);
-                                ev.run(&gev)
+                                ev.run(&gev,world)
                              }
                            }
 
@@ -227,7 +231,13 @@ impl GameEventHandle {
                             for ev in calls.iter() {
                                 let code = input.virtual_keycode.map(|v|v as u32).unwrap_or(0u32);
                                 let game_ev = GameEvent::KeyBoard(code,input.state == ElementState::Pressed);
-                                ev.run(&game_ev);
+                                ev.run(&game_ev,world);
+                            }
+                        },
+                        WindowEvent::ReceivedCharacter(chr) => {
+                            let calls = GameEventHandle::get_global_calls(world, GameEventType::RecvChar);
+                            for ev in calls.iter() {
+                                ev.run(&GameEvent::RecvChar(*chr), world);
                             }
                         }
                         _ => ()

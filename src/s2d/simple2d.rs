@@ -17,6 +17,8 @@ use crate::assets::{Loader,S2DAssetPack,StorageCenter};
 use crate::event::{GameEventHandle};
 use crate::s2d::layout::{init_layout_system};
 
+use super::ui::{raw_input::RawInput, ui_system::UIUpdateSystem};
+
 pub type DefaultBackend = rendy::vulkan::Backend;
 
 pub type S2DLoader = Loader<S2DAssetPack>;
@@ -56,11 +58,14 @@ impl IModuleBundle for Simple2d  {
     fn build(world:&mut World,builder:&mut DispatcherBuilder<'static,'static>) {
         world.register::<EntityInfo>();
         world.register::<Rect2D>();
+        world.register::<RawInput>();
         world.register::<Update>();
         
         world.insert(Tree::default());
         init_layout_system(world, builder);
         build_transform_module(world,builder);
+        
+        builder.add(UIUpdateSystem::default(), "UIUpdateSystem", &[]);
         builder.add(SpriteVisibilitySortingSystem::new(), &"sprite_visibility_system", &[]);
         builder.add(SpriteMeshSystem::<DefaultBackend>::new(),&"sprite_mesh",&[&"sprite_visibility_system"]);
        

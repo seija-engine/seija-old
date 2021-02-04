@@ -49,6 +49,9 @@ impl  TextRender {
         self.text = String::from(txt);
     }
 
+    pub fn set_text_string(&mut self,str:String) {
+        self.text = str;
+    }
 
     pub fn set_font_size(&mut self,font_size:i32) {
         self.font_size = font_size;
