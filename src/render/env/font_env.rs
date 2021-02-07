@@ -189,6 +189,7 @@ impl<B> FontEnv<B> where B:Backend {
                         rect.height = h;
                     }
                     mesh2d.mesh = Some(text_mesh.clone());
+                    
                 },
                 BrushAction::ReDraw => ()
             };

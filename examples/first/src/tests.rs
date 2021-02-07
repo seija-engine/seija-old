@@ -1,3 +1,5 @@
+use std::ops::Index;
+
 use seija::specs::{World,WorldExt,world::Builder,Entity};
 use seija::render::{FontAsset};
 use seija::assets::{Handle,AssetStorage,FontAssetLoaderInfo,TextuteLoaderInfo,SpriteSheetLoaderInfo};
@@ -202,6 +204,9 @@ pub struct UITest { }
 
 impl IGameTest for UITest  {
     fn start(&mut self,world:&mut World) {
+        let arr:Vec<i32> = vec![];
+        let aa = arr.index(0);
+        
         let (sprite_sheet,font) = {
             let loader = world.write_resource::<S2DLoader>();
             ( 

@@ -1,4 +1,4 @@
-use crate::{assets::{Handle, TextuteLoaderInfo}, common::{AnchorAlign, Rect2D, Transform, Tree}, event::{global::GlobalEventNode, EventNode, GameEvent, GameEventCallBack, GameEventType}, render::{
+use crate::{assets::{Handle}, common::{AnchorAlign, Rect2D, Transform, Tree}, event::{global::GlobalEventNode, EventNode, GameEvent, GameEventCallBack, GameEventType}, render::{
         components::{Mesh2D, TextRender},
         FontAsset, Transparent,
     }, s2d::layout::{ContentView, LayoutElement, View}};
@@ -15,8 +15,9 @@ pub struct RawInput {
     pub text_value:String,
     pub is_focus: bool,
     pub label: Entity,
-    pub time:f64,
-    pub split_chr:bool
+    pub time:f32,
+    pub cursor_idx:usize,
+    pub show_cursor:bool
 }
 
 impl Component for RawInput {
@@ -31,25 +32,49 @@ pub struct RawInputCallBack {
 impl GameEventCallBack for RawInputCallBack {
     fn run(&self, ev:&GameEvent, world:&mut World) {
         let mut raw_inputs:WriteStorage<RawInput> = world.write_storage::<RawInput>();
+        let mut texts:WriteStorage<TextRender> = world.write_storage::<TextRender>();
         let raw_input = raw_inputs.get_mut(self.entity).unwrap();
+        if !raw_input.is_focus {
+            return;
+        }
         match ev {
             GameEvent::RecvChar(chr) => {
                 if *chr == '\u{8}' {
-                    if raw_input.text_value.len() > 0 {
-                        raw_input.text_value.pop().unwrap();
-                    }
+                        let rm_idx = raw_input.cursor_idx as i32 - 1;
+                        if rm_idx >= 0 {
+                            raw_input.text_value = string_rm_idx(&raw_input.text_value,raw_input.cursor_idx);
+                            raw_input.cursor_idx -= 1;
+                        }
+                    
                 } else {
-                    raw_input.text_value.push(*chr);
+                    raw_input.text_value = string_insert_idx(&raw_input.text_value, raw_input.cursor_idx, *chr);
+                    raw_input.cursor_idx += 1;
+                }
+
+                let text = texts.get_mut(self.label).unwrap();
+                let  set_s = string_insert_idx(&raw_input.text_value, raw_input.cursor_idx, '|');
+                text.set_text_string(set_s);
+            },
+            GameEvent::KeyBoard(code,b) => {
+                match code {
+                    70 if raw_input.cursor_idx > 0 && *b => {
+                        raw_input.cursor_idx -= 1;
+                        raw_input.time = 0f32;
+                        raw_input.update_show_cursor(true,&mut texts);
+                    },
+                    72 if raw_input.cursor_idx < raw_input.text_value.len() && *b => {
+                        raw_input.cursor_idx += 1;
+                        raw_input.time = 0f32;
+                        raw_input.update_show_cursor(true,&mut texts);
+                    },
+                    _ => {}
                 }
             },
             _ => {}
         }
         
-        let mut texts:WriteStorage<TextRender> = world.write_storage::<TextRender>();
-        let text = texts.get_mut(self.label).unwrap();
-        text.set_text(&raw_input.text_value);
         
-        world.write_storage::<Mesh2D>().get_mut(self.label).unwrap().is_dirty = true;
+        
     }
 }
 
@@ -59,8 +84,9 @@ impl RawInput {
             text_value:String::default(),
             label,
             is_focus: false,
-            split_chr: false,
-            time:0f64
+            show_cursor: false,
+            time:0f32,
+            cursor_idx:0
         }
     }
 
@@ -125,18 +151,55 @@ impl RawInput {
         let mut global_events: WriteStorage<GlobalEventNode> = world.write_storage::<GlobalEventNode>();
         let mut global_event = GlobalEventNode::default();
         global_event.insert(GameEventType::RecvChar, Box::new(RawInputCallBack {entity,label:label_entity}));
+        global_event.insert(GameEventType::KeyBoard, Box::new(RawInputCallBack {entity,label:label_entity}));
         global_events.insert(entity, global_event).unwrap();
     }
 
-    pub fn update(&mut self, texts: &mut WriteStorage<TextRender>) {
-        let text = texts.get_mut(self.label).unwrap();
-        let mut up_string = String::from(self.text_value.as_str());
-        if self.split_chr {
-            up_string.push('|');
-            self.split_chr = false;
-        } else {
-            self.split_chr = true;
+    pub fn update(&mut self, texts: &mut WriteStorage<TextRender>,dt:f32) {
+        self.time += dt;
+        if self.time >= 0.5f32 {
+            self.time = 0f32;
+            self.show_cursor = !self.show_cursor;
+            self.update_show_cursor(self.show_cursor,texts)
         }
+       
+    }
+
+    pub fn update_show_cursor(&mut self,b:bool, texts: &mut WriteStorage<TextRender>) {
+        let text = texts.get_mut(self.label).unwrap();
+        let ichr = if b {'|'} else { ' '};
+        let up_string = string_insert_idx(self.text_value.as_str(),self.cursor_idx,ichr);
         text.set_text_string(up_string);
     }
+}
+
+fn string_insert_idx(str:&str,idx:usize,ichr:char) -> String {
+    let mut ret = String::default();
+    let mut add_idx:usize = 0;
+    let mut iter = str.chars();
+    while let Some(chr) = iter.next() {
+        if add_idx == idx {
+            ret.push(ichr)
+        }
+        ret.push(chr);   
+        add_idx += 1;
+    }
+    if add_idx == idx {
+        ret.push(ichr)
+    }
+    ret
+}
+
+fn string_rm_idx(str:&str,idx:usize) -> String {
+    let mut ret = String::default();
+    let mut add_idx:usize = 0;
+    let mut iter = str.chars();
+    while let Some(chr) = iter.next() {
+        if add_idx != (idx - 1) {
+            ret.push(chr);
+        }
+        
+        add_idx += 1;
+    }
+    ret
 }
