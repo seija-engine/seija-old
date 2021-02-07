@@ -62,7 +62,7 @@ impl GameEventCallBack for RawInputCallBack {
                         raw_input.time = 0f32;
                         raw_input.update_show_cursor(true,&mut texts);
                     },
-                    72 if raw_input.cursor_idx < raw_input.text_value.len() && *b => {
+                    72 if raw_input.cursor_idx < raw_input.char_len() && *b => {
                         raw_input.cursor_idx += 1;
                         raw_input.time = 0f32;
                         raw_input.update_show_cursor(true,&mut texts);
@@ -170,6 +170,10 @@ impl RawInput {
         let ichr = if b {'|'} else { ' '};
         let up_string = string_insert_idx(self.text_value.as_str(),self.cursor_idx,ichr);
         text.set_text_string(up_string);
+    }
+
+    pub fn char_len(&self) -> usize {
+        self.text_value.chars().count()
     }
 }
 
