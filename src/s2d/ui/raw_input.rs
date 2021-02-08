@@ -1,4 +1,4 @@
-use crate::{assets::{Handle}, common::{AnchorAlign, Rect2D, Transform, Tree}, event::{global::GlobalEventNode, EventNode, GameEvent, GameEventCallBack, GameEventType}, render::{
+use crate::{assets::{Handle}, common::{AnchorAlign, Rect2D, Transform, Tree}, core::Time, event::{global::GlobalEventNode, EventNode, GameEvent, GameEventCallBack, GameEventType}, render::{
         components::{Mesh2D, TextRender},
         FontAsset, Transparent,
     }, s2d::layout::{ContentView, LayoutElement, View}};
@@ -17,7 +17,10 @@ pub struct RawInput {
     pub label: Entity,
     pub time:f32,
     pub cursor_idx:usize,
-    pub show_cursor:bool
+    pub show_cursor:bool,
+
+
+    pub click_frame:u64,
 }
 
 impl Component for RawInput {
@@ -70,6 +73,13 @@ impl GameEventCallBack for RawInputCallBack {
                     _ => {}
                 }
             },
+            GameEvent::TouchStart(_) => {
+                let f = world.read_resource::<Time>().frame_number();
+                if f != raw_input.click_frame {
+                    raw_input.is_focus = false;
+                    raw_input.update_show_cursor(false,&mut texts);
+                }
+            },
             _ => {}
         }
         
@@ -86,15 +96,16 @@ impl RawInput {
             is_focus: false,
             show_cursor: false,
             time:0f32,
-            cursor_idx:0
+            cursor_idx:0,
+            click_frame:0
         }
     }
 
-    pub fn attach_new(entity: Entity, font: Option<Handle<FontAsset>>, world: &mut World) {
+    pub fn attach_new(entity: Entity, font: Option<Handle<FontAsset>>, world: &mut World) -> bool {
         {
             let raw_inputs: ReadStorage<RawInput> = world.read_storage::<RawInput>();
             if raw_inputs.contains(entity) {
-                return;
+                return false;
             }
         };
 
@@ -121,6 +132,11 @@ impl RawInput {
                 let mut raw_inputs: WriteStorage<RawInput> = w.write_storage::<RawInput>();
                 let raw_input = raw_inputs.get_mut(e).unwrap();
                 raw_input.is_focus = true;
+                raw_input.click_frame = w.read_resource::<Time>().frame_number();
+                let mut texts:WriteStorage<TextRender> = w.write_storage::<TextRender>();
+                raw_input.update_show_cursor(true, &mut texts);
+                raw_input.show_cursor = true;
+                raw_input.time = 0f32;
             });
             evnodes.insert(entity, ev_node).unwrap();
 
@@ -152,7 +168,10 @@ impl RawInput {
         let mut global_event = GlobalEventNode::default();
         global_event.insert(GameEventType::RecvChar, Box::new(RawInputCallBack {entity,label:label_entity}));
         global_event.insert(GameEventType::KeyBoard, Box::new(RawInputCallBack {entity,label:label_entity}));
+        global_event.insert(GameEventType::TouchStart, Box::new(RawInputCallBack {entity,label:label_entity}));
         global_events.insert(entity, global_event).unwrap();
+
+        true
     }
 
     pub fn update(&mut self, texts: &mut WriteStorage<TextRender>,dt:f32) {
